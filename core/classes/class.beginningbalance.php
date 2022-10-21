@@ -1,0 +1,164 @@
+<?php
+
+class BeginningBalance extends Connection
+{
+    private $table = 'tbl_beginning_balance';
+    public $pk = 'bb_id';
+    public $name = 'reference_number';
+
+    // notes: make dynamic values for count if exist
+
+    public function add()
+    {
+       
+        $bb_ref_id = $this->clean($this->inputs['bb_ref_id']);
+        $bb_module = $this->clean($this->inputs['bb_module']);
+        $is_exist = $this->select($this->table, $this->pk, "bb_ref_id = '$bb_ref_id' AND bb_module='$bb_module'");
+        if ($is_exist->num_rows > 0) {
+            return 2;
+        } else {
+            $form = array(
+                $this->name     => $this->clean($this->inputs[$this->name]),
+                'bb_date'       => $this->inputs['bb_date'],
+                'bb_ref_id'     => $bb_ref_id,
+                'bb_module'     => $bb_module,
+                'bb_qty'        => $this->inputs['bb_qty'],
+                'bb_amount'     => $this->inputs['bb_amount'],
+                'bb_remarks'    => $this->inputs['bb_remarks'],
+                'encoded_by'    => $_SESSION['user']['id']
+            );
+
+            if($bb_module == "INV"){
+                $Products = new Products();
+                $amount =  $this->inputs['bb_amount']/$this->inputs['bb_qty'];
+                $Products->prodAVG($bb_ref_id, $this->inputs['bb_qty'],$amount);
+            }
+            
+            return $this->insert($this->table, $form);
+        }
+    }
+
+    public function edit()
+    {
+        $bb_ref_id = $this->clean($this->inputs['bb_ref_id']);
+        $bb_module = $this->clean($this->inputs['bb_module']);
+        $is_exist = $this->select($this->table, $this->pk, "bb_ref_id = '$bb_ref_id' AND bb_module='$bb_module'");
+        if ($is_exist->num_rows > 0) {
+            return 2;
+        } else {
+            $form = array(
+                $this->name     => $this->clean($this->inputs[$this->name]),
+                'bb_date'       => $this->inputs['bb_date'],
+                'bb_ref_id'     => $bb_ref_id,
+                'bb_module'     => $bb_module,
+                'bb_qty'        => $this->inputs['bb_qty'],
+                'bb_amount'     => $this->inputs['bb_amount'],
+                'bb_remarks'    => $this->inputs['bb_remarks'],
+                'encoded_by'    => $_SESSION['user']['id']
+            );
+            return $this->updateIfNotExist($this->table, $form);
+        }
+    }
+
+    public function show()
+    {
+        $rows = array();
+        $Products = new Products();
+        $Customers = new Customers();
+        $Suppliers = new Suppliers();
+        $Users = new Users();
+        $result = $this->select($this->table);
+        while ($row = $result->fetch_assoc()) {
+            if($row['bb_module'] == "INV"){
+                $type = "INVENTORY";
+                $account = $Products->name($row['bb_ref_id']);
+            }else if($row['bb_module'] == "AP"){
+                $type = "ACCOUNTS PAYABLE";
+                $account = $Suppliers->name($row['bb_ref_id']);
+            }else if($row['bb_module'] == "AR"){
+                $type = "ACCOUNTS RECEIVABLE";
+                $account = $Customers->name($row['bb_ref_id']);
+            }
+
+            $row['type'] =  $type;
+            $row['account'] =  $account;
+            $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    public function view()
+    {
+        $primary_id = $this->inputs['id'];
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        return $result->fetch_assoc();
+    }
+
+    public function remove()
+    {
+        $ids = implode(",", $this->inputs['ids']);
+        $Products = new Products();
+        $result = $this->select($this->table, "*", "$this->pk IN($ids)");
+        while($row = $result->fetch_array()){
+            if($row['bb_module'] == "INV"){
+                $amount = $row['bb_amount']/$row['bb_qty'];
+                $Products->prodRVS($row['bb_ref_id'], $row['bb_qty'], $amount);
+            }
+        }
+
+        return $this->delete($this->table, "$this->pk IN($ids)");
+    }
+
+    public function name($primary_id)
+    {
+        $result = $this->select($this->table, $this->name, "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row[$this->name];
+    }
+
+    public function generate()
+    {
+        return 'BB-' . date('YmdHis');
+    }
+
+    public function pk_by_name($name = null)
+    {
+        $name = $name == null ? $this->inputs[$this->name] : $name;
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name'");
+        $row = $result->fetch_assoc();
+        return $row[$this->pk] * 1;
+    }
+
+    public function total($primary_id){
+        $result = $this->select($this->table, 'bb_amount', "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row['bb_amount'];
+    }
+
+    public function bb_balance($primary_id)
+    {
+        $bb_total = $this->total($primary_id);
+
+        $fetch_sp = $this->select('tbl_supplier_payment_details as d, tbl_supplier_payment as h', "sum(amount) as total", "d.ref_id = $primary_id AND h.sp_id=d.sp_id AND h.status='F' AND d.type='BB'");
+        $paid_total = 0;
+        while ($row = $fetch_sp->fetch_assoc()) {
+            $paid_total += $row['total'];
+        }
+
+        return $bb_total - $paid_total;
+    }
+
+    public function bb_balance_ar($primary_id)
+    {
+        $bb_total = $this->total($primary_id);
+
+        $fetch_cp = $this->select('tbl_customer_payment_details as d, tbl_customer_payment as h', "sum(amount) as total", "d.ref_id = $primary_id AND h.cp_id=d.cp_id AND h.status='F' AND d.type='BB'");
+        $paid_total = 0;
+        while ($row = $fetch_cp->fetch_assoc()) {
+            $paid_total += $row['total'];
+        }
+
+        return $bb_total - $paid_total;
+    }
+}

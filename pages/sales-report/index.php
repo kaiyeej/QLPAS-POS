@@ -1,0 +1,662 @@
+<style>
+    .text-right {
+        text-align: right;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12 grid-margin">
+            <div class="row">
+                <div class="col-12 col-xl-12 mb-4 mb-xl-0">
+                    <h3 class="font-weight-bold">Sales Report</h3>
+                    <h6 class="font-weight-normal mb-0">Generate sales report here</h6>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="col-12 col-xl-12 card shadow mb-4">
+                <ul id="tabs" class="nav nav-tabs">
+                    <li class="nav-item"><a href="" data-target="#daily" data-toggle="tab" class="nav-link small text-uppercase active">Daily</a></li>
+                    <li class="nav-item"><a href="" data-target="#yearly" data-toggle="tab" class="nav-link small text-uppercase">Yearly</a></li>
+                    <li class="nav-item"><a href="" data-target="#cashier" data-toggle="tab" class="nav-link small text-uppercase">Per Cashier</a></li>
+                </ul>
+                <br>
+                <div id="tabsContent" class="tab-content">
+                    <div id="daily" class="tab-pane fade active show">
+                        <h5>Daily Report</h5>
+                        <div class="card-header py-3">
+                            <form id='frm_generate_daily'>
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <label><strong>Start Date</strong></label>
+                                        <div>
+                                            <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="start_date" name="input[start_date]">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label><strong>End Date</strong></label>
+                                        <div>
+                                            <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="end_date" name="input[end_date]">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label><strong>Category</strong></label>
+                                        <div>
+                                            <select class="form-control form-control-sm select2" required id="product_category_id" name="input[product_category_id]">
+                                                <option value="-1">&mdash; All &mdash; </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>&nbsp;</label>
+                                        <div>
+                                            <div class="btn-group pull-right">
+                                                <button type="submit" id="btn_daily" class="btn btn-primary btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-reload"></i>
+                                                    </span>
+                                                    <span class="text"> Generate</span>
+                                                </button>
+                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_daily','Daily-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-cloud-down"></i>
+                                                    </span>
+                                                    <span class="text"> Export</span>
+                                                </button>
+                                                <button type="button" onclick="print_report('daily_container')" class="btn btn-info btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-printer"></i>
+                                                    </span>
+                                                    <span class="text"> Print</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="daily_container" class="card-body">
+                            <center>
+                                <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                <h5 class="report-header">Daily Sales Report</h5>
+                            </center>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dt_entries_daily" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ITEM</th>
+                                            <th style="text-align:right">QTY</th>
+                                            <th style="text-align:right">AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="1" style="text-align:right">Total:</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="yearly" class="tab-pane fade">
+                        <h5>Yearly Report</h5>
+                        <div class="card-header py-3">
+                            <form id='frm_generate_yearly'>
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <label><strong>Year</strong></label>
+                                        <div>
+                                            <select class="form-control select2" style="width: 100%;" id='sales_year' name='sales_year' required>
+                                                <?php
+                                                $year = date("Y") - 3;
+                                                for ($i = 0; $i <= 4; $i++) { ?>
+
+                                                    <option value='<?php echo $year; ?>' <?php if ($year == date("Y")) {
+                                                                                                echo 'selected';
+                                                                                            } ?>><?php echo $year; ?></option>;
+
+                                                <?php
+                                                    $year++;
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label><strong>Category</strong></label>
+                                            <select class="form-control form-control-sm select2" required id="product_category_id_2" name="input[product_category_id_2]">
+                                                <option value="-1">&mdash; All &mdash; </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>&nbsp;</label>
+                                        <div>
+                                            <div class="btn-group pull-right">
+                                                <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-reload"></i>
+                                                    </span>
+                                                    <span class="text"> Generate</span>
+                                                </button>
+                                                <button type="button" onclick="exportTableToExcel(this,'dt_year_entries','Yearly-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-cloud-down"></i>
+                                                    </span>
+                                                    <span class="text"> Export</span>
+                                                </button>
+                                                <button type="button" onclick="print_report('yearly_container')" class="btn btn-info btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-printer"></i>
+                                                    </span>
+                                                    <span class="text"> Print</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="yearly_container" class="card-body">
+                            <center>
+                                <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                <h5 class="report-header">Yearly Sales Report</h5>
+                            </center>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dt_year_entries" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ITEM</th>
+                                            <th style="text-align:right;">JAN</th>
+                                            <th style="text-align:right;">FEB</th>
+                                            <th style="text-align:right;">MAR</th>
+                                            <th style="text-align:right;">APR</th>
+                                            <th style="text-align:right;">MAY</th>
+                                            <th style="text-align:right;">JUNE</th>
+                                            <th style="text-align:right;">JULY</th>
+                                            <th style="text-align:right;">AUG</th>
+                                            <th style="text-align:right;">SEP</th>
+                                            <th style="text-align:right;">OCT</th>
+                                            <th style="text-align:right;">NOV</th>
+                                            <th style="text-align:right;">DEC</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th style="text-align:right">Total:</th>
+                                            <?php
+                                            $count = 1;
+                                            while ($count <= 12) {
+                                            ?>
+                                                <th></th>
+                                            <?php
+                                                $count++;
+                                            } ?>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="cashier" class="tab-pane fade">
+                        <h5>Per Cashier Report</h5>
+                        <div class="card-header py-3">
+                            <form id='frm_generate_cashier'>
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <label><strong>Start Date</strong></label>
+                                        <div>
+                                            <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="c_start_date" name="input[start_date]">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label><strong>End Date</strong></label>
+                                        <div>
+                                            <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="c_end_date" name="input[end_date]">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label><strong>Cashier</strong></label>
+                                        <div>
+                                            <select class="form-control form-control-sm select2" required id="user_id" name="input[user_id]">
+                                                <option value="-1">&mdash; All &mdash; </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>&nbsp;</label>
+                                        <div>
+                                            <div class="btn-group pull-right">
+                                                <button type="submit" id="btn_cashir" class="btn btn-primary btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-reload"></i>
+                                                    </span>
+                                                    <span class="text"> Generate</span>
+                                                </button>
+                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_cashier','Per-Cashier-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-cloud-down"></i>
+                                                    </span>
+                                                    <span class="text"> Export</span>
+                                                </button>
+                                                <button type="button" onclick="print_report2('cashier_container')" class="btn btn-info btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-printer"></i>
+                                                    </span>
+                                                    <span class="text"> Print</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="cashier_container" class="card-body">
+                            <center>
+                                <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                <h5 class="report-header">Sales Per Cashier Report</h5>
+                            </center>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dt_entries_cashier" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ITEM</th>
+                                            <th style="text-align:right">QTY</th>
+                                            <th style="text-align:right">AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="1" style="text-align:right">Total:</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#frm_generate_yearly").submit(function(e) {
+        e.preventDefault();
+        getReportYearly();
+    });
+
+    $("#frm_generate_daily").submit(function(e) {
+        e.preventDefault();
+        getReportDaily();
+    });
+
+    $("#frm_generate_cashier").submit(function(e) {
+        e.preventDefault();
+        getReportCashier();
+    });
+
+    var yearly_type = "P";
+
+    function yearlyType() {
+        if ($('#typeYearly1').is(':checked')) {
+            getSelectOption('Products', 'product_category_id_2', 'product_name', '', [], -1, 'All');
+            yearly_type = "P";
+        } else {
+            getSelectOption('ProductCategories', 'product_category_id_2', 'product_category', '', [], -1, 'All');
+            yearly_type = "C";
+        }
+    }
+
+    function getReportYearly() {
+        var sales_year = $("#sales_year").val();
+        var product_category_id = $("#product_category_id_2").val();
+
+        $("#dt_year_entries").DataTable().destroy();
+        $("#dt_year_entries").DataTable({
+            "processing": true,
+            "searching": false,
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            "ajax": {
+                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=generate_yearly",
+                "dataSrc": "data",
+                "method": "POST",
+                "data": {
+                    input: {
+                        sales_year: sales_year,
+                        product_category_id: product_category_id
+                    }
+                },
+            },
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function(i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                        i : 0;
+                };
+
+                var count = 1;
+                while (count <= 12) {
+                    debitTotal = api
+                        .column(count, {
+                            page: 'current'
+                        })
+                        .data()
+                        .reduce(function(a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    // Update footer
+                    $(api.column(count).footer()).html(
+                        "&#x20B1; " + debitTotal.toLocaleString('en-US', {
+                            minimumFractionDigits: 2
+                        })
+                    );
+
+                    count++;
+                }
+
+            },
+            "columns": [{
+                    "data": "item"
+                },
+                {
+                    "data": "1",
+                    className: "text-right"
+                },
+                {
+                    "data": "2",
+                    className: "text-right"
+                },
+                {
+                    "data": "3",
+                    className: "text-right"
+                },
+                {
+                    "data": "4",
+                    className: "text-right"
+                },
+                {
+                    "data": "5",
+                    className: "text-right"
+                },
+                {
+                    "data": "6",
+                    className: "text-right"
+                },
+                {
+                    "data": "7",
+                    className: "text-right"
+                },
+                {
+                    "data": "8",
+                    className: "text-right"
+                },
+                {
+                    "data": "9",
+                    className: "text-right"
+                },
+                {
+                    "data": "10",
+                    className: "text-right"
+                },
+                {
+                    "data": "11",
+                    className: "text-right"
+                },
+                {
+                    "data": "12",
+                    className: "text-right"
+                }
+
+            ]
+
+        });
+    }
+
+    function getReportDaily() {
+        var start_date = $("#start_date").val();
+        var end_date = $("#end_date").val();
+        var product_category_id = $("#product_category_id").val();
+
+        $("#dt_entries_daily").DataTable().destroy();
+        $("#dt_entries_daily").DataTable({
+            "processing": true,
+            "searching": false,
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            "ajax": {
+                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=generate_daily",
+                "dataSrc": "data",
+                "method": "POST",
+                "data": {
+                    input: {
+                        start_date: start_date,
+                        end_date: end_date,
+                        product_category_id: product_category_id
+                    }
+                },
+            },
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function(i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                        i : 0;
+                };
+
+                qtyTotal = api
+                    .column(1, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(1).footer()).html(
+                    qtyTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+                subTotal = api
+                    .column(2, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(2).footer()).html(
+                    "&#x20B1; " + subTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+            },
+            "columns": [{
+                    "data": "item"
+                },
+                {
+                    "data": "qty",
+                    className: "text-right"
+                },
+                {
+                    "data": "amount",
+                    className: "text-right"
+                }
+
+            ]
+
+        });
+    }
+
+    function getReportCashier() {
+        var start_date = $("#c_start_date").val();
+        var end_date = $("#c_end_date").val();
+        var user_id = $("#user_id").val();
+
+        $("#dt_entries_cashier").DataTable().destroy();
+        $("#dt_entries_cashier").DataTable({
+            "processing": true,
+            "searching": false,
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            "ajax": {
+                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=generate_cashier",
+                "dataSrc": "data",
+                "method": "POST",
+                "data": {
+                    input: {
+                        start_date: start_date,
+                        end_date: end_date,
+                        user_id: user_id
+                    }
+                },
+            },
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function(i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                        i : 0;
+                };
+
+                qtyTotal = api
+                    .column(1, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(1).footer()).html(
+                    qtyTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+                subTotal = api
+                    .column(2, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(2).footer()).html(
+                    "&#x20B1; " + subTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+            },
+            "columns": [{
+                    "data": "item"
+                },
+                {
+                    "data": "qty",
+                    className: "text-right"
+                },
+                {
+                    "data": "amount",
+                    className: "text-right"
+                }
+
+            ]
+
+        });
+    }
+
+    function print_report2(container, title) {
+
+        var printContents = document.getElementById("" + container + "").innerHTML;
+
+        //alert(printContents);
+        var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+        mywindow.document.write('<html><head><title>' + document.title + '</title>');
+        mywindow.document.write('<link href="/css/vendor.bundle.base.css" rel="stylesheet">');
+        mywindow.document.write('</head><body>');
+
+        mywindow.document.write("<div class='container-fluid' id='print_report_header' style='margin-bottom: 20px;'></div>");
+        mywindow.document.write("<div class='container-fluid' id='report_content'></div>");
+        //mywindow.document.write(document.getElementById(elem).innerHTML);
+
+        mywindow.document.write('</body></html>');
+
+        mywindow.document.getElementById("report_content").innerHTML = printContents;
+
+        mywindow.document.close(); // necessary for IE >= 10
+
+        mywindow.onload = function() { // necessary if the div contain images
+
+            mywindow.focus(); // necessary for IE >= 10
+            mywindow.print();
+            mywindow.close();
+
+        }
+
+        return true;
+    }
+
+
+    $("#frm_generate_daily").submit(function(e) {
+        e.preventDefault();
+        getReportDaily();
+    });
+
+
+    $(document).ready(function() {
+
+        getSelectOption('ProductCategories', 'product_category_id', 'product_category', '', [], -1, 'All');
+        getSelectOption('ProductCategories', 'product_category_id_2', 'product_category', '', [], -1, 'All', 1);
+        getSelectOption('Users', 'user_id', 'user_fullname', "user_category='C'", [], -1, 'All');
+        getReportDaily();
+        getReportYearly();
+        getReportCashier();
+
+        $(".company_name_label").html(company_profile.company_name);
+        $(".company_address_label").html(company_profile.company_address);
+    });
+</script>
