@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_URL', 'http://localhost/juancoderSolutions/');
+define('BASE_URL', 'http://localhost/QLPAS-POS/');
 define("BASE_PATH", __DIR__ . "/../");
 define('DEVELOPMENT', true);
 
