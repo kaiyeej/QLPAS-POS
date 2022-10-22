@@ -462,10 +462,11 @@ class Sales extends Connection
     {
 
         $access_code = $this->inputs['access_code'];
+        $action = $this->inputs['action'];
 
         $Settings = new Settings();
         $setting_row = $Settings->view();
-        if ($setting_row['module_change_payment_type'] == $access_code) {
+        if ($setting_row['module_change_payment_type'] == $access_code || $action == "N") {
             $reference_number = $this->inputs['reference_number'];
             $param = "reference_number = '$reference_number'";
             $sales_id = $this->getID($param);
@@ -638,17 +639,17 @@ class Sales extends Connection
     public function posPrintReceipt()
     {
         $print_type = $this->inputs['print_type'];
-
+    
         $reference_number = $this->inputs['reference_number'];
         $sales_id = $this->getID("reference_number = '$reference_number'");
-
+    
         $this->inputs['id'] = $sales_id;
         $header_data = $this->view();
-
+    
         $Users = new Users();
         $Settings = new Settings();
         $settings_data = $Settings->view();
-
+    
         $response = [
             'company_data' => $settings_data['company_name'] . "<br>" . $settings_data['company_address'],
             'print_header' => $settings_data['print_header'],
@@ -658,12 +659,12 @@ class Sales extends Connection
             'cashier' => $Users->getUser($header_data['encoded_by']),
             'customer' => $header_data['customer_name'],
         ];
-
+    
         if ($print_type == 'sales') {
-
+    
             $this->inputs['param'] = "sales_id = '$sales_id'";
             $details = $this->show_detail();
-
+    
             $total_qty = 0;
             $total_amt = 0;
             $items = [];
@@ -678,8 +679,8 @@ class Sales extends Connection
                     'discount' => (float) $row['discount'],
                     'amount' => number_format($amount, 2)
                 ];
-
-
+    
+    
                 $items[] = [
                     'quantity' => '',
                     'description' => substr(strtoupper($row['product']), 0, 15),
@@ -689,24 +690,27 @@ class Sales extends Connection
                 $total_qty += $row['quantity'];
                 $total_amt += $amount;
             }
-
+    
+            $CustomerPayment = new CustomerPayment();
+    
             $response['reference_number'] = $header_data['reference_number'];
             $response['items'] = $items;
+            $response['payments'] = $CustomerPayment->getPaymentByRef($sales_id);
             $response['total_qty'] = $total_qty;
             $response['total_amt'] = number_format($total_amt, 2);
         } else {
-
+    
             $StockWithdrawal = new StockWithdrawal();
             $withdrawal_id = $StockWithdrawal->getID("sales_id = '$sales_id' ORDER BY date_added DESC LIMIT 1");
-
+    
             $StockWithdrawal->inputs['param'] = "withdrawal_id = '$withdrawal_id'";
             $items = $StockWithdrawal->show_detail();
-
+    
             $response['reference_number'] = $StockWithdrawal->name($withdrawal_id);
             $response['items'] = $items;
             $response['withdrawal_date'] = date("Y-m-d H:i:s");
         }
-
+    
         return $response;
     }
 

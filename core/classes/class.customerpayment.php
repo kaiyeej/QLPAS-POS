@@ -318,6 +318,24 @@ class CustomerPayment extends Connection
         return $row[0];
     }
 
+    public function getPaymentByRef($ref_id,$type = 'DR'){
+
+        $result = $this->table("$this->table AS h")
+        ->join("$this->table_detail AS d",'h.cp_id','=','d.cp_id')
+        ->join("tbl_payment_option AS p",'p.payment_option_id','=','h.payment_option_id')
+        ->selectRaw('p.payment_option','h.remarks','d.amount')
+        ->where('d.ref_id', $ref_id)
+        ->where('d.type', $type)
+        ->get();
+    
+        $count = 1;
+        $rows = array();
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     public function remove_payments(){
 
         $Settings = new Settings();
