@@ -17,6 +17,7 @@ class PayableLedger extends Connection
         $PurchaseOrder = new PurchaseOrder;
         $SupplierPayment = new SupplierPayment;
         $BeginningBalance = new BeginningBalance;
+        $PurchaseReturn = new PurchaseReturn;
         $bf = $this->total();
         $balance = (float) $bf[0];
         while ($row = $result->fetch_assoc()) {
@@ -25,11 +26,12 @@ class PayableLedger extends Connection
 
             if($trans == "PO"){
                 $trans = "Purchase Order";
-                $debit = $PurchaseOrder->total($PurchaseOrder->pk_by_name($row['reference_number']));
+                $po_id = $PurchaseOrder->pk_by_name($row['reference_number']);
+                $debit = ($PurchaseOrder->total($po_id)-$PurchaseReturn->total_per_po($po_id));
                 $credit = 0;
                 $balance += $debit;
-                $date = $PurchaseOrder->get_row($PurchaseOrder->pk_by_name($row['reference_number']), 'po_date');
-                $ref_number = $row['reference_number']." (Invoice: ".$PurchaseOrder->get_row($PurchaseOrder->pk_by_name($row['reference_number']), 'po_invoice').")";
+                $date = $PurchaseOrder->get_row($po_id, 'po_date');
+                $ref_number = $row['reference_number']." (Invoice: ".$PurchaseOrder->get_row($po_id, 'po_invoice').")";
             }else if($trans == "SP"){
                 $trans = "Supplier Payment";
                 $debit = 0;
@@ -43,13 +45,6 @@ class PayableLedger extends Connection
                 $credit = 0;
                 $balance += $debit;
                 $date = $BeginningBalance->name($BeginningBalance->pk_by_name($row['reference_number']), 'payment_date');
-                $ref_number = $row['reference_number'];
-            }else{
-                $trans = "Purchase Return";
-                $debit = 0;
-                $credit = 0;
-                $balance -= $credit;
-                $date = "";
                 $ref_number = $row['reference_number'];
             }
 
@@ -73,13 +68,21 @@ class PayableLedger extends Connection
         $get_po = $this->select("tbl_purchase_order as h, tbl_purchase_order_details as d","sum(d.supplier_price*d.qty)","h.supplier_id='$supplier_id' AND h.po_date < '$start_date' AND h.status='F' AND h.po_id=d.po_id");
         $total_po = $get_po->fetch_array();
 
+       $getPO = $this->select("tbl_purchase_order" , "po_id", "supplier_id='$supplier_id' AND po_date < '$start_date' AND status='F'");
+       $total_pr = 0;
+       while($poRow = $getPO->fetch_array()){
+            $fetch_pr = $this->select("tbl_purchase_return as h, tbl_purchase_return_details as d","sum(d.supplier_price*d.qty_return)","h.status='F' AND h.pr_id=d.pr_id AND h.po_id='$poRow[po_id]'");
+            $sum_pr = $fetch_pr->fetch_array();
+            $total_pr = $sum_pr[0];
+       }
+
         $get_payment = $this->select("tbl_supplier_payment as h, tbl_supplier_payment_details as d","sum(d.amount)","h.supplier_id='$supplier_id' AND h.payment_date < '$start_date' AND h.status='F' AND h.sp_id=d.sp_id");
         $total_payment = $get_payment->fetch_array();
 
         $get_bb = $this->select("tbl_beginning_balance","sum(bb_amount)","bb_ref_id='$supplier_id' AND bb_date < '$start_date' AND bb_module='AP'");
         $total_bb = $get_bb->fetch_array();
 
-        $bf = ($total_po[0]+$total_bb[0])-$total_payment[0];
+        $bf = ($total_po[0]+$total_bb[0])-($total_payment[0]+$total_pr);
         $total = "";
         
         return [$bf,$total];

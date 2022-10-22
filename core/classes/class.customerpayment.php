@@ -284,6 +284,9 @@ class CustomerPayment extends Connection
             $this->inputs['payment_date'] = $this->getCurrentDate();
             $this->inputs['remarks'] = $this->inputs['other_payment_reference'];
             $this->inputs['payment_type'] = "O";
+            $this->inputs['check_date'] = "";
+            $this->inputs['check_number'] = "";
+            $this->inputs['check_bank'] = "";
             
             $primary_id = $this->add();
             $this->inputs[$this->pk] = $primary_id;
@@ -350,15 +353,20 @@ class CustomerPayment extends Connection
     public function finishCustomerPaymentOfDRPOS($sales_id){
         $rows = array();
         $result = $this->select($this->table_detail, $this->pk, "ref_id='$sales_id' AND type='DR'");
-        while($row = $result->fetch_array()){
-            $rows[] = $row[0];
-        }
 
-        if(sizeof($rows) > 0){
-            $form = array(
-                'status' => 'F'
-            );
-            return $this->update($this->table, $form, "cp_id IN(" . implode(',',$rows) . ")");
+        if($result->num_rows > 0){
+            while($row = $result->fetch_array()){
+                $rows[] = $row[0];
+            }
+    
+            if(sizeof($rows) > 0){
+                $form = array(
+                    'status' => 'F'
+                );
+                return $this->update($this->table, $form, "cp_id IN(" . implode(',',$rows) . ")");
+            }else{
+                return 1;
+            }
         }else{
             return 1;
         }

@@ -72,11 +72,12 @@ class Connection
         return $result ? 1 : 0;
     }
 
-    public function updateIfNotExist($table, $form)
+    public function updateIfNotExist($table, $form, $param = '')
     {
         $primary_id = $this->inputs[$this->pk];
-        $name = $this->clean($this->inputs[$this->name]);
-        $is_exist = $this->select($table, $this->pk, "$this->name = '$name' AND $this->pk != '$primary_id'");
+        $inject = $param != '' ? $param : "$this->name = '" . $this->clean($this->inputs[$this->name]) . "'";
+
+        $is_exist = $this->select($table, $this->pk, "$inject AND $this->pk != '$primary_id'");
         if ($is_exist->num_rows > 0) {
             return 2;
         } else {

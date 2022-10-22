@@ -618,6 +618,7 @@ CREATE TABLE IF NOT EXISTS `tbl_sales` (
   `paid_status` varchar(1) NOT NULL DEFAULT '0' COMMENT 'COMMENT ''1 = Paid; 0 = Unpaid'',',
   `sales_summary_id` int(11) NOT NULL,
   `encoded_by` int(11) NOT NULL,
+  `discount_id` int(11) NOT NULL,
   `date_added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_last_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sales_id`)
@@ -625,9 +626,9 @@ CREATE TABLE IF NOT EXISTS `tbl_sales` (
 
 -- Dumping data for table jcis_db.tbl_sales: ~2 rows (approximately)
 /*!40000 ALTER TABLE `tbl_sales` DISABLE KEYS */;
-INSERT INTO `tbl_sales` (`sales_id`, `withdrawal_status`, `sales_invoice`, `reference_number`, `customer_id`, `for_pick_up`, `status`, `sales_type`, `remarks`, `sales_date`, `paid_status`, `sales_summary_id`, `encoded_by`, `date_added`, `date_last_modified`) VALUES
-	(71, 1, 0, 'DR-221021080918', 0, 1, 'F', 'H', '', '2022-10-21', '0', 0, 1, '2022-10-21 14:09:22', '2022-10-21 14:19:32'),
-	(72, 1, 0, 'DR-221021082319', 24, 1, 'F', 'H', '', '2022-10-21', '1', 0, 1, '2022-10-21 14:23:28', '2022-10-21 15:29:07');
+INSERT INTO `tbl_sales` (`sales_id`, `withdrawal_status`, `sales_invoice`, `reference_number`, `customer_id`, `for_pick_up`, `status`, `sales_type`, `remarks`, `sales_date`, `paid_status`, `sales_summary_id`, `encoded_by`, `date_added`, `date_last_modified`, `discount_id`) VALUES
+	(71, 1, 0, 'DR-221021080918', 0, 1, 'F', 'H', '', '2022-10-21', '0', 0, 1, '2022-10-21 14:09:22', '2022-10-21 14:19:32', 0),
+	(72, 1, 0, 'DR-221021082319', 24, 1, 'F', 'H', '', '2022-10-21', '1', 0, 1, '2022-10-21 14:23:28', '2022-10-21 15:29:07', 0);
 /*!40000 ALTER TABLE `tbl_sales` ENABLE KEYS */;
 
 -- Dumping structure for table jcis_db.tbl_sales_details
@@ -638,20 +639,22 @@ CREATE TABLE IF NOT EXISTS `tbl_sales_details` (
   `discount_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `discount` decimal(8,2) NOT NULL,
+  `encoded_by` int(11) NOT NULL,
   `quantity` decimal(12,2) NOT NULL,
   `cost` decimal(12,5) NOT NULL,
   `price` decimal(12,2) NOT NULL,
   `date_added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_last_modified` datetime NOT NULL,
   PRIMARY KEY (`sales_detail_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table jcis_db.tbl_sales_details: ~4 rows (approximately)
 /*!40000 ALTER TABLE `tbl_sales_details` DISABLE KEYS */;
-INSERT INTO `tbl_sales_details` (`sales_detail_id`, `sales_id`, `product_category_id`, `discount_id`, `product_id`, `discount`, `quantity`, `cost`, `price`, `date_added`) VALUES
-	(106, 71, 0, 0, 1, 0.00, 5.00, 1500.00000, 1250.00, '2022-10-21 14:09:25'),
-	(107, 71, 0, 0, 4, 0.00, 1.00, 0.50000, 8.00, '2022-10-21 14:09:28'),
-	(108, 72, 0, 0, 1, 0.00, 5.00, 1500.00000, 1250.00, '2022-10-21 14:23:37'),
-	(109, 72, 0, 0, 1, 0.00, 1.00, 1500.00000, 1250.00, '2022-10-21 14:23:40');
+INSERT INTO `tbl_sales_details` (`sales_detail_id`, `sales_id`, `product_category_id`, `discount_id`, `product_id`, `discount`, `quantity`, `cost`, `price`, `date_added`, `date_last_modified`) VALUES
+	(106, 71, 0, 0, 1, 0.00, 5.00, 1500.00000, 1250.00, '2022-10-21 14:09:25', '0000-00-00 00:00:00'),
+	(107, 71, 0, 0, 4, 0.00, 1.00, 0.50000, 8.00, '2022-10-21 14:09:28', '0000-00-00 00:00:00'),
+	(108, 72, 0, 0, 1, 0.00, 5.00, 1500.00000, 1250.00, '2022-10-21 14:23:37', '0000-00-00 00:00:00'),
+	(109, 72, 0, 0, 1, 0.00, 1.00, 1500.00000, 1250.00, '2022-10-21 14:23:40', '0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `tbl_sales_details` ENABLE KEYS */;
 
 -- Dumping structure for table jcis_db.tbl_sales_return

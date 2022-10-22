@@ -37,6 +37,7 @@ $classes = array(
     'BankDueDate'       => $pre_class . 'bankduedate.php',
     'ExpenseReport'     => $pre_class . 'expensereport.php',
     'BeginningBalance'  => $pre_class . 'beginningbalance.php',
-    'SalesSummary'  => $pre_class . 'salessummary.php',
+    'SalesSummary'      => $pre_class . 'salessummary.php',
     'Deposit'           => $pre_class . 'deposit.php',
+    'BankLedger'        => $pre_class . 'bankledger.php',
 );

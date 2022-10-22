@@ -120,15 +120,23 @@ class Sales extends Connection
     public function dataRow($primary_id, $field)
     {
         $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
-        $row = $result->fetch_array();
-        return $row[$field];
+        if($result->num_rows > 0){
+            $row = $result->fetch_array();
+            return $row[$field];
+        }else{
+            return "";
+        }
     }
 
     public function detailsRow($primary_id, $field)
     {
         $result = $this->select($this->table_detail, $field, "$this->pk2 = '$primary_id'");
-        $row = $result->fetch_array();
-        return $row[$field];
+        if($result->num_rows > 0){
+            $row = $result->fetch_array();
+            return $row[$field];
+        }else{
+            return "";
+        }
     }
 
     public function add_detail()
@@ -646,6 +654,7 @@ class Sales extends Connection
             'print_header' => $settings_data['print_header'],
             'print_footer' => $settings_data['print_footer'],
             'sales_date' => $header_data['sales_date'],
+            'current_time' => date('m/d/Y h:i:s A'),
             'cashier' => $Users->getUser($header_data['encoded_by']),
             'customer' => $header_data['customer_name'],
         ];
@@ -664,10 +673,18 @@ class Sales extends Connection
                 $discounted_price = $amount / $quantity;
                 $items[] = [
                     'quantity' => (float) $quantity,
-                    'description' => $quantity . "&nbsp;" . substr(strtoupper($row['product']), 0, 15)  . "&nbsp;" . $row['pos_price'],
+                    'description' => $quantity . "&nbsp;" . $row['pos_price'],
                     'discounted_price' => (float) $discounted_price,
                     'discount' => (float) $row['discount'],
                     'amount' => number_format($amount, 2)
+                ];
+
+
+                $items[] = [
+                    'quantity' => '',
+                    'description' => substr(strtoupper($row['product']), 0, 15),
+                    'discount' => '',
+                    'amount' => ''
                 ];
                 $total_qty += $row['quantity'];
                 $total_amt += $amount;

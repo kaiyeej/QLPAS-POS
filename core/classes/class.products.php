@@ -32,7 +32,9 @@ class Products extends Connection
             'remarks'               => $this->inputs['remarks'],
             'is_package'            => isset($this->inputs['is_package']) ? '1' : '0'
         );
-        return $this->updateIfNotExist($this->table, $form);
+        $param = "(product_code='" . $this->inputs['product_code'] . "'";
+        $param .= $this->inputs['product_barcode'] != '' ? " OR product_barcode = '" . $this->inputs['product_barcode'] . "')" : '';
+        return $this->updateIfNotExist($this->table, $form, $param);
     }
 
     public function show()

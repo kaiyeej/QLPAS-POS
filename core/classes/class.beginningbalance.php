@@ -122,6 +122,14 @@ class BeginningBalance extends Connection
         return 'BB-' . date('YmdHis');
     }
 
+    public function get_row($primary_id, $field)
+    {
+        $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row[$field];
+    }
+
+
     public function pk_by_name($name = null)
     {
         $name = $name == null ? $this->inputs[$this->name] : $name;
@@ -132,8 +140,13 @@ class BeginningBalance extends Connection
 
     public function total($primary_id){
         $result = $this->select($this->table, 'bb_amount', "$this->pk = '$primary_id'");
-        $row = $result->fetch_assoc();
-        return $row['bb_amount'];
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            return $row['bb_amount'];
+        }else{
+            return 0;
+        }
+        
     }
 
     public function bb_balance($primary_id)

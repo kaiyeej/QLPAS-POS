@@ -8,8 +8,8 @@
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Payable Ledger</h3>
-                    <h6 class="font-weight-normal mb-0">Generate accounts payable here</h6>
+                    <h3 class="font-weight-bold">Bank Ledger</h3>
+                    <h6 class="font-weight-normal mb-0">Generate bank ledger here</h6><br>
                 </div>
             </div>
 
@@ -30,10 +30,10 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <label><strong>Account</strong></label>
+                                <label><strong>Bank</strong></label>
                                 <div>
-                                    <select class="form-control form-control-sm select2" required id="supplier_id" name="input[supplier_id]">
-                                        <option class="">&mdash; All &mdash; </option>
+                                    <select class="form-control form-control-sm select2" required id="bank_id" name="input[bank_id]">
+                                        <option class="">&mdash; Please Select &mdash; </option>
                                     </select>
                                 </div>
                             </div>
@@ -63,7 +63,7 @@
                     <center>
                         <h4 class="report-header"><span id="company_name_label"></span></h4>
                         <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                        <h5>Payable Ledger</h5><br>
+                        <h5>Bank Ledger</h5><br>
                     </center>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
@@ -75,10 +75,6 @@
                                     <th style="text-align:right">DEBIT</th>
                                     <th style="text-align:right">CREDIT</th>
                                     <th style="text-align:right">BALANCE</th>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right"><strong>Account:</strong></td>
-                                    <td colspan="5"><span id="span_supplier"></span></td>
                                 </tr>
                                 <tr>
                                     <td colspan="5" style="text-align:right"><strong>Balance Fowarded:</strong></td>
@@ -111,7 +107,7 @@
 
 
     function getTotal(){
-        var supplier_id = $("#supplier_id").val();
+        var bank_id = $("#bank_id").val();
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
 
@@ -120,7 +116,7 @@
             url: "controllers/sql.php?c=" + route_settings.class_name + "&q=total",
             data: {
                 input: {
-                    supplier_id: supplier_id,
+                    bank_id: bank_id,
                     start_date:start_date,
                     end_date:end_date
                 }
@@ -135,17 +131,17 @@
                 }else{
                     $("#span_total").html(json.data[0].toLocaleString('en-US', {minimumFractionDigits: 2}));
                 }
+
+                
             }
         });
-    }
-
-    function getAccount() {
-        var optionSelected = $("#supplier_id").find('option:selected').attr('supplier_name');
-        $("#span_supplier").html(optionSelected);
+        
+       
+      
     }
 
     function getReport() {
-        var supplier_id = $("#supplier_id").val();
+        var bank_id = $("#bank_id").val();
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
         $("#dt_entries").DataTable().destroy();
@@ -161,7 +157,7 @@
                 "method": "POST",
                 "data": {
                     input: {
-                        supplier_id: supplier_id,
+                        bank_id: bank_id,
                         start_date:start_date,
                         end_date:end_date
                     }
@@ -235,11 +231,10 @@
         });
 
         getTotal();
-        getAccount();
     }
 
     $(document).ready(function() {
-        getSelectOption('Suppliers', 'supplier_id', 'supplier_name', "", ['supplier_name']);
+        getSelectOption('Banks', 'bank_id', 'bank_name');
         getTotal();
 
         $("#company_name_label").html(company_profile.company_name);

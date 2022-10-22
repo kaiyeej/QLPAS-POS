@@ -61,7 +61,12 @@ class ExpenseCategories extends Connection
     {
         $self = new self;
         $result = $self->select($self->table, 'expense_type', "$self->pk  = '$primary_id'");
-        $row = $result->fetch_assoc();
-        return $row['expense_type'] == "O" ? "Other Expense" : "Operational Expense";
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            return $row['expense_type'] == "O" ? "Other Expense" : "Operational Expense";
+        }else{
+            return '';
+        }   
+        
     }
 }

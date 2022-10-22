@@ -110,6 +110,12 @@ class Deposit extends Connection
         return $row[$this->pk] * 1;
     }
 
+    public function get_row($primary_id, $field){
+        $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row[$field];
+    }
+
     public function name($primary_id)
     {
         $result = $this->select($this->table, $this->name, "$this->pk = '$primary_id'");

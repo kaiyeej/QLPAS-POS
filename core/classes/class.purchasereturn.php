@@ -141,6 +141,33 @@ class PurchaseReturn extends Connection
         return $row[0];
     }
 
+    
+    public function get_row($primary_id, $field)
+    {
+        $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row[$field];
+    }
+
+    public function pk_by_name($name = null)
+    {
+        $name = $name == null ? $this->inputs[$this->name] : $name;
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name'");
+        $row = $result->fetch_assoc();
+        return $row[$this->pk] * 1;
+    }
+
+    public function total_per_po($primary_id){
+        $result = $this->select("tbl_purchase_return_details as d, tbl_purchase_return as p" , 'sum(d.qty_return*d.supplier_price) as total', "p.pr_id=d.pr_id AND p.status='F' AND p.po_id='$primary_id'");
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            return $row['total'];
+        }else{
+            return 0;
+        }
+        
+    }
+
     public function remove_detail()
     {
         $form = array(

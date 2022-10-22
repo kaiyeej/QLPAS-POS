@@ -33,6 +33,7 @@ class Menus extends Connection
             ),
             'report' => array(
 
+                array('url' => 'bank-ledger', 'name' => 'Bank Ledger', 'class_name' => 'BankLedger', 'has_detail' => 0),
                 array('url' => 'expense-report', 'name' => 'Expense Report', 'class_name' => 'ExpenseReport', 'has_detail' => 0),
                 array('url' => 'bankdue-report', 'name' => 'Bank Due Date', 'class_name' => 'BankDueDate', 'has_detail' => 0),
                 array('url' => 'payable-report', 'name' => 'Payable Report', 'class_name' => 'PayableReport', 'has_detail' => 0),

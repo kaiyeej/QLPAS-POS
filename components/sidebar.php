@@ -44,6 +44,7 @@
 
         // REPORTS
         $Menus->sidebar_parent('Reports', 'write', array(
+            array('Bank Ledger', 'bank-ledger'),
             array('Expense Report', 'expense-report'),
             array('Bank Due Report', 'bankdue-report'),
             array('Payable Report', 'payable-report'),
