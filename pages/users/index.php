@@ -57,6 +57,8 @@
     function addUser() {
         $("#div_password").show();
         addModal();
+        $("#div_category").show();
+        $("#user_category").prop("required",true);
     }
 
     function getUserDetails(id) {

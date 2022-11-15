@@ -335,9 +335,15 @@ include 'core/config.php';
               } else {
                 $("#for_pick_up").prop("checked", false);
               }
-
+            }else if(route_settings.class_name == "Users"){
+              if (json['user_category'] == "A") {
+                $("#div_category").hide();
+                $("#user_category").prop("required",false);
+              } else {
+                $("#div_category").show();
+                $("#user_category").prop("required",true);
+              }
             }
-
             $("#modalLabel").html("<span class='fa fa-pen'></span> Update Entry");
             $("#modalEntry").modal('show');
           }

@@ -15,7 +15,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div id="div_category" class="form-group row">
                         <div class="col">
                             <label><strong>Category</strong></label>
                             <div>

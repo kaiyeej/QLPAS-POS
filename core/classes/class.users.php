@@ -35,9 +35,11 @@ class Users extends Connection
         } else {
             $form = array(
                 'user_fullname' => $user_fullname,
-                'user_category' => $this->inputs['user_category'],
                 'username' => $username
             );
+            if($primary_id != $_SESSION['user']['id']){
+                $form['user_category'] = $this->inputs['user_category'];
+            }
             return $this->update($this->table, $form, "$this->pk = '$primary_id'");
         }
     }
