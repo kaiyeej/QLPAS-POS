@@ -56,13 +56,13 @@
                         <div class="col-4 disc-percentage">
                             <label><strong>Discount (%)</strong></label>
                             <div>
-                                <input type="number" class="form-control form-control-sm input-item" name="input[discount_percent]" id="discount_percent" max="100" required>
+                                <input type="number" step="0.01" class="form-control form-control-sm input-item" name="input[discount_percent]" id="discount_percent" max="100" required>
                             </div>
                         </div>
                         <div class="col-4 disc-amount" style="display: none;">
                             <label><strong>Discount (₱)</strong></label>
                             <div>
-                                <input type="number" class="form-control form-control-sm input-item" name="input[discount_amount]" id="discount_amount" max="100">
+                                <input type="number" step="0.01" class="form-control form-control-sm input-item" name="input[discount_amount]" id="discount_amount" max="100">
                             </div>
                         </div>
                         <div class="col-4">
