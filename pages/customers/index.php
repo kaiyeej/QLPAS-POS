@@ -74,12 +74,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-
-                        if(row.customer_id == 0){
-                            return "";
-                        }else{
-                            return "<center><button class='btn btn-info btn-circle btn-sm' onclick='getEntryDetails(" + row.customer_id + ")'><span class='ti ti-pencil'></span></button></center>";
-                        }
+                        return row.customer_id == 0 ? "" : "<center><button class='btn btn-info btn-circle btn-sm' onclick='getEntryDetails(" + row.customer_id + ")'><span class='ti ti-pencil'></span></button></center>";
                     }
                 },
                 {

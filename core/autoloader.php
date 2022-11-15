@@ -40,4 +40,5 @@ $classes = array(
     'SalesSummary'      => $pre_class . 'salessummary.php',
     'Deposit'           => $pre_class . 'deposit.php',
     'BankLedger'        => $pre_class . 'bankledger.php',
+    'Profile'           => $pre_class . 'profile.php',
 );

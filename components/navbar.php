@@ -74,6 +74,10 @@
                     <span class="icon-head mx-0"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                    <a class="dropdown-item" href="./profile">
+                        <i class="ti-user text-primary"></i>
+                        Profile
+                    </a>
                     <a class="dropdown-item" href="./settings">
                         <i class="ti-settings text-primary"></i>
                         Settings

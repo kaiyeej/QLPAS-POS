@@ -18,11 +18,6 @@
                         <div class="mt-3">
                             <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit" href="#" id="btn_submit">SIGN IN</button>
                         </div>
-                        <div class="my-2 d-flex justify-content-between align-items-center">
-                            <div class="form-check">
-                            </div>
-                            <a href="#" class="auth-link text-black">Forgot password?</a>
-                        </div>
                     </form>
                 </div>
             </div>

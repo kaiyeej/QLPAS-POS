@@ -48,6 +48,9 @@ class Menus extends Connection
                 array('url' => 'users', 'name' => 'User Account', 'class_name' => 'Users', 'has_detail' => 0),
                 array('url' => 'settings', 'name' => 'Settings', 'class_name' => 'Settings', 'has_detail' => 0),
             ),
+            'user' => array(
+                array('url' => 'profile', 'name' => 'Profile', 'class_name' => 'Profile', 'has_detail' => 0),
+            ),
         );
 
         return $this->menus;
@@ -56,9 +59,9 @@ class Menus extends Connection
     public function routes($page, $dir)
     {
         $this->lists();
-        $levels = ['master-data', 'transaction', 'report', 'admin'];
+        $levels = ['master-data', 'transaction', 'report', 'admin', 'user'];
 
-        if ($page == 'homepage') {
+        if ($page == 'homepage' || $page == 'profile') {
             $this->dir = $dir;
             $this->route_settings = [];
         } else {
