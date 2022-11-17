@@ -61,7 +61,7 @@ $Users = new Users();
                         $PurchaseOrder = new PurchaseOrder();
                         ?>
                         <div class="card-body">
-                            <p class="mb-4">Number of Purchases</p>
+                            <p class="mb-4">Total Purchases</p>
                             <p class="fs-30 mb-2"><?= number_format($PurchaseOrder->totalPurchaseDays(30), 2); ?></p>
                             <p>(30 days)</p>
                         </div>
