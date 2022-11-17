@@ -167,6 +167,11 @@ include 'core/config.php';
         swal("Cannot proceed!", "Amount is greater than balance!", "warning");
       }
 
+      function quantity_is_greater() {
+        swal("Cannot proceed!", "Quantity is greater than inventory quantity!", "warning");
+      }
+
+
       function release_first() {
         swal("Cannot proceed!", "Save transaction first!", "warning");
       }
@@ -570,6 +575,8 @@ include 'core/config.php';
               entry_already_exists();
             } else if (json.data == 3) {
               amount_is_greater();
+            }else if(json.data == -3){
+              quantity_is_greater();
             } else if (json.data == 'PC-SAME-ITEM') {
               swal("Cannot proceed!", "Original product and converted should be different.", "warning");
             } else if (json.data == 'IA-ZERO') {

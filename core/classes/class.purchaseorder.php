@@ -214,7 +214,10 @@ class PurchaseOrder extends Connection
         $fetchData = $this->select('tbl_purchase_order_details as d, tbl_purchase_order as h', "sum(supplier_price*qty) as total", "h.po_id = d.po_id AND h.po_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
         $row = $fetchData->fetch_assoc();
 
-        return $row['total'] == 0 ? 0 : $row['total'];
+        $result_pr = $this->select("tbl_purchase_return as pr, tbl_purchase_return_details as prd", "SUM(prd.qty_return*prd.supplier_price) as total", "pr.pr_id=prd.pr_id AND pr.status='F' AND pr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
+        $row_sr = $result_pr->fetch_assoc();
+
+        return ($row['total']-$row_sr['total']) == 0 ? 0 : ($row['total']-$row_sr['total']);
     }
 
     private function delete_sales_details()

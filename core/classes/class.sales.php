@@ -144,25 +144,31 @@ class Sales extends Connection
         $primary_id = $this->inputs[$this->pk];
         $fk_det     = $this->inputs[$this->fk_det];
 
-        $Products = new Products;
-        $product_price = $Products->productPrice($fk_det);
-        $product_cost = $Products->productCost($fk_det);
+        // check inventory here ...
+        $Inventory = new InventoryReport();
+        $current_balance = $Inventory->balance($this->inputs['product_id']);
+        if($current_balance-$this->inputs['quantity'] >= 0){
 
-        $Discounts = new Discounts();
-        $discount_id = $this->dataRow($primary_id, 'discount_id');
-        $row_disc = $discount_id > 0 ? $Discounts->manual($discount_id, $fk_det, $this->inputs['quantity'], $product_price) : $Discounts->automatic($fk_det, $product_price, $this->inputs['quantity']);
+            $Products = new Products;
+            $product_price = $Products->productPrice($fk_det);
+            $product_cost = $Products->productCost($fk_det);
+            $Discounts = new Discounts();
+            $discount_id = $this->dataRow($primary_id, 'discount_id');
+            $row_disc = $discount_id > 0 ? $Discounts->manual($discount_id, $fk_det, $this->inputs['quantity'], $product_price) : $Discounts->automatic($fk_det, $product_price, $this->inputs['quantity']);
 
-        $form = array(
-            $this->pk       => $this->inputs[$this->pk],
-            $this->fk_det   => $fk_det,
-            'quantity'      => $this->inputs['quantity'],
-            'price'         => $product_price,
-            'cost'          => $product_cost,
-            'discount'      => $row_disc['discount_amount'],
-            'discount_id'   => $row_disc['discount_id'],
-        );
-
-        return $this->insert($this->table_detail, $form);
+            $form = array(
+                $this->pk       => $this->inputs[$this->pk],
+                $this->fk_det   => $fk_det,
+                'quantity'      => $this->inputs['quantity'],
+                'price'         => $product_price,
+                'cost'          => $product_cost,
+                'discount'      => $row_disc['discount_amount'],
+                'discount_id'   => $row_disc['discount_id'],
+            );
+            return $this->insert($this->table_detail, $form);
+        }else{
+            return -3; //insufficient qty
+        }
     }
 
     public function show_detail()
@@ -368,54 +374,63 @@ class Sales extends Connection
         if ($this->inputs['product_id'] > 0) {
 
             // check inventory here ...
-            
-            $reference_number = $this->inputs['reference_number'];
-            $param = "reference_number = '$reference_number'";
-            $this->inputs['sales_date'] = $this->getCurrentDate();
-            $this->inputs['discount_id'] = 0;
-            $sales_id = $this->add();
+            $Inventory = new InventoryReport();
+            $current_balance = $Inventory->balance($this->inputs['product_id']);
+            if($current_balance-$this->inputs['quantity'] >= 0){
 
-            if ($sales_id == -2) {
-                $sales_id = $this->getID($param);
-            }
+                $reference_number = $this->inputs['reference_number'];
+                $param = "reference_number = '$reference_number'";
+                $this->inputs['sales_date'] = $this->getCurrentDate();
+                $this->inputs['discount_id'] = 0;
+                $sales_id = $this->add();
 
-            $this->inputs[$this->pk] = $sales_id;
-
-            //$res = $this->add_detail();
-            $primary_id = $sales_id;
-            $fk_det     = $this->inputs[$this->fk_det];
-
-            $Products = new Products;
-            $product_price = $Products->productPrice($fk_det);
-
-            $Discounts = new Discounts();
-            $row_disc = $Discounts->automatic($fk_det, $product_price, $this->inputs['quantity']);
-
-            $form = array(
-                $this->pk       => $this->inputs[$this->pk],
-                $this->fk_det   => $fk_det,
-                'quantity'      => $this->inputs['quantity'],
-                'price'         => $product_price,
-                'cost'          => 0,
-                'discount'      => $row_disc['discount_amount'],
-                'discount_id'   => $row_disc['discount_id'],
-            );
-
-            //return $this->insert($this->table_detail, $form);
-            $res = $this->insertIfNotExist($this->table_detail, $form, "sales_id='$primary_id' AND product_id='$fk_det'", 'Y');
-            if ($res == -2) {
-                $qty = $this->inputs['quantity'];
-                $this->inputs['param'] = "sales_id='$primary_id' AND product_id='$fk_det' ";
-                $detail_row = $this->show_detail();
-
-                if (sizeof($detail_row) > 0) {
-                    $this->inputs['quantity'] = $detail_row[0]['quantity'] + $qty;
-                    $this->inputs['sales_detail_id'] = $detail_row[0]['sales_detail_id'];
-                    $this->edit_detail();
+                if ($sales_id == -2) {
+                    $sales_id = $this->getID($param);
                 }
-            }
 
-            return 1;
+                $this->inputs[$this->pk] = $sales_id;
+
+                //$res = $this->add_detail();
+                $primary_id = $sales_id;
+                $fk_det     = $this->inputs[$this->fk_det];
+
+                $Products = new Products;
+                $product_price = $Products->productPrice($fk_det);
+
+                $Discounts = new Discounts();
+                $row_disc = $Discounts->automatic($fk_det, $product_price, $this->inputs['quantity']);
+
+                $form = array(
+                    $this->pk       => $this->inputs[$this->pk],
+                    $this->fk_det   => $fk_det,
+                    'quantity'      => $this->inputs['quantity'],
+                    'price'         => $product_price,
+                    'cost'          => 0,
+                    'discount'      => $row_disc['discount_amount'],
+                    'discount_id'   => $row_disc['discount_id'],
+                );
+
+                //return $this->insert($this->table_detail, $form);
+                $res = $this->insertIfNotExist($this->table_detail, $form, "sales_id='$primary_id' AND product_id='$fk_det'", 'Y');
+                if ($res == -2) {
+                    $qty = $this->inputs['quantity'];
+                    $this->inputs['param'] = "sales_id='$primary_id' AND product_id='$fk_det' ";
+                    $detail_row = $this->show_detail();
+
+                    if (sizeof($detail_row) > 0) {
+                        $this->inputs['quantity'] = $detail_row[0]['quantity'] + $qty;
+                        $this->inputs['sales_detail_id'] = $detail_row[0]['sales_detail_id'];
+                        $this->edit_detail();
+                    }
+                }
+
+                return 1;
+
+            }else{
+                return -3; //insufficient qty
+            }
+            
+            
         } else {
             return "Cannot find item. Please try again.";
         }
@@ -633,7 +648,11 @@ class Sales extends Connection
         $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
         $row = $fetchData->fetch_assoc();
 
-        return $row['total'] == 0 ? 0 : $row['total'];
+        $result_sr = $this->select("tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
+        $total_sr = $result_sr->fetch_array();
+        
+
+        return ($row['total']-$total_sr['total']) == 0 ? 0 : ($row['total']-$total_sr['total']);
     }
 
     public function posPrintReceipt()

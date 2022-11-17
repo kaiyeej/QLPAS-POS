@@ -139,12 +139,23 @@ class SalesReturn extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, '*', $param);
         while ($row = $result->fetch_assoc()) {
+            if($this->get_status($row['sales_return_id']) == "F"){
+                $total = $row['quantity_return'];
+            }else{
+                $total = $row['quantity_return'] + $this->total_return($row['sales_detail_id']);
+            }
             $row['product'] = Products::name($row['product_id']);
             $row['amount'] = $row['quantity'] * $row['price'];
-            $row['quantity_return'] = $row['quantity_return'] + $this->total_return($row['sales_detail_id']);
+            $row['quantity_return'] = $total;
             $rows[] = $row;
         }
         return $rows;
+    }
+
+    public function get_status($primary_id){
+        $result = $this->select($this->table, 'status', "$this->pk  = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row['status'];
     }
 
     public function remove_detail()

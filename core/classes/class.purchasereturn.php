@@ -126,12 +126,24 @@ class PurchaseReturn extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, '*', $param);
         while ($row = $result->fetch_assoc()) {
+            if($this->get_status($row['pr_id']) == "F"){
+                $total = $row['qty_return'];
+            }else{
+                $total = $row['qty_return'] + $this->total_return($row['po_detail_id']);
+            }
+
             $row['product'] = Products::name($row['product_id']);
             $row['amount'] = $row['qty'] * $row['supplier_price'];
-            $row['qty_return'] = $row['qty_return']+ $this->total_return($row['po_detail_id']);
+            $row['qty_return'] = $total;
             $rows[] = $row;
         }
         return $rows;
+    }
+
+    public function get_status($primary_id){
+        $result = $this->select($this->table, 'status', "$this->pk  = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row['status'];
     }
 
     public function total_return($primary_id){
