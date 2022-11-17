@@ -81,7 +81,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return status == 'F' ? "<label class='badge badge-success'> Finish</label>" : "<label class='badge badge-danger'> Saved</label>";
+                        return row.status == 'F' ? "<label class='badge badge-success'> Finish</label>" : "<label class='badge badge-danger'> Saved</label>";
                     }
                 },
                 {

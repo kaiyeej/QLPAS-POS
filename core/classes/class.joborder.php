@@ -176,7 +176,7 @@ class JobOrder extends Connection
     }
 
     public function totalCost($primary_id){
-        $result = $this->select($this->table_detail, 'sum(cost)', "$this->pk = '$primary_id'");
+        $result = $this->select($this->table_detail, 'sum(cost*qty)', "$this->pk = '$primary_id'");
         $row = $result->fetch_array();
 
         return $row[0];
