@@ -62,7 +62,7 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return "<input type='checkbox' value=" + row.adjustment_id + " class='dt_id' style='position: initial; opacity:1;'>";
+                        return row.status == "F" ? "" : "<input type='checkbox' value=" + row.adjustment_id + " class='dt_id' style='position: initial; opacity:1;'>";
                     }
                 },
                 {

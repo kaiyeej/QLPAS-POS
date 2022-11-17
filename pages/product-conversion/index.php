@@ -62,7 +62,7 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return "<input type='checkbox' value=" + row.conversion_id + " class='dt_id' style='position: initial; opacity:1;'>";
+                        return row.status == 'F' ? "" : "<input type='checkbox' value=" + row.conversion_id + " class='dt_id' style='position: initial; opacity:1;'>";
                     }
                 },
                 {
@@ -81,7 +81,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return status == 'F' ? "<label class='badge badge-success'> Finish</label>" : "<label class='badge badge-danger'> Saved</label>";
+                        return row.status == 'F' ? "<label class='badge badge-success'> Finish</label>" : "<label class='badge badge-danger'> Saved</label>";
                     }
                 },
                 {

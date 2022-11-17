@@ -120,6 +120,12 @@ class ProductConversion extends Connection
     public function finish()
     {
         $primary_id = $this->inputs['id'];
+        $Products = new Products();
+        $result = $this->select($this->table_detail, " * ", "$this->pk = '$primary_id'");
+        while ($row = $result->fetch_array()) {
+            $Products->prodAVG($row['converted_product_id'], $row['converted_qty'], $row['converted_cost']);
+        }
+
         $form = array(
             'status' => 'F',
         );
