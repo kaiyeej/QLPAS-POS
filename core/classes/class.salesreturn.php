@@ -30,7 +30,8 @@ class SalesReturn extends Connection
             'product_id'        => 'product_id',
             'quantity'          => 'quantity',
             'price'             => 'price',
-            'cost'             => 'cost'
+            'discount'          => 'discount',
+            'cost'              => 'cost'
         );
 
         $this->insert_select($this->table_detail, 'tbl_sales_details', $form_detail, "sales_id = '$sales_id'");

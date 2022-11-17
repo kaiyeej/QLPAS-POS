@@ -83,9 +83,9 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="5" style="text-align:right">Total:</th>
-                                    <th></th>
-                                    <th></th>
+                                    <th colspan="5" style="text-align:right">Current:</th>
+                                    <th><span id="span_current_qty"></span></th>
+                                    <th><span id="span_current_amount"></span></th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -165,42 +165,6 @@
                 "render": $.fn.dataTable.render.number(',', '.', 2, ''),
                 "className": 'dt-body-right'
             }],
-            "footerCallback": function(row, data, start, end, display) {
-                var api = this.api();
-
-                // Remove the formatting to get integer data for summation
-                var intVal = function(i) {
-                    return typeof i === 'string' ?
-                        i.replace(/[\$,]/g, '') * 1 :
-                        typeof i === 'number' ?
-                        i : 0;
-                };
-
-                // Total over all pages
-                total_5 = api
-                    .column(5)
-                    .data()
-                    .reduce(function(a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-                // Total over all pages
-                total_6 = api
-                    .column(6)
-                    .data()
-                    .reduce(function(a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-                // Update footer
-                $(api.column(5).footer()).html(
-                    '&#x20B1; ' + total_5
-                );
-
-                $(api.column(6).footer()).html(
-                    '&#x20B1; ' + total_6
-                );
-            },
             "columns": [{
                     "data": "date"
                 }, {
@@ -216,13 +180,33 @@
                     "data": "qty_out"
                 },
                 {
-                    "data": "qty_balance"
+                    "mRender": function(data, type, row) {
+                        return row.qty_balance+"<input type='hidden' class='current_qty' value='"+row.qty_balance+"'>";
+
+                    }
                 },
                 {
-                    "data": "amount"
+                    "mRender": function(data, type, row) {
+                        return row.amount+"<input type='hidden' class='current_amount' value='"+row.amount+"'>";
+
+                    }
                 },
             ]
         });
+        current_qty();
+    }
+
+    function current_qty(){
+        
+        var table = $('#dt_entries').DataTable();
+        table.on( 'draw', function () {
+            var current_qty = $(".current_qty").last().val();
+            var current_amount = $(".current_amount").last().val();
+
+            $("#span_current_qty").html(current_qty);
+            $("#span_current_amount").html(current_amount);
+        });
+        
     }
 
     $(document).ready(function() {

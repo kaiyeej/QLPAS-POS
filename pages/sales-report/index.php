@@ -19,6 +19,7 @@
                     <li class="nav-item"><a href="" data-target="#daily" data-toggle="tab" class="nav-link small text-uppercase active">Daily</a></li>
                     <li class="nav-item"><a href="" data-target="#yearly" data-toggle="tab" class="nav-link small text-uppercase">Yearly</a></li>
                     <li class="nav-item"><a href="" data-target="#cashier" data-toggle="tab" class="nav-link small text-uppercase">Per Cashier</a></li>
+                    <li class="nav-item"><a href="" data-target="#customer" data-toggle="tab" class="nav-link small text-uppercase">Per Customer</a></li>
                 </ul>
                 <br>
                 <div id="tabsContent" class="tab-content">
@@ -239,7 +240,7 @@
                                         <label>&nbsp;</label>
                                         <div>
                                             <div class="btn-group pull-right">
-                                                <button type="submit" id="btn_cashir" class="btn btn-primary btn-sm btn-icon-split">
+                                                <button type="submit" id="btn_cashier" class="btn btn-primary btn-sm btn-icon-split">
                                                     <span class="icon">
                                                         <i class="ti ti-reload"></i>
                                                     </span>
@@ -292,6 +293,88 @@
                         </div>
                     </div>
 
+                    <div id="customer" class="tab-pane fade">
+                        <h5>Per Customer Report</h5>
+                        <div class="card-header py-3">
+                            <form id='frm_generate_customer'>
+                                <div class="form-group row">
+                                    <div class="col">
+                                        <label><strong>Start Date</strong></label>
+                                        <div>
+                                            <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="cu_start_date" name="input[start_date]">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label><strong>End Date</strong></label>
+                                        <div>
+                                            <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="cu_end_date" name="input[end_date]">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label><strong>Customer</strong></label>
+                                        <div>
+                                            <select class="form-control form-control-sm select2" required id="customer_id" name="input[customer_id]">
+                                                <option value="-1">&mdash; All &mdash; </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <label>&nbsp;</label>
+                                        <div>
+                                            <div class="btn-group pull-right">
+                                                <button type="submit" id="btn_customer" class="btn btn-primary btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-reload"></i>
+                                                    </span>
+                                                    <span class="text"> Generate</span>
+                                                </button>
+                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_customer','Per-Customer-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-cloud-down"></i>
+                                                    </span>
+                                                    <span class="text"> Export</span>
+                                                </button>
+                                                <button type="button" onclick="print_report2('customer_container')" class="btn btn-info btn-sm btn-icon-split">
+                                                    <span class="icon">
+                                                        <i class="ti ti-printer"></i>
+                                                    </span>
+                                                    <span class="text"> Print</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="customer_container" class="card-body">
+                            <center>
+                                <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                <h5 class="report-header">Sales Per Customer Report</h5>
+                            </center>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dt_entries_customer" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>ITEM</th>
+                                            <th style="text-align:right">QTY</th>
+                                            <th style="text-align:right">AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="1" style="text-align:right">Total:</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -312,6 +395,11 @@
     $("#frm_generate_cashier").submit(function(e) {
         e.preventDefault();
         getReportCashier();
+    });
+
+    $("#frm_generate_customer").submit(function(e) {
+        e.preventDefault();
+        getReportCustomer();
     });
 
     var yearly_type = "P";
@@ -608,6 +696,91 @@
         });
     }
 
+    function getReportCustomer() {
+        var start_date = $("#cu_start_date").val();
+        var end_date = $("#cu_end_date").val();
+        var customer_id = $("#customer_id").val();
+
+        $("#dt_entries_customer").DataTable().destroy();
+        $("#dt_entries_customer").DataTable({
+            "processing": true,
+            "searching": false,
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            "ajax": {
+                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=generate_customer",
+                "dataSrc": "data",
+                "method": "POST",
+                "data": {
+                    input: {
+                        start_date: start_date,
+                        end_date: end_date,
+                        customer_id: customer_id
+                    }
+                },
+            },
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function(i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                        i : 0;
+                };
+
+                qtyTotal = api
+                    .column(1, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(1).footer()).html(
+                    qtyTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+                subTotal = api
+                    .column(2, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(2).footer()).html(
+                    "&#x20B1; " + subTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+            },
+            "columns": [{
+                    "data": "item"
+                },
+                {
+                    "data": "qty",
+                    className: "text-right"
+                },
+                {
+                    "data": "amount",
+                    className: "text-right"
+                }
+
+            ]
+
+        });
+    }
+
     function print_report2(container, title) {
 
         var printContents = document.getElementById("" + container + "").innerHTML;
@@ -652,6 +825,7 @@
         getSelectOption('ProductCategories', 'product_category_id', 'product_category', '', [], -1, 'All');
         getSelectOption('ProductCategories', 'product_category_id_2', 'product_category', '', [], -1, 'All', 1);
         getSelectOption('Users', 'user_id', 'user_fullname', "user_category='C'", [], -1, 'All');
+        getSelectOption('Customers', 'customer_id', 'customer_name', "", [], -1, 'All');
         getReportDaily();
         getReportYearly();
         getReportCashier();

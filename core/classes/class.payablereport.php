@@ -34,7 +34,7 @@ class PayableReport extends Connection
         $get_po = $this->select("tbl_purchase_order as po, tbl_purchase_order_details AS pd", "SUM(pd.supplier_price*pd.qty) as total", "po.supplier_id='$supplier_id' AND pd.po_id=po.po_id AND po.status='F' AND po.po_type='H'");
         $po_row = $get_po->fetch_assoc();
 
-        $get_pr = $this->select("tbl_purchase_order as po, tbl_purchase_order_details AS pd, tbl_purchase_return as pr, tbl_purchase_return_details as prd", "SUM(prd.qty_return*prd.supplier_price) as total", "po.supplier_id='$supplier_id' AND pd.po_id=po.po_id AND po.status='F' AND po.po_type='H' AND pr.pr_id=prd.pr_id AND pr.status='F' AND pr.po_id=po.po_id");
+        $get_pr = $this->select("tbl_purchase_order as po, tbl_purchase_order_details AS pd, tbl_purchase_return as pr, tbl_purchase_return_details as prd", "SUM(prd.qty_return*prd.supplier_price) as total", "po.supplier_id='$supplier_id' AND pd.po_id=po.po_id AND po.status='F' AND po.po_type='H' AND pr.pr_id=prd.pr_id AND pr.status='F' AND pr.po_id=po.po_id AND pd.po_detail_id=prd.po_detail_id");
         $pr_row = $get_pr->fetch_assoc();
 
 

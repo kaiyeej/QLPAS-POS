@@ -12,7 +12,7 @@ class PayableLedger extends Connection
         
         $rows = array();
 
-        $result = $this->select("tbl_purchase_order","reference_number","supplier_id='$supplier_id' AND (po_date >= '$start_date' AND po_date <= '$end_date') AND status='F' UNION ALL SELECT reference_number FROM tbl_supplier_payment WHERE supplier_id='$supplier_id' AND (payment_date >= '$start_date' AND payment_date <= '$end_date') AND status='F' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$supplier_id' AND (bb_date >= '$start_date' AND bb_date <= '$end_date') AND bb_module='AP'");
+        $result = $this->select("tbl_purchase_order","reference_number","supplier_id='$supplier_id' AND (po_date >= '$start_date' AND po_date <= '$end_date') AND status='F' AND po_type='H' UNION ALL SELECT reference_number FROM tbl_supplier_payment WHERE supplier_id='$supplier_id' AND (payment_date >= '$start_date' AND payment_date <= '$end_date') AND status='F' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$supplier_id' AND (bb_date >= '$start_date' AND bb_date <= '$end_date') AND bb_module='AP'");
         
         $PurchaseOrder = new PurchaseOrder;
         $SupplierPayment = new SupplierPayment;
@@ -27,24 +27,26 @@ class PayableLedger extends Connection
             if($trans == "PO"){
                 $trans = "Purchase Order";
                 $po_id = $PurchaseOrder->pk_by_name($row['reference_number']);
-                $debit = ($PurchaseOrder->total($po_id)-$PurchaseReturn->total_per_po($po_id));
+                $debit = $PurchaseOrder->total($po_id);
                 $credit = 0;
                 $balance += $debit;
                 $date = $PurchaseOrder->get_row($po_id, 'po_date');
                 $ref_number = $row['reference_number']." (Invoice: ".$PurchaseOrder->get_row($po_id, 'po_invoice').")";
             }else if($trans == "SP"){
                 $trans = "Supplier Payment";
+                $id = $SupplierPayment->pk_by_name($row['reference_number']);
                 $debit = 0;
-                $credit = $SupplierPayment->total($SupplierPayment->pk_by_name($row['reference_number']));
+                $credit = $SupplierPayment->total($id);
                 $balance -= $credit;
-                $date = $SupplierPayment->get_row($SupplierPayment->pk_by_name($row['reference_number']), 'payment_date');
+                $date = $SupplierPayment->get_row($id, 'payment_date');
                 $ref_number = $row['reference_number'];
             }else if($trans == "BB"){
                 $trans = "Beginning Balance";
-                $debit = $BeginningBalance->total($BeginningBalance->pk_by_name($row['reference_number']));
+                $id = $BeginningBalance->pk_by_name($row['reference_number']);
+                $debit = $BeginningBalance->total($id);
                 $credit = 0;
                 $balance += $debit;
-                $date = $BeginningBalance->name($BeginningBalance->pk_by_name($row['reference_number']), 'payment_date');
+                $date = $BeginningBalance->get_row($id, 'bb_date');
                 $ref_number = $row['reference_number'];
             }
 
@@ -65,7 +67,7 @@ class PayableLedger extends Connection
         $start_date = $this->inputs['start_date'];
         $end_date = $this->inputs['end_date'];
 
-        $get_po = $this->select("tbl_purchase_order as h, tbl_purchase_order_details as d","sum(d.supplier_price*d.qty)","h.supplier_id='$supplier_id' AND h.po_date < '$start_date' AND h.status='F' AND h.po_id=d.po_id");
+        $get_po = $this->select("tbl_purchase_order as h, tbl_purchase_order_details as d","sum(d.supplier_price*d.qty)","h.supplier_id='$supplier_id' AND h.po_date < '$start_date' AND h.status='F' AND h.po_type='H' AND h.po_id=d.po_id");
         $total_po = $get_po->fetch_array();
 
        $getPO = $this->select("tbl_purchase_order" , "po_id", "supplier_id='$supplier_id' AND po_date < '$start_date' AND status='F'");

@@ -15,8 +15,23 @@ class StockCard extends Connection
             $qty = $row['qty_in'] - $row['qty_out'];
             $qty_balance += $qty;
 
-            $row['qty_balance'] = $qty_balance;
-            $row['amount'] = $qty_balance * $row['price'];
+            if($row['module'] == "BB"){
+                $module = "Beginning Balance";
+            }else if($row['module'] == "PO"){
+                $module = "Purchase Order";
+            }else if($row['module'] == "SLS"){
+                $module = "Sales";
+            }else if($row['module'] == "JO"){
+                $module = "Job Order";
+            }else if($row['module'] == "PC"){
+                $module = "Product Conversion";
+            }else if($row['module'] == "IA"){
+                $module = "Inventory Adjustment";
+            }
+
+            $row['qty_balance'] = number_format($qty_balance,2);
+            $row['module'] = $module;
+            $row['amount'] = number_format($qty_balance * $row['price'],2);
             $row['date'] = date('M d,Y', strtotime($row['date_modified']));
             $rows[] = $row;
         }

@@ -246,6 +246,17 @@ class CustomerPayment extends Connection
         return $row[0];
     }
 
+    public function dataRow($primary_id, $field)
+    {
+        $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
+        if($result->num_rows > 0){
+            $row = $result->fetch_array();
+            return $row[$field];
+        }else{
+            return "";
+        }
+    }
+
     public function cancel()
     {
         $ids = implode(",", $this->inputs['ids']);

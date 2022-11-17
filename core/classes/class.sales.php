@@ -194,7 +194,7 @@ class Sales extends Connection
         $result_dr = $this->select($this->table_detail, 'sum((quantity*price)-discount)', "$this->pk = '$primary_id'");
         $total_dr = $result_dr->fetch_array();
 
-        $result_sr = $this->select("tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM(srd.quantity_return*srd.price) as total", "sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.sales_id='$primary_id'");
+        $result_sr = $this->select("tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.sales_id='$primary_id'");
         $total_sr = $result_sr->fetch_array();
 
         return $total_dr[0] - $total_sr[0];
@@ -630,7 +630,7 @@ class Sales extends Connection
 
     public function totalSalesDays($days)
     {
-        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum(quantity*price) as total", "h.sales_id = d.sales_id AND h.sales_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
+        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
         $row = $fetchData->fetch_assoc();
 
         return $row['total'] == 0 ? 0 : $row['total'];

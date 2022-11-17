@@ -41,4 +41,6 @@ $classes = array(
     'Deposit'           => $pre_class . 'deposit.php',
     'BankLedger'        => $pre_class . 'bankledger.php',
     'Profile'           => $pre_class . 'profile.php',
+    'ReceivableLedger'  => $pre_class . 'receivableledger.php',
+    'ReceivableReport'  => $pre_class . 'receivablereport.php',
 );
