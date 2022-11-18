@@ -27,11 +27,15 @@ class StockCard extends Connection
                 $module = "Product Conversion";
             }else if($row['module'] == "IA"){
                 $module = "Inventory Adjustment";
+            }else if($row['module'] == "SR"){
+                $module = "Sales Return";
+            }else if($row['module'] == "PR"){
+                $module = "Purchase Return";
             }
 
             $row['qty_balance'] = number_format($qty_balance,2);
             $row['module'] = $module;
-            $row['amount'] = number_format($qty_balance * $row['price'],2);
+            $row['amount'] = number_format($qty_balance * $row['cost'],2);
             $row['date'] = date('M d,Y', strtotime($row['date_modified']));
             $rows[] = $row;
         }

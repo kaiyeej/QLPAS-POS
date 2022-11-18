@@ -68,7 +68,7 @@
                                 <tr>
                                     <th>DATE</th>
                                     <th>TRANSACTION</th>
-                                    <th>UNIT PRICE</th>
+                                    <th>UNIT COST</th>
                                     <th>QTY IN</th>
                                     <th>QTY OUT</th>
                                     <th colspan="2">BALANCE</th>
@@ -171,7 +171,7 @@
                     "data": "module"
                 },
                 {
-                    "data": "price"
+                    "data": "cost"
                 },
                 {
                     "data": "qty_in"
