@@ -31,6 +31,7 @@ class ExpenseCategories extends Connection
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
+            $row['expense_type_name'] = $row['expense_type'] == "O" ? "Other Expense" : "Operational Expense";
             $rows[] = $row;
         }
         return $rows;

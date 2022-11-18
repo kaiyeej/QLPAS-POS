@@ -710,7 +710,7 @@ include 'core/config.php';
           },
           success: function(data) {
             var json = JSON.parse(data);
-            $("#" + primary_id).html("<option value='" + pre_value + "'> &mdash; " + pre_label + " &mdash; </option>");
+            $("#" + primary_id).html("<option value='" + pre_value + "'>" + pre_label + "</option>");
 
 
             for (list_index = 0; list_index < json.data.length; list_index++) {

@@ -26,10 +26,18 @@
                             <div class="col">
                                 <label><strong>Type</strong></label>
                                 <div>
-                                    <select class="form-control form-control-sm select2" required id="expense_type" name="input[expense_type]">
-                                        <option value="-1">&mdash; All &mdash; </option>
+                                    <select class="form-control form-control-sm select2" required id="expense_type" name="input[expense_type]" onchange="getCategory()">
+                                        <option value="-1">All</option>
                                         <option value='OE'>Operational Expense</option>
                                         <option value='O'>Other Expense</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label><strong>Category</strong></label>
+                                <div>
+                                    <select class="form-control form-control-sm select2" required id="expense_category_id" name="input[expense_category_id]">
+                                        <option value="-1">All</option>
                                     </select>
                                 </div>
                             </div>
@@ -66,7 +74,8 @@
                         <h4 class="report-header"><span id="company_name_label"></span></h4>
                         <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
                         <h6 class="report-header" id="report_date"></h6>
-                        <h6 class="report-header" id="type_span"></h6>
+                        <h6 class="report-header">Type: <span id="type_span"></span></h6>
+                        <h6 class="report-header">Category: <span id="category_span"></span></h6>
                     </center>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
@@ -102,6 +111,11 @@
         $("#company_address_label").html(company_profile.company_address);
     });
 
+    function getCategory(){
+        var expense_type = $("#expense_type").val();
+        getSelectOption('ExpenseCategories', 'expense_category_id', 'expense_category', "expense_type = '"+expense_type+"'", [], -1, 'All');
+    }
+
     $("#frm_generate").submit(function(e) {
         e.preventDefault();
         getEntries();
@@ -109,19 +123,19 @@
 
     function expenseType() {
         var expense_type = $("#expense_type").val();
-        if (expense_type == -1) {
-            $("#type_span").html("ALL");
-        } else if (expense_type == "O") {
-            $("#type_span").html("Other Expense");
-        } else if (expense_type == "OE") {
-            $("#type_span").html("Operational Expense");
-        }
+        var str = $("#expense_type option[value="+expense_type+"]").text();
+        $("#type_span").html(str);
+
+        var expense_category_id = $("#expense_category_id").val();
+        var str = $("#expense_category_id option[value="+expense_category_id+"]").text();
+        $("#category_span").html(str);
     }
 
     function getEntries() {
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
         var expense_type = $("#expense_type").val();
+        var expense_category_id = $("#expense_category_id").val();
 
         const d1 = new Date(start_date);
         let start = d1.toDateString().slice(4);
@@ -146,7 +160,8 @@
                     input: {
                         start_date: start_date,
                         end_date: end_date,
-                        expense_type: expense_type
+                        expense_type: expense_type,
+                        expense_category_id:expense_category_id
                     }
                 },
             },

@@ -35,6 +35,7 @@
                                     <th></th>
                                     <th>Expense Code</th>
                                     <th>Expense Category</th>
+                                    <th>Type</th>
                                     <th>Date Added</th>
                                     <th>Date Modified</th>
                                 </tr>
@@ -73,6 +74,9 @@
                 },
                 {
                     "data": "expense_category"
+                },
+                {
+                    "data": "expense_type_name"
                 },
                 {
                     "data": "date_added"
