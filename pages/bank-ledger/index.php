@@ -47,6 +47,12 @@
                                             </span>
                                             <span class="text"> Generate</span>
                                         </button>
+                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries','Bank-Ledger-Report')" class="btn btn-success btn-sm btn-icon-split">
+                                            <span class="icon">
+                                                <i class="ti ti-cloud-down"></i>
+                                            </span>
+                                            <span class="text"> Export</span>
+                                        </button>
                                         <button type="button" onclick="print_report('report_container')" class="btn btn-info btn-sm btn-icon-split">
                                             <span class="icon">
                                                 <i class="ti ti-printer"></i>
