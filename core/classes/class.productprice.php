@@ -10,6 +10,7 @@ class ProductPrice extends Connection
     public $pk2 = 'price_detail_id';
     public $fk_det = 'product_id';
 
+    public $module_name = "Price Notice";
     public function add()
     {
         $effective_date = date('Y-m-d', strtotime($this->inputs['effective_date']));
@@ -19,7 +20,10 @@ class ProductPrice extends Connection
             'remarks' => $this->clean($this->inputs['remarks']),
             'status' => 'S',
         );
-        return $this->insertIfNotExist($this->table, $form, "effective_date = '$effective_date'", 'Y');
+        $result = $this->insertIfNotExist($this->table, $form, "effective_date = '$effective_date'", 'Y');
+        $new_result = $result > 0 ? 1 : abs($result); // for return last_id
+        Logs::storeCrud($this->module_name, 'c', $new_result, $this->inputs[$this->name]);
+        return $result;
     }
 
     public function edit()
@@ -27,7 +31,9 @@ class ProductPrice extends Connection
         $form = array(
             $this->name => $this->clean($this->inputs[$this->name])
         );
-        return $this->updateIfNotExist($this->table, $form);
+        $result = $this->updateIfNotExist($this->table, $form);
+        Logs::storeCrud($this->module_name, 'u', $result, $this->inputs[$this->name]);
+        return $result;
     }
 
     public function show()
@@ -51,7 +57,14 @@ class ProductPrice extends Connection
     public function remove()
     {
         $ids = implode(",", $this->inputs['ids']);
-        return $this->delete($this->table, "$this->pk IN($ids)");
+
+        foreach ($this->inputs['ids'] as $id) {
+            $name = self::name($id);
+            $result = $this->delete($this->table, "$this->pk = '$id'");
+            Logs::storeCrud($this->module_name, 'd', $result, $name);
+        }
+
+        return 1; //$this->delete($this->table, "$this->pk IN($ids)");
     }
 
     public function name($primary_id)
@@ -60,6 +73,7 @@ class ProductPrice extends Connection
         $row = $result->fetch_assoc();
         return $row[$this->name];
     }
+
 
     public function generate()
     {
@@ -78,7 +92,10 @@ class ProductPrice extends Connection
             'price'         => $this->inputs['new_price'],
         );
 
-        return $this->insertIfNotExist($this->table_detail, $form, "$this->pk = '$primary_id' AND $this->fk_det = '$fk_det'");
+        $result = $this->insertIfNotExist($this->table_detail, $form, "$this->pk = '$primary_id' AND $this->fk_det = '$fk_det'");
+        $details = Products::name($fk_det) . " " . $this->inputs['old_price'] . " ->  " . $this->inputs['new_price'];
+        Logs::storeCrud($this->module_name, 'cd', $result, $this->name($primary_id), $details);
+        return $result;
     }
 
     public function show_detail()
@@ -98,7 +115,21 @@ class ProductPrice extends Connection
     public function remove_detail()
     {
         $ids = implode(",", $this->inputs['ids']);
-        return $this->delete($this->table_detail, "$this->pk2 IN($ids)");
+
+        foreach ($this->inputs['ids'] as $id) {
+            $name = $this->name_detail($id);
+            $result = $this->delete($this->table_detail, "$this->pk2 = '$id'");
+            Logs::storeCrud($this->module_name, 'dd', $result, $name);
+        }
+
+        return 1; // $this->delete($this->table_detail, "$this->pk2 IN($ids)");
+    }
+
+    public function name_detail($pk2)
+    {
+        $result = $this->select($this->table_detail, "product_id,price", "$this->pk2 = '$pk2'");
+        $row = $result->fetch_assoc();
+        return Products::name($row['product_id']) . " @ $row[price]";
     }
 
     public function finish()
@@ -107,7 +138,9 @@ class ProductPrice extends Connection
         $form = array(
             'status' => 'F',
         );
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        Logs::storeCrud($this->module_name, 'f', $result, $this->name($primary_id));
+        return $result;
     }
 
     public function runner()
@@ -118,7 +151,8 @@ class ProductPrice extends Connection
         while ($row = $result->fetch_assoc()) {
             if ($this->implement($row[$this->pk]) == 1) {
                 $rows[] = $row[$this->name];
-                $this->update($this->jccrypt($this->table), ['effective_status' => 1], "$this->pk = '" . $row[$this->pk] . "'");
+                $res = $this->update($this->jccrypt($this->table), ['effective_status' => 1], "$this->pk = '" . $row[$this->pk] . "'");
+                Logs::storeCrud($this->module_name, 'i', $res, $row[$this->name]);
             }
         }
         return $rows;

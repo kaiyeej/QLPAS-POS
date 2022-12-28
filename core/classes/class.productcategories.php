@@ -4,13 +4,17 @@ class ProductCategories extends Connection
     private $table = 'tbl_product_categories';
     public $pk = 'product_category_id';
     public $name = 'product_category';
+    public $module_name = "Product Category";
 
     public function add()
     {
         $form = array(
             $this->name => $this->clean($this->inputs[$this->name])
         );
-        return $this->insertIfNotExist($this->table, $form);
+
+        $result = $this->insertIfNotExist($this->table, $form);
+        Logs::storeCrud($this->module_name, 'c', $result, $this->inputs[$this->name]);
+        return $result;
     }
 
     public function edit()
@@ -18,7 +22,10 @@ class ProductCategories extends Connection
         $form = array(
             $this->name => $this->clean($this->inputs[$this->name])
         );
-        return $this->updateIfNotExist($this->table, $form);
+        $old_name = $this->name($this->inputs[$this->pk]);
+        $result = $this->updateIfNotExist($this->table, $form);
+        Logs::storeCrud($this->module_name, 'u', $result, $old_name, $this->inputs[$this->name]);
+        return $result;
     }
 
     public function show()
@@ -42,7 +49,14 @@ class ProductCategories extends Connection
     public function remove()
     {
         $ids = implode(",", $this->inputs['ids']);
-        return $this->delete($this->table, "$this->pk IN($ids)");
+
+        foreach ($this->inputs['ids'] as $id) {
+            $name = self::name($id);
+            $result = $this->delete($this->table, "$this->pk = '$id'");
+            Logs::storeCrud($this->module_name, 'd', $result, $name);
+        }
+
+        return 1; //$this->delete($this->table, "$this->pk IN($ids)");
     }
 
     public function name($primary_id)

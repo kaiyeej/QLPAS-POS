@@ -70,8 +70,9 @@ class Logs extends Connection
 			$pre_action = $result == 1 ? "Added new" : ($result == 2 ? "Attempt to add existing" : "Error to add new");
 			$action = $pre_action . " " . $post_action;
 		} else if ($crud == 'cd') { // Add Details
-			$pre_action = $result == 1 ? "Added new detail " : ($result == 2 ? "Attempt to add existing detail" : "Error to add detail");
-			$action = $pre_action . " " . $post_action;
+			$pre_action = $result == 1 ? "Added new detail" : ($result == 2 ? "Attempt to add existing detail" : "Error to add detail");
+			$post_action .= " : [$new_name]";
+			$action = $pre_action . " of " . $post_action;
 		} else if ($crud == 'r') { // Read
 			$action = "";
 		} else if ($crud == 'u') { // Update
@@ -83,8 +84,14 @@ class Logs extends Connection
 		} else if ($crud == 'd') { // Delete
 			$pre_action = $result == 1 ? "Deleted" : "Error to delete";
 			$action = $pre_action . " " . $post_action;
+		} else if ($crud == 'dd') { // Delete detail
+			$pre_action = $result == 1 ? "Deleted detail" : "Error to delete detail";
+			$action = $pre_action . " of " . $post_action;
 		} else if ($crud == 'f') { // Finish
 			$pre_action = $result == 1 ? "Finished" : "Error to finish";
+			$action = $pre_action . " " . $post_action;
+		} else if ($crud == 'i') { // Finish
+			$pre_action = $result == 1 ? "Implemented" : "Error to implement";
 			$action = $pre_action . " " . $post_action;
 		} else {
 			$action = "";

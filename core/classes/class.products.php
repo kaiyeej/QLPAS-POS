@@ -4,6 +4,7 @@ class Products extends Connection
     private $table = 'tbl_products';
     public $pk = 'product_id';
     public $name = 'product_name';
+    public $module_name = "Product";
 
     public function add()
     {
@@ -18,7 +19,9 @@ class Products extends Connection
         );
         $param = "product_code='" . $this->inputs['product_code'] . "'";
         $param .= $this->inputs['product_barcode'] != '' ? " OR product_barcode = '" . $this->inputs['product_barcode'] . "'" : '';
-        return $this->insertIfNotExist($this->table, $form, $param);
+        $result = $this->insertIfNotExist($this->table, $form, $param);
+        Logs::storeCrud($this->module_name, 'c', $result, $this->inputs[$this->name]);
+        return $result;
     }
 
     public function edit()
@@ -34,7 +37,10 @@ class Products extends Connection
         );
         $param = "(product_code='" . $this->inputs['product_code'] . "'";
         $param .= $this->inputs['product_barcode'] != '' ? " OR product_barcode = '" . $this->inputs['product_barcode'] . "')" : ')';
-        return $this->updateIfNotExist($this->table, $form, $param);
+        $old_name = self::name($this->inputs[$this->pk]);
+        $result = $this->updateIfNotExist($this->table, $form, $param);
+        Logs::storeCrud($this->module_name, 'u', $result, $old_name, $this->inputs[$this->name]);
+        return $result;
     }
 
     public function show()
@@ -62,7 +68,14 @@ class Products extends Connection
     public function remove()
     {
         $ids = implode(",", $this->inputs['ids']);
-        return $this->delete($this->table, "$this->pk IN($ids)");
+
+        foreach ($this->inputs['ids'] as $id) {
+            $name = self::name($id);
+            $result = $this->delete($this->table, "$this->pk = '$id'");
+            Logs::storeCrud($this->module_name, 'd', $result, $name);
+        }
+
+        return 1; //$this->delete($this->table, "$this->pk IN($ids)");
     }
 
     public static function name($primary_id)
@@ -145,9 +158,9 @@ class Products extends Connection
         $Inv = new InventoryReport();
         $current_cost = $this->productCost($product_id);
         $current_qty = $Inv->balance($product_id);
-        if(($current_qty - $new_qty) <= 0){
+        if (($current_qty - $new_qty) <= 0) {
             $avg_cost = 0;
-        }else{
+        } else {
             $avg_cost = (($current_qty * $current_cost) - ($new_qty * $new_cost)) / ($current_qty - $new_qty);
         }
 
