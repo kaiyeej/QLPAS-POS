@@ -5,16 +5,18 @@ class BeginningBalance extends Connection
     private $table = 'tbl_beginning_balance';
     public $pk = 'bb_id';
     public $name = 'reference_number';
+    public $module_name = "Beginning Balance";
 
     // notes: make dynamic values for count if exist
 
     public function add()
     {
-       
+
         $bb_ref_id = $this->clean($this->inputs['bb_ref_id']);
         $bb_module = $this->clean($this->inputs['bb_module']);
         $is_exist = $this->select($this->table, $this->pk, "bb_ref_id = '$bb_ref_id' AND bb_module='$bb_module'");
         if ($is_exist->num_rows > 0) {
+            Logs::storeCrud($this->module_name, 'c', 2, $bb_ref_id);
             return 2;
         } else {
             $form = array(
@@ -28,13 +30,15 @@ class BeginningBalance extends Connection
                 'encoded_by'    => $_SESSION['user']['id']
             );
 
-            if($bb_module == "INV"){
+            if ($bb_module == "INV") {
                 $Products = new Products();
-                $amount =  $this->inputs['bb_amount']/$this->inputs['bb_qty'];
-                $Products->prodAVG($bb_ref_id, $this->inputs['bb_qty'],$amount);
+                $amount =  $this->inputs['bb_amount'] / $this->inputs['bb_qty'];
+                $Products->prodAVG($bb_ref_id, $this->inputs['bb_qty'], $amount);
             }
-            
-            return $this->insert($this->table, $form);
+
+            $result = $this->insert($this->table, $form);
+            Logs::storeCrud($this->module_name, 'c', $result, $bb_ref_id);
+            return $result;
         }
     }
 
@@ -44,6 +48,7 @@ class BeginningBalance extends Connection
         $bb_module = $this->clean($this->inputs['bb_module']);
         $is_exist = $this->select($this->table, $this->pk, "bb_ref_id = '$bb_ref_id' AND bb_module='$bb_module'");
         if ($is_exist->num_rows > 0) {
+            Logs::storeCrud($this->module_name, 'u', 2, $bb_ref_id);
             return 2;
         } else {
             $form = array(
@@ -56,7 +61,9 @@ class BeginningBalance extends Connection
                 'bb_remarks'    => $this->inputs['bb_remarks'],
                 'encoded_by'    => $_SESSION['user']['id']
             );
-            return $this->updateIfNotExist($this->table, $form);
+            $result = $this->updateIfNotExist($this->table, $form);
+            Logs::storeCrud($this->module_name, 'u', $result, $bb_ref_id);
+            return $result;
         }
     }
 
@@ -69,13 +76,13 @@ class BeginningBalance extends Connection
         $Users = new Users();
         $result = $this->select($this->table);
         while ($row = $result->fetch_assoc()) {
-            if($row['bb_module'] == "INV"){
+            if ($row['bb_module'] == "INV") {
                 $type = "INVENTORY";
                 $account = $Products->name($row['bb_ref_id']);
-            }else if($row['bb_module'] == "AP"){
+            } else if ($row['bb_module'] == "AP") {
                 $type = "ACCOUNTS PAYABLE";
                 $account = $Suppliers->name($row['bb_ref_id']);
-            }else if($row['bb_module'] == "AR"){
+            } else if ($row['bb_module'] == "AR") {
                 $type = "ACCOUNTS RECEIVABLE";
                 $account = $Customers->name($row['bb_ref_id']);
             }
@@ -100,11 +107,13 @@ class BeginningBalance extends Connection
         $ids = implode(",", $this->inputs['ids']);
         $Products = new Products();
         $result = $this->select($this->table, "*", "$this->pk IN($ids)");
-        while($row = $result->fetch_array()){
-            if($row['bb_module'] == "INV"){
-                $amount = $row['bb_amount']/$row['bb_qty'];
+        while ($row = $result->fetch_array()) {
+            if ($row['bb_module'] == "INV") {
+                $amount = $row['bb_amount'] / $row['bb_qty'];
                 $Products->prodRVS($row['bb_ref_id'], $row['bb_qty'], $amount);
             }
+
+            Logs::storeCrud($this->module_name, 'd', 1, $row['bb_ref_id']);
         }
 
         return $this->delete($this->table, "$this->pk IN($ids)");
@@ -138,15 +147,15 @@ class BeginningBalance extends Connection
         return $row[$this->pk] * 1;
     }
 
-    public function total($primary_id){
+    public function total($primary_id)
+    {
         $result = $this->select($this->table, 'bb_amount', "$this->pk = '$primary_id'");
-        if($result->num_rows > 0){
+        if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             return $row['bb_amount'];
-        }else{
+        } else {
             return 0;
         }
-        
     }
 
     public function bb_balance($primary_id)

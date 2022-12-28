@@ -9,6 +9,8 @@ class CustomerPayment extends Connection
     public $pk2 = 'cpd_id';
     public $fk_det = 'ref_id';
 
+    public $module_name = "Customer Payment";
+
     public function add()
     {
         $form = array(
@@ -22,7 +24,9 @@ class CustomerPayment extends Connection
             'payment_option_id' => $this->inputs['payment_option_id'],
             'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
         );
-        return $this->insertIfNotExist($this->table, $form, '', 'Y');
+        $result = $this->insertIfNotExist($this->table, $form, '', 'Y');
+        Logs::storeCrud($this->module_name, 'c', abs($result), $this->inputs[$this->name]);
+        return $result;
     }
 
     public function edit()
@@ -33,7 +37,9 @@ class CustomerPayment extends Connection
             'remarks'       => $this->inputs['remarks'],
             'encoded_by' => $_SESSION['user']['id']
         );
-        return $this->updateIfNotExist($this->table, $form);
+        $result = $this->updateIfNotExist($this->table, $form);
+        Logs::storeCrud($this->module_name, 'u', abs($result), $this->inputs[$this->name]);
+        return $result;
     }
 
     public function show()
@@ -45,7 +51,7 @@ class CustomerPayment extends Connection
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['customer'] = $Customers->name($row['customer_id']);
-            $row['total'] = number_format($this->total($row['cp_id']),2);
+            $row['total'] = number_format($this->total($row['cp_id']), 2);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $rows[] = $row;
         }
@@ -60,7 +66,7 @@ class CustomerPayment extends Connection
         $row = $result->fetch_assoc();
         $row['customer'] = $Customers->name($row['customer_id']);
         $row['payment_type'] = $row['payment_type'];
-        $row['paymenttype'] = ($row['payment_type'] == "C" ? "Cash" : ($row['payment_type'] == "H" ?"Check" : "Online Payment"));
+        $row['paymenttype'] = ($row['payment_type'] == "C" ? "Cash" : ($row['payment_type'] == "H" ? "Check" : "Online Payment"));
         return $row;
     }
 
@@ -71,22 +77,22 @@ class CustomerPayment extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
 
-        $result = $this->select("tbl_sales","reference_number","customer_id='$param' AND status='F' AND paid_status='0' AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$param' AND bb_module='AR' AND bb_paid_status= 0");
+        $result = $this->select("tbl_sales", "reference_number", "customer_id='$param' AND status='F' AND paid_status='0' AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$param' AND bb_module='AR' AND bb_paid_status= 0");
 
         while ($row = $result->fetch_assoc()) {
             $trans = substr($row['reference_number'], 0, 2);
-            if($trans == "DR"){
+            if ($trans == "DR") {
                 $sales_id = $Sales->pk_by_name($row['reference_number']);
                 $bal = $Sales->dr_balance($sales_id);
-                if($bal > 0){
-                    $row['reference'] = $row['reference_number']." (₱".number_format($bal,2).")";
-                    $row['ref_id'] = "DR-".$sales_id;
+                if ($bal > 0) {
+                    $row['reference'] = $row['reference_number'] . " (₱" . number_format($bal, 2) . ")";
+                    $row['ref_id'] = "DR-" . $sales_id;
                     $rows[] = $row;
                 }
-            }else{
+            } else {
                 $bb_id = $BeginningBalance->pk_by_name($row['reference_number']);
-                $row['reference'] = $row['reference_number']." (₱".number_format($BeginningBalance->bb_balance_ar($bb_id),2).")";
-                $row['ref_id'] = "BB-".$bb_id;
+                $row['reference'] = $row['reference_number'] . " (₱" . number_format($BeginningBalance->bb_balance_ar($bb_id), 2) . ")";
+                $row['ref_id'] = "BB-" . $bb_id;
                 $rows[] = $row;
             }
         }
@@ -98,17 +104,19 @@ class CustomerPayment extends Connection
         $ids = implode(",", $this->inputs['ids']);
         $result = $this->select($this->table_detail, "ref_id,type", "$this->pk IN($ids)");
         while ($row = $result->fetch_assoc()) {
-            if($row['type'] == "DR"){
+            if ($row['type'] == "DR") {
                 $form_ = array(
                     'paid_status'   => '0',
                 );
                 $this->update('tbl_sales', $form_, "sales_id = '$row[ref_id]'");
-            }else{
+            } else {
                 $form_ = array(
                     'bb_paid_status'   => '0',
                 );
                 $this->update('tbl_beginning_balance', $form_, "bb_id = '$row[ref_id]' AND bb_module = 'AR'");
             }
+
+            Logs::storeCrud($this->module_name, 'd', 1, $row['ref_id']);
         }
 
         return $this->delete($this->table, "$this->pk IN($ids)");
@@ -121,37 +129,36 @@ class CustomerPayment extends Connection
 
     public function finish()
     {
-        
+
         $primary_id = $this->inputs['id'];
 
         $result = $this->select($this->table_detail, "ref_id, type, sum(amount) as total", "$this->pk = '$primary_id' GROUP BY ref_id,type");
-        while($row = $result->fetch_array()){
-            if($row['type'] == "DR"){
+        while ($row = $result->fetch_array()) {
+            if ($row['type'] == "DR") {
                 $Sales = new Sales;
-                $dr_paid = $Sales->dr_balance($row['ref_id']) - ($row['total']+$this->total_paid($primary_id, 'DR'));
-                if($dr_paid <= 0){
+                $dr_paid = $Sales->dr_balance($row['ref_id']) - ($row['total'] + $this->total_paid($primary_id, 'DR'));
+                if ($dr_paid <= 0) {
                     $form_ = array(
                         'paid_status'   => 1,
                     );
-                    $this->update('tbl_sales', $form_, 'sales_id='.$row['ref_id'].'');
+                    $this->update('tbl_sales', $form_, 'sales_id=' . $row['ref_id'] . '');
                 }
-            }else{
+            } else {
                 $BeginningBalance = new BeginningBalance;
-                $bb_paid = $BeginningBalance->bb_balance_ar($row['ref_id']) - ($row['total']+$this->total_paid($primary_id, 'BB'));
-                if($bb_paid <= 0){
+                $bb_paid = $BeginningBalance->bb_balance_ar($row['ref_id']) - ($row['total'] + $this->total_paid($primary_id, 'BB'));
+                if ($bb_paid <= 0) {
                     $form_ = array(
                         'bb_paid_status' => 1,
                     );
-                    $this->update('tbl_beginning_balance', $form_, "bb_id=".$row['ref_id']." AND bb_module='AR'");
+                    $this->update('tbl_beginning_balance', $form_, "bb_id=" . $row['ref_id'] . " AND bb_module='AR'");
                 }
             }
         }
 
-        $form = array(
-            'status' => 'F',
-        );
-        return  $this->update($this->table, $form, "$this->pk = '$primary_id'");
-
+        $form = array('status' => 'F');
+        $res =  $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        Logs::storeCrud($this->module_name, 'f', $res, $this->name($primary_id));
+        return $res;
     }
 
     public function pk_by_name($name = null)
@@ -173,7 +180,7 @@ class CustomerPayment extends Connection
     {
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
-        return $row['reference_number']." (Amount: ".$this->total($primary_id).")";
+        return $row['reference_number'] . " (Amount: " . $this->total($primary_id) . ")";
     }
 
     public function add_detail()
@@ -182,17 +189,17 @@ class CustomerPayment extends Connection
         $fk_det     = substr($this->inputs[$this->fk_det], 3);
         $type = substr($this->inputs[$this->fk_det], 0, 2);
 
-        if($type == "DR"){
+        if ($type == "DR") {
             $Sales = new Sales;
-            $balance = ($Sales->total($fk_det)) - (($this->inputs['amount'])+($this->total_saved($primary_id,$fk_det, 'DR'))+$this->total_paid($fk_det, 'DR'));
-        }else{
+            $balance = ($Sales->total($fk_det)) - (($this->inputs['amount']) + ($this->total_saved($primary_id, $fk_det, 'DR')) + $this->total_paid($fk_det, 'DR'));
+        } else {
             $BeginningBalance = new BeginningBalance;
-            $balance = ($BeginningBalance->total($fk_det)) - (($this->inputs['amount'])+($this->total_saved($primary_id,$fk_det, 'BB'))+$this->total_paid($fk_det, 'BB'));
+            $balance = ($BeginningBalance->total($fk_det)) - (($this->inputs['amount']) + ($this->total_saved($primary_id, $fk_det, 'BB')) + $this->total_paid($fk_det, 'BB'));
         }
 
-        if($balance < 0){
+        if ($balance < 0) {
             return 3;
-        }else{
+        } else {
             $form = array(
                 $this->pk => $this->inputs[$this->pk],
                 $this->fk_det => $fk_det,
@@ -202,7 +209,6 @@ class CustomerPayment extends Connection
 
             return $this->insert($this->table_detail, $form);
         }
-
     }
 
     public function show_detail()
@@ -214,7 +220,7 @@ class CustomerPayment extends Connection
         $result = $this->select($this->table_detail, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['ref_id'] = $row['type'] == "DR" ? $Sales->name($row['ref_id']) : $BeginningBalance->name($row['ref_id']);
-            $row['amount'] = number_format($row['amount'],2);
+            $row['amount'] = number_format($row['amount'], 2);
             $rows[] = $row;
         }
         return $rows;
@@ -240,7 +246,8 @@ class CustomerPayment extends Connection
         return $row[0];
     }
 
-    public function total_per_sales($primary_id,$sales_id){
+    public function total_per_sales($primary_id, $sales_id)
+    {
         $result = $this->select($this->table_detail, 'sum(amount)', "$this->pk = '$primary_id' AND sales_id = '$sales_id'");
         $row = $result->fetch_array();
         return $row[0];
@@ -249,10 +256,10 @@ class CustomerPayment extends Connection
     public function dataRow($primary_id, $field)
     {
         $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
-        if($result->num_rows > 0){
+        if ($result->num_rows > 0) {
             $row = $result->fetch_array();
             return $row[$field];
-        }else{
+        } else {
             return "";
         }
     }
@@ -263,12 +270,12 @@ class CustomerPayment extends Connection
 
         $result = $this->select($this->table_detail, "ref_id,type", "$this->pk IN($ids)");
         while ($row = $result->fetch_assoc()) {
-            if($row['type'] == "DR"){
+            if ($row['type'] == "DR") {
                 $form_ = array(
                     'paid_status'   => '0',
                 );
                 $this->update('tbl_sales', $form_, "sales_id = '$row[ref_id]'");
-            }else{
+            } else {
                 $form_ = array(
                     'bb_paid_status'   => '0',
                 );
@@ -282,15 +289,16 @@ class CustomerPayment extends Connection
 
         return $this->update($this->table, $form, "$this->pk IN($ids)");
     }
-    
 
-    public function addPaymentPOS(){
+
+    public function addPaymentPOS()
+    {
 
         $amount = $this->inputs['amount'];
         $totalPayable = $this->inputs['total_payment_amount'];
         $amount_paid = $this->getTotalPaymentPOS();
 
-        if(($amount + $amount_paid) <= $totalPayable){
+        if (($amount + $amount_paid) <= $totalPayable) {
             $Sales = new Sales;
             $this->inputs['payment_date'] = $this->getCurrentDate();
             $this->inputs['remarks'] = $this->inputs['other_payment_reference'];
@@ -298,7 +306,7 @@ class CustomerPayment extends Connection
             $this->inputs['check_date'] = "";
             $this->inputs['check_number'] = "";
             $this->inputs['check_bank'] = "";
-            
+
             $primary_id = $this->add();
             $this->inputs[$this->pk] = $primary_id;
             $sales_num = $this->inputs['sales_num'];
@@ -314,12 +322,13 @@ class CustomerPayment extends Connection
             );
 
             return $this->insert($this->table_detail, $form);
-        }else{
+        } else {
             return -1;
         }
     }
 
-    public function getTotalPaymentPOS(){
+    public function getTotalPaymentPOS()
+    {
         $Sales = new Sales;
         $sales_num = $this->inputs['sales_num'];
         $param = "reference_number='$sales_num'";
@@ -329,16 +338,17 @@ class CustomerPayment extends Connection
         return $row[0];
     }
 
-    public function getPaymentByRef($ref_id,$type = 'DR'){
+    public function getPaymentByRef($ref_id, $type = 'DR')
+    {
 
         $result = $this->table("$this->table AS h")
-        ->join("$this->table_detail AS d",'h.cp_id','=','d.cp_id')
-        ->join("tbl_payment_option AS p",'p.payment_option_id','=','h.payment_option_id')
-        ->selectRaw('p.payment_option','h.remarks','d.amount')
-        ->where('d.ref_id', $ref_id)
-        ->where('d.type', $type)
-        ->get();
-    
+            ->join("$this->table_detail AS d", 'h.cp_id', '=', 'd.cp_id')
+            ->join("tbl_payment_option AS p", 'p.payment_option_id', '=', 'h.payment_option_id')
+            ->selectRaw('p.payment_option', 'h.remarks', 'd.amount')
+            ->where('d.ref_id', $ref_id)
+            ->where('d.type', $type)
+            ->get();
+
         $count = 1;
         $rows = array();
         while ($row = $result->fetch_assoc()) {
@@ -347,11 +357,12 @@ class CustomerPayment extends Connection
         return $rows;
     }
 
-    public function remove_payments(){
+    public function remove_payments()
+    {
 
         $Settings = new Settings();
         $setting_row = $Settings->view();
-        
+
         $access_code = $this->inputs['access_code'];
 
         if ($setting_row['module_remove_online_payment'] == $access_code) {
@@ -359,55 +370,56 @@ class CustomerPayment extends Connection
             $reference_number = $this->inputs['reference_number'];
             $param = "reference_number='$reference_number'";
             $sales_id = $Sales->getID($param);
-            
+
             $rows = array();
             $result = $this->select($this->table_detail, $this->pk, "ref_id='$sales_id' AND type='DR'");
-            while($row = $result->fetch_array()){
+            while ($row = $result->fetch_array()) {
                 $rows[] = $row[0];
             }
 
-            $ids = implode(',',$rows);
+            $ids = implode(',', $rows);
 
-            if(sizeof($rows) > 0){
+            if (sizeof($rows) > 0) {
                 return $result = $this->delete($this->table,  "cp_id IN($ids)");
-            }else{
+            } else {
                 return 1;
             }
-        }else{
+        } else {
             return -2;
         }
-        
     }
 
-    public function finishCustomerPaymentOfDRPOS($sales_id){
+    public function finishCustomerPaymentOfDRPOS($sales_id)
+    {
         $rows = array();
         $result = $this->select($this->table_detail, $this->pk, "ref_id='$sales_id' AND type='DR'");
 
-        if($result->num_rows > 0){
-            while($row = $result->fetch_array()){
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_array()) {
                 $rows[] = $row[0];
             }
-    
-            if(sizeof($rows) > 0){
+
+            if (sizeof($rows) > 0) {
                 $form = array(
                     'status' => 'F'
                 );
-                return $this->update($this->table, $form, "cp_id IN(" . implode(',',$rows) . ")");
-            }else{
+                return $this->update($this->table, $form, "cp_id IN(" . implode(',', $rows) . ")");
+            } else {
                 return 1;
             }
-        }else{
+        } else {
             return 1;
         }
     }
 
-    public function total_saved($primary_id,$ref_id,$type){
+    public function total_saved($primary_id, $ref_id, $type)
+    {
         $result = $this->select($this->table_detail, 'sum(amount)', "$this->pk = '$primary_id' AND ref_id = '$ref_id' AND type='$type'");
         $row = $result->fetch_array();
         return $row[0];
     }
 
-    
+
     public function getHeader()
     {
         $Customers = new Customers;

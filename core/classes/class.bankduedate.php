@@ -10,9 +10,9 @@ class BankDueDate extends Connection
         $bank_id = $this->inputs['bank_id'];
         $rows = array();
 
-        if($bank_id == -1){
+        if ($bank_id == -1) {
             $query = "";
-        }else{
+        } else {
             $query = "AND bank_id='$bank_id'";
         }
 
@@ -25,7 +25,7 @@ class BankDueDate extends Connection
             $row['check_number'] = $row['check_number'];
             $row['check_date'] = $row['check_date'];
             $row['bank'] = $Banks->name($row['bank_id']);
-            $row['amount'] = number_format($SupplierPayment->total($row['sp_id']),2);
+            $row['amount'] = number_format($SupplierPayment->total($row['sp_id']), 2);
             $row['count'] = $count++;
             $rows[] = $row;
         }
@@ -38,7 +38,8 @@ class BankDueDate extends Connection
         $form = array(
             'due_status' => 1,
         );
+
+        Logs::store("Successfully cleared bank due date [$primary_id]", "Bank Due Date");
         return $this->update($this->table, $form, "$this->pk = '$primary_id'");
     }
-
 }

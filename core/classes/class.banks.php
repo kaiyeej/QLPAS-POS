@@ -5,6 +5,7 @@ class Banks extends Connection
     private $table = 'tbl_banks';
     public $pk = 'bank_id';
     public $name = 'bank_name';
+    public $module_name = "Bank";
 
     // notes: make dynamic values for count if exist
 
@@ -13,6 +14,7 @@ class Banks extends Connection
         $bank_name = $this->clean($this->inputs['bank_name']);
         $is_exist = $this->select($this->table, $this->pk, "bank_name = '$bank_name'");
         if ($is_exist->num_rows > 0) {
+            Logs::storeCrud($this->module_name, 'c', 2, $bank_name);
             return 2;
         } else {
             $form = array(
@@ -21,7 +23,10 @@ class Banks extends Connection
                 'bank_account_name' => $this->inputs['bank_account_name'],
                 'bank_account_number' => $this->inputs['bank_account_number']
             );
-            return $this->insert($this->table, $form);
+
+            $result = $this->insert($this->table, $form);
+            Logs::storeCrud($this->module_name, 'c', $result, $bank_name);
+            return $result;
         }
     }
 
@@ -31,6 +36,7 @@ class Banks extends Connection
         $bank_name = $this->clean($this->inputs['bank_name']);
         $is_exist = $this->select($this->table, $this->pk, "bank_name = '$bank_name' AND $this->pk != '$primary_id'");
         if ($is_exist->num_rows > 0) {
+            Logs::storeCrud($this->module_name, 'u', 2, $bank_name);
             return 2;
         } else {
             $form = array(
@@ -39,7 +45,10 @@ class Banks extends Connection
                 'bank_account_name' => $this->inputs['bank_account_name'],
                 'bank_account_number' => $this->inputs['bank_account_number']
             );
-            return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+
+            $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+            Logs::storeCrud($this->module_name, 'u', $result, $this->name($primary_id), $bank_name . " - " . $this->inputs['bank_account_number']);
+            return $result;
         }
     }
 
@@ -48,7 +57,7 @@ class Banks extends Connection
         $rows = array();
         $result = $this->select($this->table);
         while ($row = $result->fetch_assoc()) {
-            $row['bank'] = $row['bank_name']." - ".$row['bank_account_number'];
+            $row['bank'] = $row['bank_name'] . " - " . $row['bank_account_number'];
             $rows[] = $row;
         }
         return $rows;
@@ -64,13 +73,20 @@ class Banks extends Connection
     public function remove()
     {
         $ids = implode(",", $this->inputs['ids']);
-        return $this->delete($this->table, "$this->pk IN($ids)");
+
+        foreach ($this->inputs['ids'] as $id) {
+            $name = $this->name($id);
+            $result = $this->delete($this->table, "$this->pk = '$id'");
+            Logs::storeCrud($this->module_name, 'd', $result, $name);
+        }
+
+        return 1; //$this->delete($this->table, "$this->pk IN($ids)");
     }
 
     public function name($primary_id)
     {
         $result = $this->select($this->table, '*', "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
-        return $row['bank_name']." - ".$row['bank_account_number'];
+        return $row['bank_name'] . " - " . $row['bank_account_number'];
     }
 }

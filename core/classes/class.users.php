@@ -37,7 +37,7 @@ class Users extends Connection
                 'user_fullname' => $user_fullname,
                 'username' => $username
             );
-            if($primary_id != $_SESSION['user']['id']){
+            if ($primary_id != $_SESSION['user']['id']) {
                 $form['user_category'] = $this->inputs['user_category'];
             }
             return $this->update($this->table, $form, "$this->pk = '$primary_id'");
@@ -106,6 +106,8 @@ class Users extends Connection
             $_SESSION['user']['id'] = $row['user_id'];
             $_SESSION['user']['fullname'] = $row['user_fullname'];
             $_SESSION['user']['category'] = $row['user_category'];
+
+            Logs::store("Successfully Login", "Login", $row['user_id']);
         } else {
             $response['login'] = 'No';
         }

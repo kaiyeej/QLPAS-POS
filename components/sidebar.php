@@ -61,6 +61,7 @@
 
         // ADMIN
         $Menus->sidebar('User Accounts', 'users', 'user');
+        $Menus->sidebar('Logs', 'log', 'user');
         ?>
     </ul>
 </nav>
