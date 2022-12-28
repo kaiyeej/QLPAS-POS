@@ -43,4 +43,5 @@ $classes = array(
     'Profile'           => $pre_class . 'profile.php',
     'ReceivableLedger'  => $pre_class . 'receivableledger.php',
     'ReceivableReport'  => $pre_class . 'receivablereport.php',
+    'StockReleasal'     => $pre_class . 'stockreleasal.php',
 );

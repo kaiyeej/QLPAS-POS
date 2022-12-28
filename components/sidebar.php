@@ -53,6 +53,7 @@
             array('Receivable Ledger', 'receivable-ledger'),
             array('Receivable Report', 'receivable-report'),
             array('Sales Report', 'sales-report'),
+            array('Stock Releasal', 'stock-releasal'),
             array('Inventory Report', 'inventory-report'),
             array('Stock Card', 'stock-card'),
             array('Income Statement', 'income-statement'),

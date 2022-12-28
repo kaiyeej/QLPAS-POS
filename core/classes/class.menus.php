@@ -42,6 +42,7 @@ class Menus extends Connection
                 array('url' => 'receivable-ledger', 'name' => 'Receivable Ledger', 'class_name' => 'ReceivableLedger', 'has_detail' => 0),
                 array('url' => 'receivable-report', 'name' => 'Receivable Report', 'class_name' => 'ReceivableReport', 'has_detail' => 0),
                 array('url' => 'sales-report', 'name' => 'Sales Report', 'class_name' => 'SalesReport', 'has_detail' => 0),
+                array('url' => 'stock-releasal', 'name' => 'Stock Releasal', 'class_name' => 'StockReleasal', 'has_detail' => 0),
                 array('url' => 'inventory-report', 'name' => 'Inventory Report', 'class_name' => 'InventoryReport', 'has_detail' => 0),
                 array('url' => 'stock-card', 'name' => 'Stock Card', 'class_name' => 'StockCard', 'has_detail' => 0),
                 array('url' => 'income-statement', 'name' => 'Income Statement', 'class_name' => 'IncomeStatement', 'has_detail' => 0),

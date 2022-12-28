@@ -115,6 +115,33 @@ class SalesReport extends Connection
         return $rows;
     }
 
+    public function generate_summary()
+    {
+        $start_date = $this->inputs['start_date'];
+        $end_date = $this->inputs['end_date'];
+        $user_id = $this->inputs['user_id'];
+        
+        if($user_id >= 0){
+            $param = "AND cashier_id = '$user_id'";
+        }else{
+            $param = "";
+        }
+
+        $result = $this->select("tbl_sales_summary","*","(date_added >= '$start_date' AND date_added <= '$end_date') AND status='F' $param");
+        $rows = array();
+        while($row = $result->fetch_assoc()) {
+            
+            $row['cashier'] = Users::name($row['cashier_id']);
+            $row['starting_balance'] = number_format($row['starting_balance'],2);
+            $row['total_sales_amount'] = number_format($row['total_sales_amount'],2);
+            $row['total_amount_collected'] = number_format($row['total_amount_collected'],2);
+            $row['total_deficit'] = number_format($row['total_deficit'],2);   
+                
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     public function balance($product_id)
     {
         $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND status = 1");
