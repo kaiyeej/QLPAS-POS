@@ -444,4 +444,15 @@ class CustomerPayment extends Connection
         }
         return $rows;
     }
+
+    public function amount_paid($ref_id, $type){
+
+        $fetch = $this->select('tbl_customer_payment_details as d, tbl_customer_payment as h', "sum(amount) as total", "d.ref_id = $ref_id AND h.cp_id=d.cp_id AND h.status='F' AND d.type='$type'");
+        $paid_total = 0;
+        while ($row = $fetch->fetch_assoc()) {
+            $paid_total += $row['total'];
+        }
+
+        return $paid_total;
+    }
 }

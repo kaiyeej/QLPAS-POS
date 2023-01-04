@@ -297,4 +297,15 @@ class Connection
         // return sha1(sha1($x));
         return DEVELOPMENT ? $x : md5(md5($x));
     }
+
+    function daysDifference($endDate, $beginDate)
+    {
+
+        $date_parts1 = explode("-", $beginDate);
+        $date_parts2 = explode("-", $endDate);
+        $start_date = gregoriantojd($date_parts1[1], $date_parts1[2], $date_parts1[0]);
+        $end_date = gregoriantojd($date_parts2[1], $date_parts2[2], $date_parts2[0]);
+        $diff = abs($end_date - $start_date);
+         return $diff;
+    }
 }

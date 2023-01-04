@@ -45,4 +45,5 @@ $classes = array(
     'ReceivableReport'  => $pre_class . 'receivablereport.php',
     'StockReleasal'     => $pre_class . 'stockreleasal.php',
     'Logs'              => $pre_class . 'logs.php',
+    'ReceivableAging'   => $pre_class . 'receivableaging.php',
 );
