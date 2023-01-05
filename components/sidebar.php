@@ -47,6 +47,7 @@
             array('Bank Ledger', 'bank-ledger'),
             array('Expense Report', 'expense-report'),
             array('Bank Due Report', 'bankdue-report'),
+            array('Payable Aging', 'payable-aging'),
             array('Payable Ledger', 'payable-ledger'),
             array('Payable Report', 'payable-report'),
             array('Price List', 'price-list'),

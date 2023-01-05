@@ -36,6 +36,7 @@ class Menus extends Connection
                 array('url' => 'bank-ledger', 'name' => 'Bank Ledger', 'class_name' => 'BankLedger', 'has_detail' => 0),
                 array('url' => 'expense-report', 'name' => 'Expense Report', 'class_name' => 'ExpenseReport', 'has_detail' => 0),
                 array('url' => 'bankdue-report', 'name' => 'Bank Due Date', 'class_name' => 'BankDueDate', 'has_detail' => 0),
+                array('url' => 'payable-aging', 'name' => 'Aging of AP', 'class_name' => 'PayableAging', 'has_detail' => 0),
                 array('url' => 'payable-ledger', 'name' => 'Payable Ledger', 'class_name' => 'PayableLedger', 'has_detail' => 0),
                 array('url' => 'payable-report', 'name' => 'Payable Report', 'class_name' => 'PayableReport', 'has_detail' => 0),
                 array('url' => 'price-list', 'name' => 'Price List', 'class_name' => 'Products', 'has_detail' => 0),
