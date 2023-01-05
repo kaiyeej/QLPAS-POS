@@ -211,8 +211,8 @@
     }
 
     $(document).ready(function() {
-        //$("#company_name_label").html(company_profile.company_name);
-        //$("#company_address_label").html(company_profile.company_address);
+        $("#company_name_label").html(company_profile.company_name);
+        $("#company_address_label").html(company_profile.company_address);
         getSelectOption('Products', 'product_id', 'product_name', '', [], -1, 'All');
         getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All');
         getReport();

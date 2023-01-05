@@ -41,6 +41,7 @@ class Menus extends Connection
                 array('url' => 'price-list', 'name' => 'Price List', 'class_name' => 'Products', 'has_detail' => 0),
                 array('url' => 'price-list', 'name' => 'Price List', 'class_name' => 'Products', 'has_detail' => 0),
                 array('url' => 'receivable-aging', 'name' => 'Aging of AR', 'class_name' => 'ReceivableAging', 'has_detail' => 0),
+                array('url' => 'receivable-ledger', 'name' => 'Receivable Ledger', 'class_name' => 'ReceivableLedger', 'has_detail' => 0),
                 array('url' => 'receivable-report', 'name' => 'Receivable Report', 'class_name' => 'ReceivableReport', 'has_detail' => 0),
                 array('url' => 'sales-report', 'name' => 'Sales Report', 'class_name' => 'SalesReport', 'has_detail' => 0),
                 array('url' => 'stock-releasal', 'name' => 'Stock Releasal', 'class_name' => 'StockReleasal', 'has_detail' => 0),
