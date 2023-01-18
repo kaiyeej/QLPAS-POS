@@ -90,7 +90,10 @@ class Sales extends Connection
 
     public function generate()
     {
-        return 'DR-' . date('ymdHis');
+        //return 'DR-' . date('ymdHis');
+        $fetch = $this->select($this->table, "max(sales_id) + 1 as max_id", $this->pk > 0);
+        $row = $fetch->fetch_assoc();
+        return sprintf("%'.06d", $row['max_id']);
     }
 
     public function finish()
@@ -396,6 +399,7 @@ class Sales extends Connection
 
                 $Products = new Products;
                 $product_price = $Products->productPrice($fk_det);
+                $product_cost = $Products->productCost($fk_det);
 
                 $Discounts = new Discounts();
                 $row_disc = $Discounts->automatic($fk_det, $product_price, $this->inputs['quantity']);
@@ -405,7 +409,7 @@ class Sales extends Connection
                     $this->fk_det   => $fk_det,
                     'quantity'      => $this->inputs['quantity'],
                     'price'         => $product_price,
-                    'cost'          => 0,
+                    'cost'          => $product_cost,
                     'discount'      => $row_disc['discount_amount'],
                     'discount_id'   => $row_disc['discount_id'],
                 );
