@@ -546,7 +546,7 @@ class Sales extends Connection
 
         if ($res == 1) {
             // finish all related customer payment
-            return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id);
+            return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
         } else {
             return -1;
         }
