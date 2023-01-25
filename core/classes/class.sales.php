@@ -582,6 +582,25 @@ class Sales extends Connection
         }
     }
 
+    public function summary_of_charge_sales(){
+        $user_id = $this->inputs['user_id'];
+        $rows = array();
+        $result = $this->select($this->table, $this->pk, "encoded_by='$user_id' AND sales_summary_id=0 AND status='F' AND sales_type='H' ");
+        if ($result->num_rows > 0) {
+            $rows = $result->fetch_array();
+
+            if (sizeof($rows) > 0) {
+                $count = 0;
+                $fetch = $this->select($this->table_detail, "sum((quantity*price)-discount) as total", "sales_id IN(" . implode(',', $rows) . ") ");
+                $sales_row = $fetch->fetch_assoc();
+                
+                return $sales_row['total']*1;
+            }
+        } else {
+            return 0;
+        }
+    }
+
     public function update_review_sales_summary()
     {
         $encoded_by = $this->inputs['encoded_by'];
