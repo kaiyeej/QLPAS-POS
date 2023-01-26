@@ -11,7 +11,7 @@ class StockReleasal extends Connection
         if ($customer_id == "-1") {
             $cust_param = "";
         } else {
-            $cust_param = "AND h.customer_id='$customer_id'";
+            $cust_param = "customer_id='$customer_id'";
         }
 
         if ($product_id == "-1") {
@@ -25,12 +25,14 @@ class StockReleasal extends Connection
         $Customer = new Customers();
 
         $data = "";
-        $fetch_customer = $this->select("tbl_customers");
+        $counter = 0;
+        $fetch_customer = $this->select("tbl_customers","*","$cust_param");
         while ($cRow = $fetch_customer->fetch_array()) {
 
-            $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND h.withdrawal_status='1' $prod_param $cust_param GROUP BY d.sales_detail_id");
+            $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND h.withdrawal_status='1' $prod_param GROUP BY d.sales_detail_id");
 
             if ($result->num_rows > 0) {
+                $counter += 1;
                 $data .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="5" style="background: #607d8b;color: #fff;">Customer: '.$Customer->name($cRow["customer_id"]).'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
 
                 while ($row = $result->fetch_assoc()) {
@@ -48,6 +50,7 @@ class StockReleasal extends Connection
                 $data .= "</tbody></table>";
             }
         }
-        echo $data;
+        
+        echo $counter > 0 ? $data : "<hr><center style='color: #757575;'><h3>No details found.</h3></center><hr>";
     }
 }

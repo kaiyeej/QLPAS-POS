@@ -114,6 +114,8 @@
         var customer_id = $("#customer_id").val();
         var product_id = $("#product_id").val();
 
+        $("#dt_entries").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
+
         $.ajax({
             type: "POST",
             url: "controllers/sql.php?c=" + route_settings.class_name + "&q=view",
@@ -134,6 +136,5 @@
         $("#company_address_label").html(company_profile.company_address);
         getSelectOption('Products', 'product_id', 'product_name', '', [], -1, 'All');
         getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All');
-        getReport();
     });
 </script>

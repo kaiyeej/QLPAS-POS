@@ -51,6 +51,7 @@
             array('Payable Ledger', 'payable-ledger'),
             array('Payable Report', 'payable-report'),
             array('Price List', 'price-list'),
+            array('Purchase Report', 'purchase-report'),
             array('Aging of AR', 'receivable-aging'),
             array('Receivable Ledger', 'receivable-ledger'),
             array('Receivable Report', 'receivable-report'),

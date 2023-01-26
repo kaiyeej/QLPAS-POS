@@ -40,7 +40,7 @@ class Menus extends Connection
                 array('url' => 'payable-ledger', 'name' => 'Payable Ledger', 'class_name' => 'PayableLedger', 'has_detail' => 0),
                 array('url' => 'payable-report', 'name' => 'Payable Report', 'class_name' => 'PayableReport', 'has_detail' => 0),
                 array('url' => 'price-list', 'name' => 'Price List', 'class_name' => 'Products', 'has_detail' => 0),
-                array('url' => 'price-list', 'name' => 'Price List', 'class_name' => 'Products', 'has_detail' => 0),
+                array('url' => 'purchase-report', 'name' => 'Purchase Report', 'class_name' => 'PurchaseReport', 'has_detail' => 0),
                 array('url' => 'receivable-aging', 'name' => 'Aging of AR', 'class_name' => 'ReceivableAging', 'has_detail' => 0),
                 array('url' => 'receivable-ledger', 'name' => 'Receivable Ledger', 'class_name' => 'ReceivableLedger', 'has_detail' => 0),
                 array('url' => 'receivable-report', 'name' => 'Receivable Report', 'class_name' => 'ReceivableReport', 'has_detail' => 0),
