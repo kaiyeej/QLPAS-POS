@@ -591,10 +591,15 @@ class Sales extends Connection
 
             if (sizeof($rows) > 0) {
                 $count = 0;
-                $fetch = $this->select($this->table_detail, "sum((quantity*price)-discount) as total", "sales_id IN(" . implode(',', $rows) . ") ");
+                $fetch = $this->select($this->table_detail, "sum((quantity*price)-discount) as total_charge_sales", "sales_id IN(" . implode(',', $rows) . ") ");
                 $sales_row = $fetch->fetch_assoc();
+
+                $fetch_payment = $this->select("tbl_customer_payment_details", "sum(amount) as total_payment", "ref_id IN(" . implode(',', $rows) . ") AND type='DR' ");
+                $payment_row = $fetch_payment->fetch_assoc();
                 
-                return $sales_row['total']*1;
+                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales']*1;
+                $sales_rows['total_payment'] = $payment_row['total_payment']*1;
+                return $sales_rows;
             }
         } else {
             return 0;
@@ -607,7 +612,7 @@ class Sales extends Connection
         $form = array(
             'sales_summary_id' => $this->inputs['sales_summary_id']
         );
-        return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' ");
+        return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
     }
 
     public function released()
