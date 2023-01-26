@@ -62,27 +62,8 @@
                         <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
                         <h5 class="report-header">Stock Releasal Report</h5><br>
                     </center>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>DATE</th>
-                                    <th>REFERENCE #</th>
-                                    <th>PRODUCT</th>
-                                    <th style="text-align:right;">TOTAL QTY</th>
-                                    <th style="text-align:right;">REMAINING QTY</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" style="text-align:right;">TOTAL:</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div class="table-responsive" id="dt_entries">
+                        
                     </div>
                 </div>
             </div>
@@ -132,81 +113,19 @@
     function getReport() {
         var customer_id = $("#customer_id").val();
         var product_id = $("#product_id").val();
-        $("#dt_entries").DataTable().destroy();
-        $("#dt_entries").DataTable({
-            "processing": true,
-            "searching": false,
-            "paging": false,
-            "ordering": false,
-            "info": false,
-            "ajax": {
-                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=view",
-                "dataSrc": "data",
-                "method": "POST",
-                "data": {
-                    input: {
-                        customer_id: customer_id,
-                        product_id: product_id
-                    }
-                },
-            },
-            
-            "footerCallback": function(row, data, start, end, display) {
-                var api = this.api();
 
-                // Remove the formatting to get integer data for summation
-                var intVal = function(i) {
-                    return typeof i === 'string' ?
-                        i.replace(/[\$,]/g, '') * 1 :
-                        typeof i === 'number' ?
-                        i : 0;
-                };
-
-                // Total qty
-                total = api
-                    .column(3)
-                    .data()
-                    .reduce(function(a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-
-                // Update footer
-                $(api.column(3).footer()).html(
-                    "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total).toFixed(2)))
-                );
-
-                // Remaining qty
-                r_total = api
-                    .column(4)
-                    .data()
-                    .reduce(function(a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-
-                // Update footer
-                $(api.column(4).footer()).html(
-                    "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(r_total).toFixed(2)))
-                );
-
-                
-            },
-            "columns": [{
-                    "data": "date"
-                }, {
-                    "data": "reference_number"
-                },
-                {
-                    "data": "product"
-                },
-                {
-                    "data": "total_qty", className: "text-right"
-                },
-                {
-                    "data": "remaining_qty", className: "text-right"
+        $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=view",
+            data: {
+                input: {
+                    customer_id: customer_id,
+                    product_id: product_id
                 }
-            ]
+            },
+            success: function(data) {
+                $("#dt_entries").html(data);
+            }
         });
     }
 
