@@ -17,6 +17,8 @@ class Menus extends Connection
                 array('url' => 'formulation', 'name' => 'Formulation', 'class_name' => 'Formulation', 'has_detail' => 1),
             ),
             'transaction' => array(
+                array('url' => 'credit-memo', 'name' => 'Credit Memo', 'class_name' => 'CreditMemo', 'has_detail' => 1),
+                array('url' => 'debit-memo', 'name' => 'Debit Memo', 'class_name' => 'DebitMemo', 'has_detail' => 1),
                 array('url' => 'purchase-order', 'name' => 'Purchase Order Entries', 'class_name' => 'PurchaseOrder', 'has_detail' => 1),
                 array('url' => 'purchase-return', 'name' => 'Purchase Order Return', 'class_name' => 'PurchaseReturn', 'has_detail' => 1),
                 array('url' => 'sales', 'name' => 'Sales Entries', 'class_name' => 'Sales', 'has_detail' => 1),

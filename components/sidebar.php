@@ -20,6 +20,10 @@
         $Menus->sidebar('Formulation', 'formulation', 'filter');
 
         // TRANSACTION
+        $Menus->sidebar_parent('Memo', 'write', array(
+            array('Credit Memo', 'credit-memo'),
+            array('Debit Memo', 'debit-memo'),
+        ));
         $Menus->sidebar_parent('Purchase Order', 'package', array(
             array('Entries', 'purchase-order'),
             array('Returns', 'purchase-return'),
@@ -64,7 +68,7 @@
 
         // ADMIN
         $Menus->sidebar('User Accounts', 'users', 'user');
-        $Menus->sidebar('Logs', 'log', 'user');
+        $Menus->sidebar('Logs', 'log', 'file');
         ?>
     </ul>
 </nav>

@@ -22,21 +22,21 @@ class ReceivableAging extends Connection
 
             $trans = substr($row['reference_number'], 0, 2);
 
-            if($trans == "DR"){
-                $trans = "Sales";
-                $id = $Sales->pk_by_name($row['reference_number']);
-                $net_amount = ($Sales->total($id));
-                $amount_paid = $CustomerPayment->amount_paid($id, "DR");
-                $balance += $net_amount;
-                $date = $Sales->dataRow($id, 'sales_date');
-                $ref_number = $row['reference_number'];
-            }else if($trans == "BB"){
+            if($trans == "BB"){
                 $trans = "Beginning Balance";
                 $id = $BeginningBalance->pk_by_name($row['reference_number']);
                 $net_amount = $BeginningBalance->total($id);
                 $amount_paid = $CustomerPayment->amount_paid($id, "BB");
                 $balance += $net_amount;
                 $date = $BeginningBalance->get_row($id, 'bb_date');
+                $ref_number = $row['reference_number'];
+            }else{
+                $trans = "Sales";
+                $id = $Sales->pk_by_name($row['reference_number']);
+                $net_amount = ($Sales->total($id));
+                $amount_paid = $CustomerPayment->amount_paid($id, "DR");
+                $balance += $net_amount;
+                $date = $Sales->dataRow($id, 'sales_date');
                 $ref_number = $row['reference_number'];
             }
 

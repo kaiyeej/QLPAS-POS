@@ -48,5 +48,7 @@ $classes = array(
     'ReceivableAging'   => $pre_class . 'receivableaging.php',
     'PayableAging'      => $pre_class . 'payableaging.php',
     'PurchaseReport'    => $pre_class . 'purchasereport.php',
+    'CreditMemo'        => $pre_class . 'creditmemo.php',
+    'DebitMemo'         => $pre_class . 'debitmemo.php',
 
 );

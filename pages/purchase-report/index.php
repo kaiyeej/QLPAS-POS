@@ -21,7 +21,6 @@
                 <br>
                 <div id="tabsContent" class="tab-content">
                     <div id="supplier" class="tab-pane active">
-                        <h5>Per Supplier Report</h5>
                         <div class="card-header py-3">
                             <form id='frm_generate_supplier'>
                                 <div class="form-group row">
@@ -77,7 +76,7 @@
                             <center>
                                 <h4 class="report-header"><span class="company_name_label"></span></h4>
                                 <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Purchase Report</h5>
+                                <h5 class="report-header">Purchase Report Per Supplier</h5>
                             </center>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dt_entries_supplier" width="100%" cellspacing="0">

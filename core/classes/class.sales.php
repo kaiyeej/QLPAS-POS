@@ -113,6 +113,13 @@ class Sales extends Connection
         return $row[$this->pk] * 1;
     }
 
+    public function pk_name($name, $customer_id)
+    {
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND status='F' AND customer_id='$customer_id'");
+        $row = $result->fetch_assoc();
+        return $row[$this->pk] * 1;
+    }
+
     public function name($primary_id)
     {
         $result = $this->select($this->table, $this->name, "$this->pk = '$primary_id'");

@@ -147,6 +147,13 @@ class BeginningBalance extends Connection
         return $row[$this->pk] * 1;
     }
 
+    public function pk_name($name, $bb_ref_id)
+    {
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND status='F' AND bb_ref_id='$bb_ref_id'");
+        $row = $result->fetch_assoc();
+        return $row[$this->pk] * 1;
+    }
+
     public function total($primary_id)
     {
         $result = $this->select($this->table, 'bb_amount', "$this->pk = '$primary_id'");
