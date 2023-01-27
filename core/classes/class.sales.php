@@ -912,4 +912,21 @@ class Sales extends Connection
         }
         return $rows;
     }
+
+    public function total_cash_sales_summary($id)
+    {
+        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_summary_id='$id' AND h.status='F' AND h.sales_type='C'");
+        $row = $fetchData->fetch_array();
+
+        return $row[0];
+    }
+
+    
+    public function total_charge_sales_summary($id)
+    {
+        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_summary_id='$id' AND h.status='F' AND h.sales_type='H'");
+        $row = $fetchData->fetch_array();
+
+        return $row[0];
+    }
 }
