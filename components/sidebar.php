@@ -20,6 +20,10 @@
         $Menus->sidebar('Formulation', 'formulation', 'filter');
 
         // TRANSACTION
+        // $Menus->sidebar_parent('Memo', 'write', array(
+        //     array('Credit Memo', 'credit-memo'),
+        //     array('Debit Memo', 'debit-memo'),
+        // ));
         $Menus->sidebar_parent('Purchase Order', 'package', array(
             array('Entries', 'purchase-order'),
             array('Returns', 'purchase-return'),
@@ -47,9 +51,11 @@
             array('Bank Ledger', 'bank-ledger'),
             array('Expense Report', 'expense-report'),
             array('Bank Due Report', 'bankdue-report'),
+            array('Payable Aging', 'payable-aging'),
             array('Payable Ledger', 'payable-ledger'),
             array('Payable Report', 'payable-report'),
             array('Price List', 'price-list'),
+            array('Purchase Report', 'purchase-report'),
             array('Aging of AR', 'receivable-aging'),
             array('Receivable Ledger', 'receivable-ledger'),
             array('Receivable Report', 'receivable-report'),
@@ -62,7 +68,7 @@
 
         // ADMIN
         $Menus->sidebar('User Accounts', 'users', 'user');
-        $Menus->sidebar('Logs', 'log', 'user');
+        $Menus->sidebar('Logs', 'log', 'file');
         ?>
     </ul>
 </nav>

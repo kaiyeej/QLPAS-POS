@@ -23,15 +23,7 @@ class ReceivableLedger extends Connection
 
             $trans = substr($row['reference_number'], 0, 2);
 
-            if($trans == "DR"){
-                $trans = "Sales";
-                $id = $Sales->pk_by_name($row['reference_number']);
-                $debit = ($Sales->total($id));
-                $credit = 0;
-                $balance += $debit;
-                $date = $Sales->dataRow($id, 'sales_date');
-                $ref_number = $row['reference_number'];
-            }else if($trans == "CP"){
+            if($trans == "CP"){
                 $trans = "Customer Payment";
                 $id = $CustomerPayment->pk_by_name($row['reference_number']);
                 $debit = 0;
@@ -46,6 +38,14 @@ class ReceivableLedger extends Connection
                 $credit = 0;
                 $balance += $debit;
                 $date = $BeginningBalance->get_row($id, 'bb_date');
+                $ref_number = $row['reference_number'];
+            }else{
+                $trans = "Sales";
+                $id = $Sales->pk_by_name($row['reference_number']);
+                $debit = ($Sales->total($id));
+                $credit = 0;
+                $balance += $debit;
+                $date = $Sales->dataRow($id, 'sales_date');
                 $ref_number = $row['reference_number'];
             }
 

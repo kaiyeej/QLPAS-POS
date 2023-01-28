@@ -389,7 +389,7 @@ class CustomerPayment extends Connection
         }
     }
 
-    public function finishCustomerPaymentOfDRPOS($sales_id)
+    public function finishCustomerPaymentOfDRPOS($sales_id, $customer_id)
     {
         $rows = array();
         $result = $this->select($this->table_detail, $this->pk, "ref_id='$sales_id' AND type='DR'");
@@ -401,7 +401,8 @@ class CustomerPayment extends Connection
 
             if (sizeof($rows) > 0) {
                 $form = array(
-                    'status' => 'F'
+                    'status' => 'F',
+                    'customer_id' => $customer_id
                 );
                 return $this->update($this->table, $form, "cp_id IN(" . implode(',', $rows) . ")");
             } else {

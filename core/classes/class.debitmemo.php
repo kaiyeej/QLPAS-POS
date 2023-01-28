@@ -1,40 +1,54 @@
 <?php
-class PurchaseOrder extends Connection
+class DebitMemo extends Connection
 {
-    private $table = 'tbl_purchase_order';
-    public $pk = 'po_id';
+    private $table = 'tbl_debit_memo';
+    public $pk = 'dm_id';
     public $name = 'reference_number';
 
-    private $table_detail = 'tbl_purchase_order_details';
-    public $pk2 = 'po_detail_id';
-    public $fk_det = 'product_id';
+    private $table_detail = 'tbl_debit_memo_details';
+    public $pk2 = 'dmd_id';
+    public $fk_det = 'reference_id';
 
     public function add()
     {
         $form = array(
-            $this->name => $this->clean($this->inputs[$this->name]),
-            'supplier_id' => $this->inputs['supplier_id'],
-            'po_type' => $this->inputs['po_type'],
-            'po_invoice' => $this->inputs['po_invoice'],
-            'po_terms' => $this->inputs['po_terms'],
-            'paid_status' => ($this->inputs['po_type'] == "C" ? 1 : 0),
-            'po_date' => $this->inputs['po_date'],
-            'po_remarks' => $this->inputs['po_remarks'],
-            'encoded_by' => $_SESSION['user']['id']
+            $this->name     => $this->clean($this->inputs[$this->name]),
+            'memo_date'     => $this->inputs['memo_date'],
+            'memo_type'     => $this->inputs['memo_type'],
+            'account_id'    => $this->inputs['account_id'],
+            'remarks'       => $this->inputs['remarks'],
+            'encoded_by'    => $_SESSION['user']['id']
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
 
     public function add_detail()
     {
-        $primary_id = $this->inputs[$this->pk];
-        $fk_det     = $this->inputs[$this->fk_det];
+        $refID = $this->inputs['reference_id'];
+        $PurchaseOrder = new PurchaseOrder;
+        $BeginningBalance = new BeginningBalance;
+        $Sales = new Sales;
+
+        $trans = substr($refID, 0, 2);
+
+        if($trans == "PO"){
+            $reference_id = $PurchaseOrder->pk_by_name($refID);
+            $type = "PO";
+        }else if($trans == "BB"){
+            $reference_id = $BeginningBalance->pk_by_name($refID);
+            $type = "BB";
+        }else{
+            $reference_id = $Sales->pk_by_name($refID);
+            $type = "DR";
+        }
 
         $form = array(
             $this->pk => $this->inputs[$this->pk],
-            $this->fk_det => $fk_det,
-            'qty' => $this->inputs['qty'],
-            'supplier_price' => $this->inputs['supplier_price'],
+            $this->fk_det => $reference_id,
+            'amount' => $this->inputs['amount'],
+            'ref_type' => $type,
+            'description' => $this->inputs['description'],
+            
         );
 
         return $this->insert($this->table_detail, $form);
@@ -43,12 +57,8 @@ class PurchaseOrder extends Connection
     public function edit()
     {
         $form = array(
-            'supplier_id'   => $this->inputs['supplier_id'],
-            'po_type' => $this->inputs['po_type'],
-            'po_date'    => $this->inputs['po_date'],
-            'po_invoice' => $this->inputs['po_invoice'],
-            'po_terms' => $this->inputs['po_terms'],
-            'po_remarks'       => $this->inputs['po_remarks'],
+            'memo_date'     => $this->inputs['memo_date'],
+            'remarks'       => $this->inputs['remarks'],
             'encoded_by' => $_SESSION['user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
@@ -57,11 +67,12 @@ class PurchaseOrder extends Connection
     public function view()
     {
         $Suppliers = new Suppliers;
+        $Customers = new Customers;
         $Users = new Users;
         $primary_id = $this->inputs['id'];
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
-        $row['supplier_name'] = $Suppliers->name($row['supplier_id']);
+        $row['account'] = $row['memo_type'] == "AP" ? $Suppliers->name($row['account_id']) : $Customers->name($row['account_id']);
         $row['encoded_name'] = $Users->getUser($row['encoded_by']);
         $row['po_type_name'] = $row['po_type'] == "C" ? "Cash" : "Charge";
         return $row;
@@ -69,13 +80,23 @@ class PurchaseOrder extends Connection
 
     public function show_detail()
     {
-        $Products = new Products();
+        $Sales = new Sales();
+        $PurchaseOrder = new PurchaseOrder();
+        $BeginningBalance = new BeginningBalance();
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table_detail, '*', $param);
         while ($row = $result->fetch_assoc()) {
-            $row['amount'] = $row['supplier_price'] * $row['qty'];
-            $row['product'] = Products::name($row['product_id']);
+            if($row['ref_type'] == "PO"){
+                $ref = $PurchaseOrder->name($row['reference_id']);
+            }else if($row['ref_type'] == "BB"){
+                $ref = $BeginningBalance->name($row['reference_id']);
+            }else{
+                $ref = $Sales->name($row['reference_id']);
+            }
+
+            $row['amount'] = number_format($row['amount'],2);
+            $row['reference'] = $ref;
             $rows[] = $row;
         }
         return $rows;
@@ -83,16 +104,16 @@ class PurchaseOrder extends Connection
 
     public function show()
     {
-        $Suppliers = new Suppliers();
+        $Suppliers = new Suppliers;
+        $Customers = new Customers;
         $Users = new Users;
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
-            $row['supplier_id'] = $Suppliers->name($row['supplier_id']);
-            $row['total'] = $this->total($row['po_id']);
+            $row['total'] = $this->total($row['dm_id']);
+            $row['account'] = $row['memo_type'] == "AP" ? $Suppliers->name($row['account_id']) : $Customers->name($row['account_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
-            $row['po_ref'] = $row['po_invoice']." (₱".number_format($this->po_balance($row['po_id']),2).")";
             $rows[] = $row;
         }
         return $rows;
@@ -115,7 +136,7 @@ class PurchaseOrder extends Connection
 
     public function generate()
     {
-        return 'PO-' . date('YmdHis');
+        return 'DM-' . date('YmdHis');
     }
 
     public function remove()
@@ -131,12 +152,30 @@ class PurchaseOrder extends Connection
         return $this->delete($this->table_detail, "$this->pk2 IN($ids)");
     }
 
-    public function po_id($primary_id)
-    {
 
-        $result = $this->select($this->table, $this->pk, "$this->name = '$primary_id'");
-        $row = $result->fetch_assoc();
-        return $row[$this->name];
+    function ref_checker(){
+        $refID = $this->inputs['reference_id'];
+        $primary_id = $this->inputs['id'];
+
+        $result = $this->select($this->table, "memo_type,account_id", "$this->pk = '$primary_id'");
+        $row = $result->fetch_array();
+
+        $trans = substr($refID, 0, 2);
+
+        if($row['memo_type'] == "AP"){
+            if($trans == "PO"){
+                $PurchaseOrder = new PurchaseOrder;
+                $reference_id = $PurchaseOrder->pk_name($refID,$row['account_id']);
+            }else if($trans == "BB"){
+                $BeginningBalance = new BeginningBalance;
+                $reference_id = $BeginningBalance->pk_name($refID,$row['account_id']);
+            }
+        }else{
+            $Sales = new Sales;
+            $reference_id = $Sales->pk_name($refID,$row['account_id']);
+        }
+        
+        return $reference_id*1; 
     }
 
     public function pk_by_name($name = null)
@@ -163,56 +202,44 @@ class PurchaseOrder extends Connection
 
     public function total($primary_id)
     {
-        $result_po = $this->select($this->table_detail, 'sum(qty*supplier_price)', "$this->pk = '$primary_id'");
-        $po_total = $result_po->fetch_array();
-
-        $result_pr = $this->select("tbl_purchase_return as pr, tbl_purchase_return_details as prd", "SUM(prd.qty_return*prd.supplier_price) as total", "pr.pr_id=prd.pr_id AND pr.status='F' AND pr.po_id='$primary_id'");
-        $pr_total = $result_pr->fetch_array();
-
-        // $result_dm = $this->select("tbl_debit_memo as dm, tbl_debit_memo_details as dmd", "SUM(dmd.amount) as total", "dm.dm_id=dmd.dm_id AND dm.status='F' AND dmd.reference_id='$primary_id'");
-        // $dm_total = $result_dm->fetch_array();
-
-        // $result_cm = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d", "SUM(d.amount) as total", "h.cm_id=d.cm_id AND h.status='F' AND d.reference_id='$primary_id'");
-        // $cm_total = $result_cm->fetch_array();
-
-
-        // return ($po_total[0]+$cm_total)-($pr_total[0]+$dm_total);
-        return $po_total[0]-$pr_total[0];
-    }
-
-
-    public function po_balance($primary_id)
-    {
-        $po_total = $this->total($primary_id);
-
-        $fetch_sp = $this->select('tbl_supplier_payment_details as d, tbl_supplier_payment as h', "sum(amount) as total", "d.ref_id = $primary_id AND d.type='PO' AND h.sp_id=d.sp_id AND h.status='F'");
-        $paid_total = 0;
-        while ($row = $fetch_sp->fetch_assoc()) {
-            $paid_total += $row['total'];
+        $result = $this->select($this->table_detail, 'sum(amount)', "$this->pk = '$primary_id'");
+        if($result->num_rows > 0){
+            $total = $result->fetch_array();
+            return $total[0];
+        }else{
+            return "";
         }
-
-        return $po_total - $paid_total;
     }
 
     public function getHeader()
     {
         $Supplier = new Suppliers;
+        $Customers = new Customers;
         $id = $_POST['id'];
         $result = $this->select($this->table, "*", "$this->pk='$id'");
         $row = $result->fetch_assoc();
-        $row['po_date_mod'] = date("F j, Y", strtotime($row['po_date']));
-        $row['supplier_name'] = $Supplier->name($row['supplier_id']);
+        $row['memo_date'] = date("F j, Y", strtotime($row['memo_date']));
+        $row['account'] = $row['memo_type'] == "AP" ? $Supplier->name($row['account_id']) : $Customers->name($row['account_id']);
         $rows[] = $row;
         return $rows;
     }
     public function getPrintDetails()
     {
         $id = $_POST['id'];
-        $Products = new Products;
+        $PurchaseOrder = new PurchaseOrder;
+        $BeginningBalance = new BeginningBalance;
+        $Sales = new Sales;
         $rows = array();
         $result = $this->select($this->table_detail, "*", "$this->pk='$id'");
         while ($row = $result->fetch_assoc()) {
-            $row['product_name'] = $Products->name($row['product_id']);
+            if($row['ref_type'] == "PO"){
+                $ref = $PurchaseOrder->name($row['reference_id']);
+            }else if($row['ref_type'] == "BB"){
+                $ref = $BeginningBalance->name($row['reference_id']);
+            }else{
+                $ref = $Sales->name($row['reference_id']);
+            }
+            $row['reference'] = $ref;
             $rows[] = $row;
         }
         return $rows;

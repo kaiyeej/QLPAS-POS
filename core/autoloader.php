@@ -46,4 +46,9 @@ $classes = array(
     'StockReleasal'     => $pre_class . 'stockreleasal.php',
     'Logs'              => $pre_class . 'logs.php',
     'ReceivableAging'   => $pre_class . 'receivableaging.php',
+    'PayableAging'      => $pre_class . 'payableaging.php',
+    'PurchaseReport'    => $pre_class . 'purchasereport.php',
+    // 'CreditMemo'        => $pre_class . 'creditmemo.php',
+    // 'DebitMemo'         => $pre_class . 'debitmemo.php',
+
 );

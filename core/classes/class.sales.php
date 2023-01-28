@@ -90,7 +90,10 @@ class Sales extends Connection
 
     public function generate()
     {
-        return 'DR-' . date('ymdHis');
+        //return 'DR-' . date('ymdHis');
+        $fetch = $this->select($this->table, "max(sales_id) + 1 as max_id", $this->pk > 0);
+        $row = $fetch->fetch_assoc();
+        return sprintf("%'.06d", $row['max_id']);
     }
 
     public function finish()
@@ -106,6 +109,13 @@ class Sales extends Connection
     {
         $name = $name == null ? $this->inputs[$this->name] : $name;
         $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND status='F'");
+        $row = $result->fetch_assoc();
+        return $row[$this->pk] * 1;
+    }
+
+    public function pk_name($name, $customer_id)
+    {
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND status='F' AND customer_id='$customer_id'");
         $row = $result->fetch_assoc();
         return $row[$this->pk] * 1;
     }
@@ -396,6 +406,7 @@ class Sales extends Connection
 
                 $Products = new Products;
                 $product_price = $Products->productPrice($fk_det);
+                $product_cost = $Products->productCost($fk_det);
 
                 $Discounts = new Discounts();
                 $row_disc = $Discounts->automatic($fk_det, $product_price, $this->inputs['quantity']);
@@ -405,7 +416,7 @@ class Sales extends Connection
                     $this->fk_det   => $fk_det,
                     'quantity'      => $this->inputs['quantity'],
                     'price'         => $product_price,
-                    'cost'          => 0,
+                    'cost'          => $product_cost,
                     'discount'      => $row_disc['discount_amount'],
                     'discount_id'   => $row_disc['discount_id'],
                 );
@@ -542,7 +553,7 @@ class Sales extends Connection
 
         if ($res == 1) {
             // finish all related customer payment
-            return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id);
+            return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
         } else {
             return -1;
         }
@@ -578,13 +589,52 @@ class Sales extends Connection
         }
     }
 
+    public function summary_of_charge_sales(){
+        $user_id = $this->inputs['user_id'];
+        $rows = array();
+        $result = $this->select($this->table, $this->pk, "encoded_by='$user_id' AND sales_summary_id=0 AND status='F' AND sales_type='H' ");
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_array()) {
+                $rows[] = $row[0];
+            }
+
+            if (sizeof($rows) > 0) {
+                $count = 0;
+                $fetch = $this->select($this->table_detail, "sum((quantity*price)-discount) as total_charge_sales", "sales_id IN(" . implode(',', $rows) . ") ");
+                $sales_row = $fetch->fetch_assoc();
+
+                //$fetch_payment = $this->select("tbl_customer_payment_details", "sum(amount) as total_payment", "ref_id IN(" . implode(',', $rows) . ") AND type='DR' ");
+                //$payment_row = $fetch_payment->fetch_assoc();
+
+                /*$fetch_payment = $this->table("tbl_customer_payment as cp")
+                    ->join("tbl_customer_payment_details as cd", "cd.cp_id","=","cp.cp_id")
+                    ->selectRaw("sum(cd.amount) as total_payment")
+                    ->where("cd.ref_id", "IN(" . implode(',', $rows) . ")")
+                    ->where("cd.type","DR")
+                    ->where("cp.payment_type","C")
+                    ->where("cp.status","F")
+                    ->get();*/
+                $fetch_payment = $this->select("tbl_customer_payment as cp, tbl_customer_payment_details as cd", "sum(cd.amount) as total_payment", "cp.cp_id=cd.cp_id AND cd.ref_id IN(" . implode(',', $rows) . ") AND cp.payment_type='C' AND cp.status='F' ");
+
+                    //SELECT sum(cd.amount) from tbl_customer_payment as cp INNER JOIN tbl_customer_payment_details as cd ON cp.cp_id=cd.cp_id WHERE cd.ref_id IN(2095,2096) AND cp.payment_type='C' AND cp.status='F'
+                $payment_row = $fetch_payment->fetch_assoc();
+                
+                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales']*1;
+                $sales_rows['total_payment'] = $payment_row['total_payment']*1;
+                return $sales_rows;
+            }
+        } else {
+            return 0;
+        }
+    }
+
     public function update_review_sales_summary()
     {
         $encoded_by = $this->inputs['encoded_by'];
         $form = array(
             'sales_summary_id' => $this->inputs['sales_summary_id']
         );
-        return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' ");
+        return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
     }
 
     public function released()
@@ -861,5 +911,22 @@ class Sales extends Connection
             $rows[] = $row;
         }
         return $rows;
+    }
+
+    public function total_cash_sales_summary($id)
+    {
+        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_summary_id='$id' AND h.status='F' AND h.sales_type='C'");
+        $row = $fetchData->fetch_array();
+
+        return $row[0];
+    }
+
+    
+    public function total_charge_sales_summary($id)
+    {
+        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_summary_id='$id' AND h.status='F' AND h.sales_type='H'");
+        $row = $fetchData->fetch_array();
+
+        return $row[0];
     }
 }

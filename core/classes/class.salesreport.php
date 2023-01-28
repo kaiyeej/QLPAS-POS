@@ -16,14 +16,13 @@ class SalesReport extends Connection
             $param = "";
         }
 
-        $result = $this->select("tbl_products","*",$param);
+        $count = 1;
+        $result = $this->select("tbl_sales as h, tbl_sales_details as d","reference_number,sum((quantity*price)-discount) as amount","d.product_id='$row[product_id]' AND h.sales_id=d.sales_id AND YEAR(h.sales_date) = '$year' AND MONTH(h.sales_date) = '$count' AND h.status='F'");
         $rows = array();
         while ($row = $result->fetch_assoc()) {
             $row['item'] = Products::name($row['product_id']);
-            $count = 1;
             while ($count <= 12) {
-                $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d","sum((quantity*price)-discount) as amount","d.product_id='$row[product_id]' AND h.sales_id=d.sales_id AND YEAR(h.sales_date) = '$year' AND MONTH(h.sales_date) = '$count' AND h.status='F'");
-                $sRow = $fetchSAles->fetch_array();
+                // $sRow = $fetchSAles->fetch_array();
                 $row[$count] = ($sRow['amount'] <= 0 ? "" : number_format($sRow['amount'],2));
                 $count++;
             }
@@ -127,13 +126,19 @@ class SalesReport extends Connection
             $param = "";
         }
 
+        $Sales = new Sales();
+        //$SalesReturn = new SalesReturn();
         $result = $this->select("tbl_sales_summary","*","(date_added >= '$start_date' AND date_added <= '$end_date') AND status='F' $param");
         $rows = array();
         while($row = $result->fetch_assoc()) {
             
+            //$total_return = $SalesReturn->total_return_per_summary($row['sales_summary_id']);
+            
             $row['cashier'] = Users::name($row['cashier_id']);
             $row['starting_balance'] = number_format($row['starting_balance'],2);
-            $row['total_sales_amount'] = number_format($row['total_sales_amount'],2);
+            $row['total_sales_amount'] = number_format($row['total_sales_amount'], 2);
+            $row['total_sales_cash'] = number_format($Sales->total_cash_sales_summary($row['sales_summary_id']),2);
+            $row['total_sales_charge'] = number_format($Sales->total_charge_sales_summary($row['sales_summary_id']),2);
             $row['total_amount_collected'] = number_format($row['total_amount_collected'],2);
             $row['total_deficit'] = number_format($row['total_deficit'],2);   
                 

@@ -115,7 +115,7 @@ class SalesReturn extends Connection
         $row = $result->fetch_assoc();
 
         $new_quantity_return = $row['quantity_return'] + $quantity_return;
-        if (($new_quantity_return+$this->total_return($row['sales_detail_id'])) > $row['quantity']) {
+        if (($new_quantity_return + $this->total_return($row['sales_detail_id'])) > $row['quantity']) {
             return 2;
         } else {
             $form = array(
@@ -125,11 +125,27 @@ class SalesReturn extends Connection
         }
     }
 
-    public function total_return($primary_id){
-        $result = $this->select("tbl_sales_return_details as d, tbl_sales_return as p" , 'sum(d.quantity_return)', "p.sales_return_id=d.sales_return_id AND p.status='F' AND d.sales_detail_id='$primary_id'");
+    public function total_return($primary_id)
+    {
+        $result = $this->select("tbl_sales_return_details as d, tbl_sales_return as p", 'sum(d.quantity_return)', "p.sales_return_id=d.sales_return_id AND p.status='F' AND d.sales_detail_id='$primary_id'");
         $row = $result->fetch_array();
 
         return $row[0];
+    }
+
+    public function total_return_per_summary($sales_summary_id)
+    {
+        $fetchSales = $this->select("tbl_sales", "sales_id", "sales_summary_id='$sales_summary_id' AND status='F'");
+        $total = 0;
+        while ($sRow = $fetchSales->fetch_assoc()) {
+            $result = $this->select("tbl_sales_return_details as d, tbl_sales_return as p", '"sum((quantity_return*price)-discount) as total', "p.sales_return_id=d.sales_return_id AND p.status='F' AND p.sales_id='$sRow[sales_id]'");
+            if($result->num_rows > 0){
+                $row = $result->fetch_assoc();
+                $total += $row['total'];
+            }
+        }
+
+        return $total;
     }
 
     public function show_detail()
@@ -139,9 +155,9 @@ class SalesReturn extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, '*', $param);
         while ($row = $result->fetch_assoc()) {
-            if($this->get_status($row['sales_return_id']) == "F"){
+            if ($this->get_status($row['sales_return_id']) == "F") {
                 $total = $row['quantity_return'];
-            }else{
+            } else {
                 $total = $row['quantity_return'] + $this->total_return($row['sales_detail_id']);
             }
             $row['product'] = Products::name($row['product_id']);
@@ -152,7 +168,8 @@ class SalesReturn extends Connection
         return $rows;
     }
 
-    public function get_status($primary_id){
+    public function get_status($primary_id)
+    {
         $result = $this->select($this->table, 'status', "$this->pk  = '$primary_id'");
         $row = $result->fetch_assoc();
         return $row['status'];

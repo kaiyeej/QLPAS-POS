@@ -442,6 +442,8 @@
                                             <th>CASHIER</th>
                                             <th style="text-align:right">STARTING BALANCE</th>
                                             <th style="text-align:right">TOTAL SALES</th>
+                                            <th style="text-align:right">TOTAL CASH SALES</th>
+                                            <th style="text-align:right">TOTAL CHARGE SALES</th>
                                             <th style="text-align:right">COLLECTED</th>
                                             <th style="text-align:right">DEFICIT</th>
                                         </tr>
@@ -451,6 +453,8 @@
                                     <tfoot>
                                         <tr>
                                             <th colspan="2" style="text-align:right">Total:</th>
+                                            <th></th>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -923,7 +927,7 @@
                     })
                 );
 
-                total_collected= api
+                total_cash = api
                     .column(3, {
                         page: 'current'
                     })
@@ -934,11 +938,12 @@
 
                 // Update footer
                 $(api.column(3).footer()).html(
-                    "&#x20B1; " + total_collected.toLocaleString('en-US', {
+                    total_sales.toLocaleString('en-US', {
                         minimumFractionDigits: 2
                     })
                 );
-                total_deficit = api
+
+                total_charge = api
                     .column(4, {
                         page: 'current'
                     })
@@ -949,6 +954,38 @@
 
                 // Update footer
                 $(api.column(4).footer()).html(
+                    total_sales.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+                total_collected= api
+                    .column(5, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(5).footer()).html(
+                    "&#x20B1; " + total_collected.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+                total_deficit = api
+                    .column(6, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(6).footer()).html(
                     "&#x20B1; " + total_deficit.toLocaleString('en-US', {
                         minimumFractionDigits: 2
                     })
@@ -964,6 +1001,14 @@
                 },
                 {
                     "data": "total_sales_amount",
+                    className: "text-right"
+                },
+                {
+                    "data": "total_sales_cash",
+                    className: "text-right"
+                },
+                {
+                    "data": "total_sales_charge",
                     className: "text-right"
                 },
                 {
