@@ -50,5 +50,5 @@ $classes = array(
     'PurchaseReport'    => $pre_class . 'purchasereport.php',
     // 'CreditMemo'        => $pre_class . 'creditmemo.php',
     // 'DebitMemo'         => $pre_class . 'debitmemo.php',
-
+    'Search'            => $pre_class . 'search.php',
 );
