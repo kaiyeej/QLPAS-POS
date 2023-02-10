@@ -6,6 +6,11 @@ class ProductCategories extends Connection
     public $name = 'product_category';
     public $module_name = "Product Category";
 
+    public $inputs = [];
+
+    public $searchable = ['product_category'];
+    public $uri = "product-categories";
+
     public function add()
     {
         $form = array(
@@ -64,6 +69,26 @@ class ProductCategories extends Connection
         $result = $this->select($this->table, $this->name, "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         return $row[$this->name];
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 
     public function schema()

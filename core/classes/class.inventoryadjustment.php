@@ -9,6 +9,11 @@ class InventoryAdjustment extends Connection
     public $pk2 = 'adjustment_detail_id';
 
     public $module = 'IA';
+
+    public $module_name = "Inventory Adjustment";
+    public $inputs = [];
+    public $searchable = ['reference_number','remarks'];
+    public $uri = "inventory-adjustment";
     public function add()
     {
 
@@ -191,5 +196,25 @@ class InventoryAdjustment extends Connection
         );
 
         return $this->triggerCreator($triggers);
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

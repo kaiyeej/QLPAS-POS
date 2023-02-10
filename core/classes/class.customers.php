@@ -7,8 +7,10 @@ class Customers extends Connection
     public $name = 'customer_name';
     public $module_name = "Customer";
 
-    // notes: make dynamic values for count if exist
+    public $inputs = [];
 
+    public $searchable = ['customer_name','customer_address','customer_contact_number'];
+    public $uri = "customers";
     public function add()
     {
         $customer_name = $this->clean($this->inputs['customer_name']);
@@ -125,6 +127,26 @@ class Customers extends Connection
             }
         } else {
             return -2;
+        }
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
         }
     }
 }

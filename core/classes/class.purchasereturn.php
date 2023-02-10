@@ -14,6 +14,11 @@ class PurchaseReturn extends Connection
 
     public $module = 'PO-RET-';
 
+    public $module_name = "Purchase Return";
+    public $inputs = [];
+    public $searchable = ['reference_number','remarks'];
+    public $uri = "purchase-return";
+
     public function add()
     {
         $PurchaseOrder = new PurchaseOrder;
@@ -202,5 +207,25 @@ class PurchaseReturn extends Connection
     private function add_transaction_in()
     {
         $query = "CREATE TRIGGER `add_transaction_in` AFTER INSERT ON `tbl_purchase_order_details` FOR EACH ROW INSERT INTO tbl_product_transactions (product_id,qty,cost,supplier_price,header_id,detail_id,module,type) VALUES (NEW.product_id,NEW.qty,NEW.cost,NEW.supplier_price,NEW.po_id,NEW.PurchaseOrder_detail_id,'SLS','OUT')";
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

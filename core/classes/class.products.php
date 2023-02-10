@@ -6,6 +6,11 @@ class Products extends Connection
     public $name = 'product_name';
     public $module_name = "Product";
 
+    public $inputs = [];
+
+    public $searchable = ['product_barcode','product_code','product_name'];
+    public $uri = "products";
+
     public function add()
     {
         $form = array(
@@ -99,38 +104,6 @@ class Products extends Connection
         $row = $fetch->fetch_assoc();
         return $row['product_price'];
     }
-
-    public function schema()
-    {
-        if (DEVELOPMENT) {
-            $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
-            $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', '', 'ON UPDATE CURRENT_TIMESTAMP');
-
-
-            // TABLE HEADER
-            $tables[] = array(
-                'name'      => $this->jccrypt($this->table),
-                'primary'   => $this->pk,
-                'fields' => array(
-                    $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
-                    $this->metadata($this->name, 'varchar', 75),
-                    $this->metadata('product_barcode', 'varchar', 50),
-                    $this->metadata('product_code', 'varchar', 10),
-                    $this->metadata('product_price', 'decimal', '11,2'),
-                    $this->metadata('product_cost', 'decimal', '11,2'),
-                    $this->metadata('product_img', 'text'),
-                    $this->metadata('product_category_id', 'int', 11),
-                    $this->metadata('remarks', 'varchar', 255),
-                    $this->metadata('is_package', 'int', 1),
-                    $default['date_added'],
-                    $default['date_last_modified']
-                )
-            );
-
-            return $this->schemaCreator($tables);
-        }
-    }
-
     public function productCost($primary_id)
     {
         $fetch = $this->select($this->table, "product_cost", "$this->pk = '$primary_id'");
@@ -169,5 +142,56 @@ class Products extends Connection
         );
 
         return $this->update($this->table, $form, "$this->pk = '$product_id'");
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
+    }
+
+    public function schema()
+    {
+        if (DEVELOPMENT) {
+            $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
+            $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', '', 'ON UPDATE CURRENT_TIMESTAMP');
+
+
+            // TABLE HEADER
+            $tables[] = array(
+                'name'      => $this->jccrypt($this->table),
+                'primary'   => $this->pk,
+                'fields' => array(
+                    $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                    $this->metadata($this->name, 'varchar', 75),
+                    $this->metadata('product_barcode', 'varchar', 50),
+                    $this->metadata('product_code', 'varchar', 10),
+                    $this->metadata('product_price', 'decimal', '11,2'),
+                    $this->metadata('product_cost', 'decimal', '11,2'),
+                    $this->metadata('product_img', 'text'),
+                    $this->metadata('product_category_id', 'int', 11),
+                    $this->metadata('remarks', 'varchar', 255),
+                    $this->metadata('is_package', 'int', 1),
+                    $default['date_added'],
+                    $default['date_last_modified']
+                )
+            );
+
+            return $this->schemaCreator($tables);
+        }
     }
 }

@@ -7,7 +7,10 @@ class Banks extends Connection
     public $name = 'bank_name';
     public $module_name = "Bank";
 
-    // notes: make dynamic values for count if exist
+    public $inputs = [];
+
+    public $searchable = ['bank_name','bank_branch','bank_account_name','bank_account_number'];
+    public $uri = "banks";
 
     public function add()
     {
@@ -88,5 +91,25 @@ class Banks extends Connection
         $result = $this->select($this->table, '*', "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         return $row['bank_name'] . " - " . $row['bank_account_number'];
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

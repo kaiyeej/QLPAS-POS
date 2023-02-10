@@ -69,6 +69,13 @@ include 'core/config.php';
       padding: 6px;
       font-size: 14px;
     }
+
+    .table-bordered {
+     border: 0px !important;
+    }
+    table.dataTable thead .sorting_asc:after {
+     content: none;
+    }
   </style>
 </head>
 
@@ -101,6 +108,7 @@ include 'core/config.php';
       <?php
       echo "var route_settings = " . $route_settings . ";\n";
       echo "var company_profile = " . $company_profile . ";\n";
+      echo "var app_folder = '" . APP_FOLDER . "';\n";
       ?>
     </script>
     <script type="text/javascript">
@@ -827,6 +835,80 @@ include 'core/config.php';
           $(el).prop('disabled', false)
         }, 1000);
       }
+
+      $("#frm_search").submit(function(e) {
+        e.preventDefault();
+        $(".content-wrapper").html('<div class="row">'+
+            '<div class="col-md-12 grid-margin">'+
+                '<div class="row">'+
+                    '<div class="col-12 col-xl-8 mb-4 mb-xl-0">'+
+                        '<h3 class="font-weight-bold">Search results for : <u>'+$("#navbar-search-input").val()+'</u></h3>'+
+                    '</div>'+
+                    '<div class="col-12 col-xl-4">'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
+          '<div class="row" style="margin-bottom: 10px;">'+
+          '<div class="col-md-12 card" style="margin-top:3px;border-bottom: 0px solid #aaa;">'+
+            '<div class="card-body">'+
+               '<table id="search_table" class="table table-bordered table-hover" style="margin-top:2px;">'+
+                '<thead>'+
+                 '<tr>'+
+                  '<th style="border: 0px; padding: 0px;"></th>'+
+                 '</tr>'+
+                '</thead>'+
+                '<tbody id="search_result">'+
+                '</tbody>'+
+               '</table>'+
+            '</div>'+
+          '</div>'+
+         '</div>');
+        var search_result = '';
+        $("#search_result").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading data . . .</h3></center><br>");
+        $.ajax({
+          type: "POST",
+          url: "controllers/sql.php?c=Search&q=finder",
+          data: $("#frm_search").serialize(),
+          success: function(data) {
+            var res = JSON.parse(data);
+            if(res.data.length > 0){
+
+              for (var i = 0; i < res.data.length; i++) {
+                const items = res.data[i];
+                search_result += '<tr style="background: transparent !important; color: #505050;">'+
+               '<td style="border-top: 1px solid #ddd; font-size: 12px;text-align:left;width: 100%;">'+
+               '<div class="row">'+
+                '<div class="col-9" style="margin-top: 10px;">'+
+                   '<b><a href="#" style="font-size: 14px; color: #2e2e2e;">'+items.name+'</a></b>'+
+                 '<span style="display:block"><p><span style="color: #1b69b6;"> '+items.module+' </span>'+
+                '</div>'+
+                '<div class="col-3" style="margin-top: 10px; vertical-align: baseline; display: inline-block;">'+
+                '<div class="btn-group pull-right">'+
+                  '<a href="'+items.slug+'&search='+$("#navbar-search-input").val()+'" class="btn btn-primary btn-sm btn-icon-split">'+
+                      '<span class="icon text-white-50">'+
+                          '<i class="fas fa-plus"></i>'+
+                      '</span>'+
+                      '<span class="text">View</span>'+
+                  '</a>'+
+                  '</div>'+
+                '</div>'+
+                '</div>'+
+               '</td>'+
+              '</tr>';
+              }
+            }
+            $("#search_result").html(search_result);
+            $('#search_table').dataTable({
+            "paging": true,
+            "bFilter":false,
+            "bLengthChange":false,
+            "bSort" : false,
+            "ordering": false
+           });
+          }
+        });
+      });
     </script>
   <?php } ?>
 </body>
