@@ -9,6 +9,11 @@ class JobOrder extends Connection
     public $pk2 = 'jo_detail_id';
     public $fk_det = 'product_id';
 
+    public $module_name = "Job Order";
+    public $inputs = [];
+    public $searchable = ['reference_number','remarks'];
+    public $uri = "job-order";
+
     public function add()
     {
 
@@ -221,8 +226,25 @@ class JobOrder extends Connection
         );
 
         return $this->schemaCreator($tables);
+    }
 
-
-        return $this->schemaCreator($tables);
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

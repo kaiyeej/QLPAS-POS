@@ -10,6 +10,9 @@ class CustomerPayment extends Connection
     public $fk_det = 'ref_id';
 
     public $module_name = "Customer Payment";
+    public $inputs = [];
+    public $searchable = ['reference_number','remarks','check_number','check_bank'];
+    public $uri = "customer-payment";
 
     public function add()
     {
@@ -458,5 +461,25 @@ class CustomerPayment extends Connection
         }
 
         return $paid_total;
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

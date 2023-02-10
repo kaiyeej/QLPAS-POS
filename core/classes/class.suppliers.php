@@ -6,11 +6,17 @@ class Suppliers extends Connection
     private $pk = 'supplier_id';
     private $name = 'supplier_name';
 
+    public $module_name = "Supplier";
+    public $inputs = [];
+    public $searchable = ['supplier_name','supplier_address','contact_number'];
+    public $uri = "suppliers";
+
     public function add()
     {
         $supplier_name = $this->clean($this->inputs['supplier_name']);
         $is_exist = $this->select($this->table, $this->pk, "supplier_name = '$supplier_name'");
         if ($is_exist->num_rows > 0) {
+            Logs::storeCrud($this->module_name, 'c', 2, $supplier_name);
             return 2;
         } else {
             $form = array(
@@ -19,7 +25,9 @@ class Suppliers extends Connection
                 'contact_number' => $this->inputs['contact_number'],
                 'remarks' => $this->inputs['remarks']
             );
-            return $this->insert($this->table, $form);
+            $result = $this->insert($this->table, $form);
+            Logs::storeCrud($this->module_name, 'c', $result, $supplier_name);
+            return $result;
         }
     }
 
@@ -29,6 +37,7 @@ class Suppliers extends Connection
         $supplier_name = $this->clean($this->inputs['supplier_name']);
         $is_exist = $this->select($this->table, $this->pk, "supplier_name = '$supplier_name' AND  $this->pk != '$primary_id'");
         if ($is_exist->num_rows > 0) {
+            Logs::storeCrud($this->module_name, 'u', 2, $supplier_name);
             return 2;
         } else {
             $form = array(
@@ -37,15 +46,23 @@ class Suppliers extends Connection
                 'contact_number' => $this->inputs['contact_number'],
                 'remarks' => $this->inputs['remarks']
             );
-            return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+            $old_name = $this->name($primary_id);
+            $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+            Logs::storeCrud($this->module_name, 'u', $result, $old_name, $supplier_name);
+            return $result;
         }
     }
 
 
     public function remove()
     {
-        $ids = implode(",", $this->inputs['ids']);
-        return $this->delete($this->table, "$this->pk IN($ids)");
+        foreach ($this->inputs['ids'] as $id) {
+            $name = $this->name($id);
+            $result = $this->delete($this->table, "$this->pk = '$id'");
+            Logs::storeCrud($this->module_name, 'd', $result, $name);
+        }
+
+        return 1; //$this->delete($this->table, "$this->pk IN($ids)");
     }
 
     public function show()
@@ -77,5 +94,25 @@ class Suppliers extends Connection
         
         
 
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

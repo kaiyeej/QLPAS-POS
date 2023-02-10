@@ -9,6 +9,11 @@ class ProductConversion extends Connection
     public $pk2 = 'conversion_detail_id';
 
     public $module = 'PC';
+
+    public $module_name = "Product Conversion";
+    public $inputs = [];
+    public $searchable = ['reference_number','remarks'];
+    public $uri = "product-conversion";
     public function add()
     {
 
@@ -213,5 +218,25 @@ class ProductConversion extends Connection
         );
 
         return $this->triggerCreator($triggers);
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

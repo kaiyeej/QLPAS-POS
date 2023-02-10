@@ -10,6 +10,10 @@ class Expense extends Connection
     public $fk_det = 'expense_category_id';
 
     public $module = 'EXP-';
+    public $module_name = "Expense";
+    public $inputs = [];
+    public $searchable = ['reference_number','remarks'];
+    public $uri = "expense";
     public function add()
     {
         $form = array(
@@ -138,5 +142,25 @@ class Expense extends Connection
         $row = $fetchData->fetch_assoc();
 
         return $row['total'];
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

@@ -5,6 +5,10 @@ class ExpenseCategories extends Connection
     public $pk = 'expense_category_id';
     public $name = 'expense_category';
 
+    public $module_name = "Expense Category";
+    public $inputs = [];
+    public $searchable = ['expense_category_code','expense_category'];
+    public $uri = "expense-category";
     public function add()
     {
         $form = array(
@@ -69,5 +73,25 @@ class ExpenseCategories extends Connection
             return '';
         }   
         
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

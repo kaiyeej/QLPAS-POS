@@ -9,6 +9,11 @@ class PurchaseOrder extends Connection
     public $pk2 = 'po_detail_id';
     public $fk_det = 'product_id';
 
+    public $module_name = "Purchase Order";
+    public $inputs = [];
+    public $searchable = ['po_invoice','reference_number','po_remarks'];
+    public $uri = "purchase-order";
+
     public function add()
     {
         $form = array(
@@ -242,5 +247,25 @@ class PurchaseOrder extends Connection
     private function add_transaction_in()
     {
         $query = "CREATE TRIGGER `add_transaction_in` AFTER INSERT ON `tbl_sales_details` FOR EACH ROW INSERT INTO tbl_product_transactions (product_id,quantity,cost,price,header_id,detail_id,module,type) VALUES (NEW.product_id,NEW.quantity,NEW.cost,NEW.price,NEW.sales_id,NEW.sales_detail_id,'SLS','OUT')";
+    }
+
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
     }
 }

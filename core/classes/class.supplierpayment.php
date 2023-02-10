@@ -9,6 +9,11 @@ class SupplierPayment extends Connection
     public $pk2 = 'spd_id';
     public $fk_det = 'ref_id';
 
+    public $module_name = "Supplier Payment";
+    public $inputs = [];
+    public $searchable = ['reference_number','remarks','check_number'];
+    public $uri = "supplier-payment";
+
     public function add()
     {
         $form = array(
@@ -305,4 +310,23 @@ class SupplierPayment extends Connection
         return $rows;
     }
 
+    public static function search($words,&$rows)
+    {
+        $self = new self;
+        if(count($self->searchable) > 0 ){
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+            $result = $self->select($self->table, '*', $where);
+            while ($row = $result->fetch_assoc()) {
+                $names = [];
+                foreach($self->searchable as $f){
+                    $names[] = $row[$f];
+                }
+                $rows[] = array(
+                    'name' => implode(" ", $names),
+                    'module' => $self->module_name,
+                    'slug' => $self->uri."?id=".$row[$self->pk]
+                );
+            }
+        }
+    }
 }
