@@ -10,6 +10,7 @@
         <ul id="tabs" class="nav nav-tabs">
             <li class="nav-item"><a href="" data-target="#company-profile" data-toggle="tab" class="nav-link small text-uppercase active">Company Profile</a></li>
             <li class="nav-item"><a href="" data-target="#access-codes" data-toggle="tab" class="nav-link small text-uppercase">Access Codes</a></li>
+            <li class="nav-item"><a href="" data-target="#version-update" data-toggle="tab" class="nav-link small text-uppercase">Version Update</a></li>
         </ul>
         <br>
         <div id="tabsContent" class="tab-content">
@@ -83,6 +84,21 @@
                     </div>
                 </form>
             </div>
+
+            <div id="version-update" class="tab-pane fade">
+                <div class="col-12">
+                    <h4 class="card-title">Version Update</h4>
+                    <p class="card-description">
+                        Fetch latest version update.
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary mr-2" id="btn_pull" onclick="pullVersionControl()">Fetch latest version update</button>
+                        <p id="output_pull"></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -128,6 +144,20 @@
                         this.value = json[id_name];
                     });
                 }
+            }
+        });
+    }
+
+    function pullVersionControl(){
+        $("#btn_pull").prop("disabled",true);
+        $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=Settings&q=version",
+            success: function(data) {
+                var jsonParse = JSON.parse(data);
+                const json = jsonParse.data;
+                $("#output_pull").html(json);
+                $("#btn_pull").prop("disabled",false);
             }
         });
     }

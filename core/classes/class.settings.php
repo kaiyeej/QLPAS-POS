@@ -50,6 +50,13 @@ class Settings extends Connection
         return $result->fetch_assoc();
     }
 
+    public function version()
+    {
+        $repo = __DIR__ . "../../";
+        $output = shell_exec("cd $repo && git pull 2>&1");
+        return "<pre>$output</pre>";
+    }
+
     public function schema()
     {
         if (DEVELOPMENT) {
