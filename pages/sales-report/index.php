@@ -1069,7 +1069,7 @@
         getSelectOption('ProductCategories', 'product_category_id', 'product_category', '', [], -1, 'All');
         getSelectOption('ProductCategories', 'product_category_id_2', 'product_category', '', [], -1, 'All', 1);
         getSelectOption('Users', 'user_id', 'user_fullname', "user_category='C'", [], -1, 'All');
-        getSelectOption('Users', 'user_id_2', 'user_fullname', "user_category='C'", [], -1, 'All');
+        getSelectOption('Users', 'user_id_2', 'user_fullname', "user_category='C'", [], -1, 'All', 1);
         getSelectOption('Customers', 'customer_id', 'customer_name', "", [], -1, 'All');
         getReportDaily();
         //getReportYearly();
