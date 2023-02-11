@@ -16,13 +16,14 @@ class SalesReport extends Connection
             $param = "";
         }
 
-        $count = 1;
-        $result = $this->select("tbl_sales as h, tbl_sales_details as d","reference_number,sum((quantity*price)-discount) as amount","d.product_id='$row[product_id]' AND h.sales_id=d.sales_id AND YEAR(h.sales_date) = '$year' AND MONTH(h.sales_date) = '$count' AND h.status='F'");
+        $result = $this->select("tbl_products","*",$param);
         $rows = array();
         while ($row = $result->fetch_assoc()) {
             $row['item'] = Products::name($row['product_id']);
+            $count = 1;
             while ($count <= 12) {
-                // $sRow = $fetchSAles->fetch_array();
+                $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d","sum(quantity*price) as amount","d.product_id='$row[product_id]' AND h.sales_id=d.sales_id AND YEAR(h.sales_date) = '$year' AND MONTH(h.sales_date) = '$count' AND h.status='F'");
+                $sRow = $fetchSAles->fetch_array();
                 $row[$count] = ($sRow['amount'] <= 0 ? "" : number_format($sRow['amount'],2));
                 $count++;
             }
