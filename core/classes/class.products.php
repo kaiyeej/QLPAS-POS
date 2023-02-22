@@ -52,6 +52,7 @@ class Products extends Connection
     {
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : '';
         $ProductCategories = new ProductCategories();
+
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         $count = 1;
@@ -142,6 +143,25 @@ class Products extends Connection
         );
 
         return $this->update($this->table, $form, "$this->pk = '$product_id'");
+    }
+
+    public function pos_show()
+    {
+        $param = isset($this->inputs['param']) ? $this->inputs['param'] : '';
+        $ProductCategories = new ProductCategories();
+        $Inv = new InventoryReport();
+
+        $rows = array();
+        $result = $this->select($this->table, '*', $param);
+        $count = 1;
+        while ($row = $result->fetch_assoc()) {
+            $row['count'] = $count++;
+            $row['product_category'] = $ProductCategories->name($row['product_category_id']);
+
+            $row['current_qty'] = $Inv->balance($row['product_id']);
+            $rows[] = $row;
+        }
+        return $rows;
     }
 
     public static function search($words,&$rows)
