@@ -955,4 +955,44 @@ class Sales extends Connection
             }
         }
     }
+
+    public function graph()
+    {
+        ini_set('date.timezone', 'UTC');
+        //error_reporting(E_ALL);
+        date_default_timezone_set('UTC');
+        $today = date('H:i:s');
+        $year = date('Y', strtotime($today) + 28800);
+
+        $rows = array();
+        $count = 1;
+        while($count <= 12){
+            $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.status='F' AND MONTH(h.sales_date)='$count' AND YEAR(h.sales_date) = '$year'");
+            $total = $result->fetch_assoc();
+            $rows[] = $total['total']*1;
+
+            $count++;
+
+        }
+
+        return $rows;
+
+    }
+
+    public function top_products()
+    {
+
+        $Products = new Products;
+        $rows = array();
+        $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total,product_id, count(h.sales_id) as count", "h.sales_id = d.sales_id AND h.status='F' GROUP BY d.product_id ORDER BY sum((quantity*price)-discount) DESC LIMIT 10");
+        while ($row = $result->fetch_assoc()) {
+            $row['product'] = $Products->name($row['product_id']);
+            $row['qty'] = $row['count'];
+            $row['total'] = number_format($row['total'], 2);
+            $rows[] = $row;
+        }
+
+        return $rows;
+
+    }
 }

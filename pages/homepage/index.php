@@ -84,45 +84,196 @@ $Users = new Users();
     </div>
 
     <div class="row">
-        <div class="col-md-6 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-title">Order Details</p>
-                    <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                    <div class="d-flex flex-wrap mb-5">
-                        <div class="mr-5 mt-3">
-                            <p class="text-muted">Order value</p>
-                            <h3 class="text-primary fs-30 font-weight-medium">12.3k</h3>
-                        </div>
-                        <div class="mr-5 mt-3">
-                            <p class="text-muted">Orders</p>
-                            <h3 class="text-primary fs-30 font-weight-medium">14k</h3>
-                        </div>
-                        <div class="mr-5 mt-3">
-                            <p class="text-muted">Users</p>
-                            <h3 class="text-primary fs-30 font-weight-medium">71.56%</h3>
-                        </div>
-                        <div class="mt-3">
-                            <p class="text-muted">Downloads</p>
-                            <h3 class="text-primary fs-30 font-weight-medium">34040</h3>
-                        </div>
-                    </div>
-                    <canvas id="order-chart"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 grid-margin stretch-card">
+        <div class="col-md-7 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <p class="card-title">Sales Report</p>
-                        <a href="#" class="text-info">View all</a>
                     </div>
-                    <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                    <p class="font-weight-500"><?= date("Y"); ?> Monthly Sales Grap</p>
                     <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
                     <canvas id="sales-chart"></canvas>
                 </div>
             </div>
         </div>
+        <div class="col-md-5 stretch-card grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title mb-0">Top Products</p>
+                    <div class="table-responsive">
+                        <table id="dt_entries" class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="pl-0  pb-2 border-bottom">Products</th>
+                                    <th class="border-bottom pb-2">Qty Sold</th>
+                                    <th class="border-bottom pb-2">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- <tr>
+                                    <td class="pl-0">Kentucky</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold mr-2">65</span></p>
+                                    </td>
+                                    <td class="text-muted">65</td>
+                                </tr>
+                                <tr>
+                                    <td class="pl-0">Ohio</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold mr-2">54</span></p>
+                                    </td>
+                                    <td class="text-muted">51</td>
+                                </tr>
+                                <tr>
+                                    <td class="pl-0">Nevada</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold mr-2">22</span></p>
+                                    </td>
+                                    <td class="text-muted">32</td> -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<script>
+    if ($("#sales-chart").length) {
+        //$.getJSON("controllers/sql.php?c=Sales&q=graph", function(data) {
+        $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=Sales&q=graph",
+            success: function(data) {
+                //var jsonParse = JSON.parse(data);
+                // var data_ = jsonParse.data;
+                var jsonParse = JSON.parse(data);
+                console.log(jsonParse.data);
+                var monthly_data = jsonParse.data;
+                var SalesChartCanvas = $("#sales-chart").get(0).getContext("2d");
+                var SalesChart = new Chart(SalesChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"],
+                        datasets: [{
+                            label: 'Total Sales',
+                            data: monthly_data,
+                            backgroundColor: '#98BDFF'
+                        }]
+                    },
+                    options: {
+                        cornerRadius: 5,
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        layout: {
+                            padding: {
+                                left: 0,
+                                right: 0,
+                                top: 20,
+                                bottom: 0
+                            }
+                        },
+                        scales: {
+                            yAxes: [{
+                                display: true,
+                                gridLines: {
+                                    display: true,
+                                    drawBorder: false,
+                                    color: "#F2F2F2"
+                                },
+                                ticks: {
+                                    display: true,
+                                    min: 0,
+                                    callback: function(value, index, values) {
+                                        return number_format(value);
+                                    },
+                                    autoSkip: true,
+                                    maxTicksLimit: 10,
+                                    fontColor: "#6C7383"
+                                }
+                            }],
+                            xAxes: [{
+                                stacked: false,
+                                ticks: {
+                                    beginAtZero: true,
+                                    fontColor: "#6C7383"
+                                },
+                                gridLines: {
+                                    color: "rgba(0, 0, 0, 0)",
+                                    display: false
+                                },
+                                barPercentage: 1
+                            }]
+                        },
+                        legend: {
+                            display: false
+                        },
+                        elements: {
+                            point: {
+                                radius: 0
+                            }
+                        }
+                    },
+                });
+                document.getElementById('sales-legend').innerHTML = SalesChart.generateLegend();
+
+            }
+        });
+    }
+
+    function number_format(number, decimals, dec_point, thousands_sep) {
+        // *     example: number_format(1234.56, 2, ',', ' ');
+        // *     return: '1 234,56'
+        number = (number + '').replace(',', '').replace(' ', '');
+        var n = !isFinite(+number) ? 0 : +number,
+            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+            s = '',
+            toFixedFix = function(n, prec) {
+                var k = Math.pow(10, prec);
+                return '' + Math.round(n * k) / k;
+            };
+        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+        if (s[0].length > 3) {
+            s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+        }
+        if ((s[1] || '').length < prec) {
+            s[1] = s[1] || '';
+            s[1] += new Array(prec - s[1].length + 1).join('0');
+        }
+        return s.join(dec);
+    }
+
+    function getEntries() {
+       $("#dt_entries").DataTable().destroy();
+        $("#dt_entries").DataTable({
+            "processing": true,
+            "searching": false,
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            "ajax": {
+                "url": "controllers/sql.php?c=Sales&q=top_products",
+                "dataSrc": "data",
+                "type": "POST"
+            },
+            "columns": [
+                {
+                    "data": "product"
+                },
+                {
+                    "data": "qty"
+                },
+                {
+                    "data": "total"
+                }
+            ]
+        });
+    }
+    $(document).ready(function() {
+        getEntries();
+    });
+</script>
