@@ -53,6 +53,7 @@ class Settings extends Connection
     public function version()
     {
         $repo = __DIR__ . "../../";
+        $git_file ="C:\Program Files\Git\bin\git";
         $output = shell_exec("cd $repo && git pull 2>&1");
         return "<pre>$output</pre>";
     }
