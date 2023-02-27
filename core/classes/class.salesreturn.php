@@ -138,6 +138,14 @@ class SalesReturn extends Connection
         return $row[0];
     }
 
+    public function total_return_by_product($product_id)
+    {
+        $result = $this->select("tbl_sales_return_details as d, tbl_sales_return as p", 'sum((quantity_return*price)-discount) as total', "p.sales_return_id=d.sales_return_id AND p.status='F' AND d.product_id='$product_id'");
+        $row = $result->fetch_assoc();
+
+        return $row['total'];
+    }
+
     public function total_return_per_summary($sales_summary_id)
     {
         $fetchSales = $this->select("tbl_sales", "sales_id", "sales_summary_id='$sales_summary_id' AND status='F'");

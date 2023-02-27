@@ -968,8 +968,13 @@ class Sales extends Connection
         $count = 1;
         while($count <= 12){
             $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.status='F' AND MONTH(h.sales_date)='$count' AND YEAR(h.sales_date) = '$year'");
-            $total = $result->fetch_assoc();
-            $rows[] = $total['total']*1;
+            $total_sales = $result->fetch_assoc();
+
+            $result_sr = $this->select('tbl_sales_return_details as d, tbl_sales_return as h', "sum((quantity_return*price)-discount) as total", "h.sales_return_id = d.sales_return_id AND h.status='F' AND MONTH(h.return_date)='$count' AND YEAR(h.return_date) = '$year'");
+            $total_return = $result_sr->fetch_assoc();
+
+
+            $rows[] = ($total_sales['total']-$total_return['total'])*1;
 
             $count++;
 
@@ -983,12 +988,14 @@ class Sales extends Connection
     {
 
         $Products = new Products;
+        $sales_return = new SalesReturn;
         $rows = array();
         $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total,product_id, count(h.sales_id) as count", "h.sales_id = d.sales_id AND h.status='F' GROUP BY d.product_id ORDER BY sum((quantity*price)-discount) DESC LIMIT 10");
         while ($row = $result->fetch_assoc()) {
+            $total = $row['total']-$sales_return->total_return_by_product($row['product_id']);
             $row['product'] = $Products->name($row['product_id']);
             $row['qty'] = $row['count'];
-            $row['total'] = number_format($row['total'], 2);
+            $row['total'] = number_format($total, 2);
             $rows[] = $row;
         }
 
