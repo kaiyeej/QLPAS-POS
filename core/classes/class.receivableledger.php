@@ -12,7 +12,7 @@ class ReceivableLedger extends Connection
         
         $rows = array();
 
-        $result = $this->select("tbl_sales","reference_number","customer_id='$customer_id' AND (sales_date >= '$start_date' AND sales_date <= '$end_date') AND status='F' AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_customer_payment WHERE customer_id='$customer_id' AND (payment_date >= '$start_date' AND payment_date <= '$end_date') AND status='F' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND (bb_date >= '$start_date' AND bb_date <= '$end_date') AND bb_module='AR'");
+        $result = $this->select("tbl_sales","reference_number","customer_id='$customer_id' AND (sales_date >= '$start_date' AND sales_date <= '$end_date') AND (status='F' OR status='P') AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_customer_payment WHERE customer_id='$customer_id' AND (payment_date >= '$start_date' AND payment_date <= '$end_date') AND status='F' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND (bb_date >= '$start_date' AND bb_date <= '$end_date') AND bb_module='AR'");
         
         $Sales = new Sales;
         $CustomerPayment = new CustomerPayment;
@@ -65,7 +65,7 @@ class ReceivableLedger extends Connection
         $customer_id = $this->inputs['customer_id'];
         $start_date = $this->inputs['start_date'];
 
-        $get_sales = $this->select("tbl_sales as h, tbl_sales_details as d","sum((d.quantity*d.price)-d.discount)","h.customer_id='$customer_id' AND h.sales_date < '$start_date' AND h.sales_type='H' AND h.status='F' AND h.sales_id=d.sales_id");
+        $get_sales = $this->select("tbl_sales as h, tbl_sales_details as d","sum((d.quantity*d.price)-d.discount)","h.customer_id='$customer_id' AND h.sales_date < '$start_date' AND h.sales_type='H' AND (h.status='F' OR h.status='F') AND h.sales_id=d.sales_id");
         $total_sales = $get_sales->fetch_array();
 
        $getSales = $this->select("tbl_sales" , "sales_id", "customer_id='$customer_id' AND sales_date < '$start_date' AND status='F'");

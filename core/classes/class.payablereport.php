@@ -41,7 +41,7 @@ class PayableReport extends Connection
         $get_bb = $this->select("tbl_beginning_balance", "SUM(bb_amount) as total", "bb_ref_id='$supplier_id' AND bb_module='AP'");
         $bb_row = $get_bb->fetch_assoc();
 
-        $get_payment_bb = $this->select("tbl_supplier_payment AS sh, tbl_supplier_payment_details AS sd", "SUM(sd.amount) as total", "sh.supplier_id='$supplier_id' AND sh.sp_id=sd.sp_id AND sd.type='BB' AND sh.status='F' AND sh.status='F'");
+        $get_payment_bb = $this->select("tbl_supplier_payment AS sh, tbl_supplier_payment_details AS sd", "SUM(sd.amount) as total", "sh.supplier_id='$supplier_id' AND sh.sp_id=sd.sp_id AND sd.type='BB' AND sh.status='F'");
         $payment_bb = $get_payment_bb->fetch_assoc();
 
         

@@ -114,14 +114,14 @@ class Sales extends Connection
     public function pk_by_name($name = null)
     {
         $name = $name == null ? $this->inputs[$this->name] : $name;
-        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND status='F'");
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND (status='F' OR status='P')");
         $row = $result->fetch_assoc();
         return $row[$this->pk] * 1;
     }
 
     public function pk_name($name, $customer_id)
     {
-        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND status='F' AND customer_id='$customer_id'");
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND (status='F' OR status='P') AND customer_id='$customer_id'");
         $row = $result->fetch_assoc();
         return $row[$this->pk] * 1;
     }

@@ -31,7 +31,7 @@ class ReceivableReport extends Connection
         $get_payment_h = $this->select("tbl_customer_payment AS ch, tbl_customer_payment_details AS cd", "SUM(cd.amount) as total", "ch.customer_id='$customer_id' AND ch.cp_id=cd.cp_id AND cd.type='DR' AND ch.status='F'");
         $payment_h = $get_payment_h->fetch_assoc();
 
-        $get_sales = $this->select("tbl_sales as h, tbl_sales_details AS d", "SUM((d.price*d.quantity)-d.discount) as total", "h.customer_id='$customer_id' AND d.sales_id=h.sales_id AND h.status='F' AND h.sales_type='H'");
+        $get_sales = $this->select("tbl_sales as h, tbl_sales_details AS d", "SUM((d.price*d.quantity)-d.discount) as total", "h.customer_id='$customer_id' AND d.sales_id=h.sales_id AND (h.status='F' OR h.status='P') AND h.sales_type='H'");
         $sales_row = $get_sales->fetch_assoc();
 
         $get_sr = $this->select("tbl_sales as h, tbl_sales_details AS d, tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "h.customer_id='$customer_id' AND d.sales_id=h.sales_id AND h.status='F' AND h.sales_type='H' AND sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.sales_id=h.sales_id AND d.sales_detail_id=srd.sales_detail_id");
