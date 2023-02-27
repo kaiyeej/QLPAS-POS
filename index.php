@@ -139,6 +139,9 @@ include 'core/config.php';
               }
               swal("Price Notice!", text_data + "Price Notice(s) is Effective now!", "warning");
             }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       }
@@ -151,6 +154,9 @@ include 'core/config.php';
           success: function(data) {
             var json = JSON.parse(data);
             console.log(json.data);
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       }
@@ -209,6 +215,9 @@ include 'core/config.php';
                 url: "controllers/sql.php?c=Users&q=logout",
                 success: function(data) {
                   window.location = "./";
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                  errorLogger('Error:', textStatus, errorThrown);
                 }
               });
 
@@ -312,6 +321,9 @@ include 'core/config.php';
             }
             $("#btn_submit").prop('disabled', false);
             $("#btn_submit").html("<span class='fa fa-check-circle'></span> Submit");
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       });
@@ -359,6 +371,9 @@ include 'core/config.php';
             }
             $("#modalLabel").html("<span class='fa fa-pen'></span> Update Entry");
             $("#modalEntry").modal('show');
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
 
@@ -410,6 +425,9 @@ include 'core/config.php';
                     } else {
                       failed_query(json);
                     }
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    errorLogger('Error:', textStatus, errorThrown);
                   }
                 });
 
@@ -463,6 +481,9 @@ include 'core/config.php';
                     } else {
                       failed_query(json);
                     }
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    errorLogger('Error:', textStatus, errorThrown);
                   }
                 });
 
@@ -558,6 +579,9 @@ include 'core/config.php';
             }
             getEntries2();
             $("#modalEntry2").modal('show');
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       }
@@ -595,6 +619,9 @@ include 'core/config.php';
             }
             $("#btn_submit_2").prop('disabled', false);
             $("#btn_submit_2").html("<span class='fa fa-check-circle'></span> Submit");
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       });
@@ -638,6 +665,9 @@ include 'core/config.php';
                     } else {
                       failed_query(json);
                     }
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    errorLogger('Error:', textStatus, errorThrown);
                   }
                 });
 
@@ -692,6 +722,9 @@ include 'core/config.php';
                     } else {
                       failed_query(json);
                     }
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    errorLogger('Error:', textStatus, errorThrown);
                   }
                 });
               } else {
@@ -735,6 +768,9 @@ include 'core/config.php';
               }
               $('#' + primary_id).append($("<option></option>").attr(data_attributes).text(list[label]));
             }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       }
@@ -762,6 +798,9 @@ include 'core/config.php';
               }
               $('#' + primary_id).append($("<option></option>").attr(data_attributes).text(list[label]));
             }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       }
@@ -786,6 +825,9 @@ include 'core/config.php';
           success: function(data) {
             var json = JSON.parse(data);
             $("#reference_number").val(json.data);
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       }
@@ -906,9 +948,17 @@ include 'core/config.php';
             "bSort" : false,
             "ordering": false
            });
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
           }
         });
       });
+
+      function errorLogger(jqXHR, textStatus, errorThrown)
+      {
+        console.log('Error:', textStatus, errorThrown);
+      }
     </script>
   <?php } ?>
 </body>
