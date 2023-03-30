@@ -13,6 +13,18 @@
                     <form id='frm_generate'>
                         <div class="form-group row">
                             <div class="col">
+                                <label><strong>Start Date</strong></label>
+                                <div>
+                                    <input type="date" required class="form-control form-control-sm" id="start_date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" name="input[start_date]">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <label><strong>End Date</strong></label>
+                                <div>
+                                    <input type="date" required class="form-control form-control-sm" id="end_date" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))); ?>" name="input[end_date]">
+                                </div>
+                            </div>
+                            <div class="col">
                                 <label><strong>Category</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="product_category_id" name="input[product_category_id]" onchange="fetchProduct()">
@@ -71,12 +83,13 @@
                                     <th>UNIT COST</th>
                                     <th>QTY IN</th>
                                     <th>QTY OUT</th>
-                                    <th colspan="2">BALANCE</th>
+                                    <th>BALANCE QTY</th>
+                                    <th>AMOUNT</th>
                                 </tr>
                                 <tr>
-                                    <th colspan="5"></th>
-                                    <th>QUANTITY</th>
-                                    <th>AMOUNT</th>
+                                    <th style="text-align:right;" colspan="5">Balance Fowarded</th>
+                                    <th><span class="label-item" id="span_bf_qty"></span></th>
+                                    <th><span class="label-item" id="span_bf_amount"></span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -142,6 +155,9 @@
     function getReport() {
         var product_category_id = $("#product_category_id").val();
         var product_id = $("#product_id").val();
+        var start_date = $("#start_date").val();
+        var end_date = $("#end_date").val();
+        balance_fowarded();
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
@@ -156,7 +172,9 @@
                 "data": {
                     input: {
                         product_category_id: product_category_id,
-                        product_id: product_id
+                        product_id: product_id,
+                        start_date:start_date,
+                        end_date:end_date
                     }
                 },
             },
@@ -181,32 +199,59 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return row.qty_balance+"<input type='hidden' class='current_qty' value='"+row.qty_balance+"'>";
+                        return row.qty_balance + "<input type='hidden' class='current_qty' value='" + row.qty_balance + "'>";
 
                     }
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return row.amount+"<input type='hidden' class='current_amount' value='"+row.amount+"'>";
+                        return row.amount + "<input type='hidden' class='current_amount' value='" + row.amount + "'>";
 
                     }
                 },
             ]
         });
+        
         current_qty();
     }
 
-    function current_qty(){
-        
+    function balance_fowarded() {
+        var product_id = $("#product_id").val();
+        var start_date = $("#start_date").val();
+        $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=balance",
+            data: {
+                input: {
+                    product_id: product_id,
+                    start_date:start_date
+                }
+            },
+            success: function(data) {
+                var jsonParse = JSON.parse(data);
+                const json = jsonParse.data;
+                console.log(json.data);
+              
+                $('.label-item').map(function() {
+                    const id_name = this.id;
+                    const new_id = id_name.replace('_label', '');
+                    this.innerHTML = json[new_id];
+                });
+            }
+        });
+    }
+
+    function current_qty() {
+
         var table = $('#dt_entries').DataTable();
-        table.on( 'draw', function () {
+        table.on('draw', function() {
             var current_qty = $(".current_qty").last().val();
             var current_amount = $(".current_amount").last().val();
 
             $("#span_current_qty").html(current_qty);
             $("#span_current_amount").html(current_amount);
         });
-        
+
     }
 
     $(document).ready(function() {
