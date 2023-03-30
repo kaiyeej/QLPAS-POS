@@ -36,7 +36,7 @@ class StockCard extends Connection
             $row['qty_balance'] = number_format($qty_balance,2);
             $row['module'] = $module;
             $row['amount'] = number_format($qty_balance * $row['cost'],2);
-            $row['date'] = date('M d,Y', strtotime($row['date_modified']));
+            $row['date'] = date('M d, Y', strtotime($row['date_modified']));
             $rows[] = $row;
         }
         return $rows;
