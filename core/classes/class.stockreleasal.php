@@ -33,14 +33,18 @@ class StockReleasal extends Connection
 
             if ($result->num_rows > 0) {
                 $counter += 1;
-                $data .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="5" style="background: #607d8b;color: #fff;">Customer: '.$Customer->name($cRow["customer_id"]).'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
-
+                $data .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;">Customer: '.$Customer->name($cRow["customer_id"]).'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PAYMENT STATUS</th><th>BALANCE</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
+                $Sales = new Sales;
                 while ($row = $result->fetch_assoc()) {
                     $remaining_qty = $StockWithdrawal->remaining_qty($row['sales_detail_id']);
+                    $paid_status = $row['paid_status'] == 1 ? "<label class='badge badge-success'>Paid</label>" : "<label class='badge badge-warning'>Unpaid</label>";
+                    $bal = $row['paid_status'] != 1 ? "₱ " . number_format($Sales->dr_balance($row['sales_id']), 2) : "0.00" ;
                     if ($remaining_qty > 0) {
                         $data .= "<tr>";
                         $data .= "<td>" . date('M d,Y', strtotime($row['sales_date'])) . "</td>";
                         $data .= "<td>" . $row['reference_number'] . "</td>";
+                        $data .= "<td>" . $paid_status . "</td>";
+                        $data .= "<td>" . $bal ."</td>";
                         $data .= "<td>" . $Products->name($row['product_id']) . "</td>";
                         $data .= "<td style='text-align: right;'>" . number_format($row['total_qty'], 2) . "</td>";
                         $data .= "<td style='text-align: right;'>" . number_format($remaining_qty, 2) . "</td>";

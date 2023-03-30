@@ -88,8 +88,8 @@
                                 </tr>
                                 <tr>
                                     <th style="text-align:right;" colspan="5">Balance Fowarded</th>
-                                    <th><span class="label-item" id="span_bf_qty"></span></th>
-                                    <th><span class="label-item" id="span_bf_amount"></span></th>
+                                    <th><span class="label-item" id="qty_label"></span></th>
+                                    <th><span class="label-item" id="amount_label"></span><input type='hidden' class='current_qty' id="bf_qty_label"><input type='hidden' class='current_amount' id="bf_amount_label"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -220,7 +220,7 @@
         var start_date = $("#start_date").val();
         $.ajax({
             type: "POST",
-            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=balance",
+            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=balance_fowarded",
             data: {
                 input: {
                     product_id: product_id,
@@ -230,13 +230,11 @@
             success: function(data) {
                 var jsonParse = JSON.parse(data);
                 const json = jsonParse.data;
-                console.log(json.data);
-              
-                $('.label-item').map(function() {
-                    const id_name = this.id;
-                    const new_id = id_name.replace('_label', '');
-                    this.innerHTML = json[new_id];
-                });
+                $("#qty_label").html(json.qty);
+                $("#amount_label").html(json.amount);
+                $("#bf_qty_label").val(json.qty);
+                $("#bf_amount_label").val(json.amount);
+                
             }
         });
     }

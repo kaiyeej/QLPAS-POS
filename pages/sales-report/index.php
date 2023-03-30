@@ -439,6 +439,7 @@
                                 <table class="table table-bordered" id="dt_entries_summary" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
+                                            <th style="text-align:right">DATE</th>
                                             <th>CASHIER</th>
                                             <th style="text-align:right">STARTING BALANCE</th>
                                             <th style="text-align:right">TOTAL SALES</th>
@@ -452,7 +453,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="2" style="text-align:right">Total:</th>
+                                            <th colspan="3" style="text-align:right">Total:</th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -912,7 +913,7 @@
                 };
 
                 total_sales = api
-                    .column(2, {
+                    .column(3, {
                         page: 'current'
                     })
                     .data()
@@ -921,7 +922,7 @@
                     }, 0);
 
                 // Update footer
-                $(api.column(2).footer()).html(
+                $(api.column(3).footer()).html(
                     total_sales.toLocaleString('en-US', {
                         minimumFractionDigits: 2
                     })
@@ -944,22 +945,6 @@
                 );
 
                 total_charge = api
-                    .column(4, {
-                        page: 'current'
-                    })
-                    .data()
-                    .reduce(function(a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-                // Update footer
-                $(api.column(4).footer()).html(
-                    total_sales.toLocaleString('en-US', {
-                        minimumFractionDigits: 2
-                    })
-                );
-
-                total_collected= api
                     .column(5, {
                         page: 'current'
                     })
@@ -970,12 +955,12 @@
 
                 // Update footer
                 $(api.column(5).footer()).html(
-                    "&#x20B1; " + total_collected.toLocaleString('en-US', {
+                    total_sales.toLocaleString('en-US', {
                         minimumFractionDigits: 2
                     })
                 );
 
-                total_deficit = api
+                total_collected= api
                     .column(6, {
                         page: 'current'
                     })
@@ -986,6 +971,22 @@
 
                 // Update footer
                 $(api.column(6).footer()).html(
+                    "&#x20B1; " + total_collected.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+                total_deficit = api
+                    .column(7, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(7).footer()).html(
                     "&#x20B1; " + total_deficit.toLocaleString('en-US', {
                         minimumFractionDigits: 2
                     })
@@ -993,6 +994,9 @@
 
             },
             "columns": [{
+                    "data": "date"
+                },
+                {
                     "data": "cashier"
                 },
                 {

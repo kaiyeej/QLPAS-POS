@@ -44,15 +44,16 @@ class StockCard extends Connection
         return $rows;
     }
 
-    public function balance($product_id)
+    public function balance_fowarded()
     {
         $start_date = $this->inputs['start_date'];
         $product_id = $this->inputs['product_id'];
         $rows = array();
-        $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty, SUM(IF(type='IN',cost)) AS cost", "product_id = '$product_id' AND status = 1 AND date_added > '$start_date'");
+        $result = $this->select($this->table, "IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out, SUM(CASE WHEN type = 'IN' THEN cost/quantity ELSE 0 END) as ave_cost", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date'");
         $row = $result->fetch_array();
-        $row['qty'] = $row['qty'];
-        $row['amount'] = $row['qty']/$row['cost'];
+        $qty = $row['qty_in'] - $row['qty_out'];
+        $row['qty'] = $qty;
+        $row['amount'] = number_format(($qty*$row['ave_cost']),2);
         $rows = $row;
         return $rows;
     }
