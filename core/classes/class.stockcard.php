@@ -12,7 +12,8 @@ class StockCard extends Connection
 
         $result = $this->select($this->table, "*,IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out", "product_id = '$product_id' AND status = '1' AND date_added BETWEEN '$start_date' AND '$end_date' ORDER BY date_modified ASC");
 
-        $qty_balance = 0;
+        $bf = $this->balance_fowarded();
+        $qty_balance = $bf['qty'];
         while ($row = $result->fetch_assoc()) {
             $qty = $row['qty_in'] - $row['qty_out'];
             $qty_balance += $qty;
@@ -49,11 +50,19 @@ class StockCard extends Connection
         $start_date = $this->inputs['start_date'];
         $product_id = $this->inputs['product_id'];
         $rows = array();
-        $result = $this->select($this->table, "IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out, SUM(CASE WHEN type = 'IN' THEN cost/quantity ELSE 0 END) as ave_cost", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date'");
+        // $result = $this->select($this->table, "IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out, SUM(CASE WHEN type = 'IN' THEN cost*quantity ELSE 0 END) as total_cost, SUM(CASE WHEN type = 'IN' THEN quantity ELSE 0 END) as total_qty", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date'");
+        $result = $this->select($this->table, "SUM(CASE WHEN type = 'IN' THEN cost*quantity ELSE 0 END) as total_cost", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date'");
         $row = $result->fetch_array();
-        $qty = $row['qty_in'] - $row['qty_out'];
+
+        $result_in = $this->select($this->table, "SUM(quantity) as qty_in", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date' AND type='IN'");
+        $rowIN = $result_in->fetch_array();
+
+        $resultOut = $this->select($this->table, "SUM(quantity) as qty_out", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date' AND type='OUt'");
+        $rowOut = $resultOut->fetch_array();
+
+        $qty = $rowIN['qty_in'] - $rowOut['qty_out'];
         $row['qty'] = $qty;
-        $row['amount'] = number_format(($qty*$row['ave_cost']),2);
+        $row['amount'] = number_format(($qty*($row['total_cost']/$rowIN['qty_in'])),2);
         $rows = $row;
         return $rows;
     }
