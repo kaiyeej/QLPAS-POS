@@ -16,7 +16,7 @@
         $Menus->sidebar('Customers', 'customers', 'id-badge');
         $Menus->sidebar('Suppliers', 'suppliers', 'truck');
         $Menus->sidebar('Discounts', 'discounts', 'tag');
-        $Menus->sidebar('Payment Option', 'payment-option', 'tag');
+        $Menus->sidebar('Payment Option', 'payment-option', 'list');
         $Menus->sidebar('Formulation', 'formulation', 'filter');
 
         // TRANSACTION
@@ -56,7 +56,7 @@
             array('Payable Report', 'payable-report'),
             array('Price List', 'price-list'),
             array('Purchase Report', 'purchase-report'),
-            array('Aging of AR', 'receivable-aging'),
+            array('Receivable Aging', 'receivable-aging'),
             array('Receivable Ledger', 'receivable-ledger'),
             array('Receivable Report', 'receivable-report'),
             array('Sales Report', 'sales-report'),

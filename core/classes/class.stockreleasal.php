@@ -85,7 +85,7 @@ class StockReleasal extends Connection
             $prod_param = "AND d.product_id='$product_id'";
         }
         $StockWithdrawal = new StockWithdrawal;
-        $counter = 0;
+        $Inventory = new InventoryReport();
         $result = $this->select("tbl_products","*",$prod_param);
         while ($row = $result->fetch_assoc()) {
             //$result = $this->select("tbl_sales as sh, tbl_sales_details as sd, tbl_stock_withdrawal as wh, tbl_stock_withdrawal_details as wd", "sum(sd.quantity) as dr_qty", "sd.product_id='$prow[product_id]' AND sh.sales_id=sd.sales_id AND sh.status='F' AND wh.sales_id=sh.sales_id AND wh.withdrawal_id=wd.withdrawal_id AND wd.product_id='$prow[product_id]' AND wh.status='F'");
@@ -96,10 +96,13 @@ class StockReleasal extends Connection
                 $for_withdrawal += $remaining_qty;
             }
 
+            
+            $on_hand = $Inventory->balance($row['product_id']);
+
             $row['item'] = $row['product_name'];
-            $row['on_hand'] = number_format($for_withdrawal,2);
+            $row['on_hand'] = number_format($on_hand,2);
             $row['for_withdrawal'] = number_format($for_withdrawal,2);
-            $row['available'] = number_format($for_withdrawal,2);
+            $row['available'] = number_format(($on_hand-$for_withdrawal),2);
                 
             $rows[] = $row;
         }

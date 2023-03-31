@@ -69,8 +69,8 @@
                                 </div>
                                 <div id="report_container" class="card-body">
                                     <center>
-                                        <h4 class="report-header"><span id="company_name_label"></span></h4>
-                                        <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                        <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                        <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
                                         <h5 class="report-header">Stock Releasal Report</h5><br>
                                     </center>
                                     <div class="table-responsive" id="dt_entries">
@@ -104,13 +104,13 @@
                                                             </span>
                                                             <span class="text">Generate</span>
                                                         </button>
-                                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries','Stock-Releasal-Report')" class="btn btn-success btn-sm btn-icon-split">
+                                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries_item','Stock-Releasal-Report')" class="btn btn-success btn-sm btn-icon-split">
                                                             <span class="icon">
                                                                 <i class="ti ti-cloud-down"></i>
                                                             </span>
                                                             <span class="text"> Export</span>
                                                         </button>
-                                                        <button onclick="print_report('report_container')" type="button" class="btn btn-info btn-sm btn-icon-split">
+                                                        <button onclick="print_report('report_container_item')" type="button" class="btn btn-info btn-sm btn-icon-split">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -122,134 +122,181 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div id="report_container" class="card-body">
+                                <div id="report_container_item" class="card-body">
                                     <center>
-                                        <h4 class="report-header"><span id="company_name_label"></span></h4>
-                                        <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                        <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                        <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
                                         <h5 class="report-header">Stock Releasal Report</h5><br>
                                     </center>
-                                    <div class="table-responsive" id="dt_entries_item">
-                                    <thead>
-                                        <tr>
-                                            <th>ITEM</th>
-                                            <th style="text-align:right">QTY</th>
-                                            <th style="text-align:right">AMOUNT</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="1" style="text-align:right">Total:</th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dt_entries_item" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>ITEM</th>
+                                                    <th style="text-align:right">ON HAND</th>
+                                                    <th style="text-align:right">FOR WITHDRAWAL</th>
+                                                    <th style="text-align:right">AVAILABLE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                            <tfoot>
+                                                <!-- <tr>
+                                                    <th colspan="1" style="text-align:right">Total:</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr> -->
+                                            </tfoot>
+                                        </table>
                                     </div>
                                 </div>
+
                             </div>
 
                         </div>
-
                     </div>
                 </div>
+
+
             </div>
-
-
         </div>
     </div>
-</div>
-<script type="text/javascript">
-    $("#frm_generate").submit(function(e) {
-        e.preventDefault();
+    <script type="text/javascript">
+        $("#frm_generate").submit(function(e) {
+            e.preventDefault();
 
-        getReport();
-    });
+            getReport();
+        });
 
-    $("#frm_generate_item").submit(function(e) {
-        e.preventDefault();
+        $("#frm_generate_item").submit(function(e) {
+            e.preventDefault();
 
-        getReportItem();
-    });
+            getReportItem();
+        });
 
-    function print_report(container, title) {
+        function print_report(container, title) {
 
-        var printContents = document.getElementById("" + container + "").innerHTML;
+            var printContents = document.getElementById("" + container + "").innerHTML;
 
-        //alert(printContents);
-        var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+            //alert(printContents);
+            var mywindow = window.open('', 'PRINT', 'height=400,width=600');
 
-        mywindow.document.write('<html><head><title>' + document.title + '</title>');
-        mywindow.document.write('<link href="../assets/css/bootstrap.min.css" rel="stylesheet">');
-        mywindow.document.write('</head><body>');
+            mywindow.document.write('<html><head><title>' + document.title + '</title>');
+            mywindow.document.write('<link href="../assets/css/bootstrap.min.css" rel="stylesheet">');
+            mywindow.document.write('</head><body>');
 
-        mywindow.document.write("<div class='container-fluid' id='print_report_header' style='margin-bottom: 20px;'></div>");
-        mywindow.document.write("<div class='container-fluid' id='report_content'></div>");
-        //mywindow.document.write(document.getElementById(elem).innerHTML);
+            mywindow.document.write("<div class='container-fluid' id='print_report_header' style='margin-bottom: 20px;'></div>");
+            mywindow.document.write("<div class='container-fluid' id='report_content'></div>");
+            //mywindow.document.write(document.getElementById(elem).innerHTML);
 
-        mywindow.document.write('</body></html>');
+            mywindow.document.write('</body></html>');
 
-        mywindow.document.getElementById("report_content").innerHTML = printContents;
+            mywindow.document.getElementById("report_content").innerHTML = printContents;
 
-        mywindow.document.close(); // necessary for IE >= 10
+            mywindow.document.close(); // necessary for IE >= 10
 
-        mywindow.onload = function() { // necessary if the div contain images
+            mywindow.onload = function() { // necessary if the div contain images
 
-            mywindow.focus(); // necessary for IE >= 10
-            mywindow.print();
-            mywindow.close();
+                mywindow.focus(); // necessary for IE >= 10
+                mywindow.print();
+                mywindow.close();
 
+            }
+
+            return true;
         }
 
-        return true;
-    }
 
+        function getReport() {
+            var customer_id = $("#customer_id").val();
+            var product_id = $("#product_id").val();
 
-    function getReport() {
-        var customer_id = $("#customer_id").val();
-        var product_id = $("#product_id").val();
+            $("#dt_entries").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
 
-        $("#dt_entries").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
-
-        $.ajax({
-            type: "POST",
-            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=view",
-            data: {
-                input: {
-                    customer_id: customer_id,
-                    product_id: product_id
+            $.ajax({
+                type: "POST",
+                url: "controllers/sql.php?c=" + route_settings.class_name + "&q=view",
+                data: {
+                    input: {
+                        customer_id: customer_id,
+                        product_id: product_id
+                    }
+                },
+                success: function(data) {
+                    $("#dt_entries").html(data);
                 }
-            },
-            success: function(data) {
-                $("#dt_entries").html(data);
-            }
-        });
-    }
+            });
+        }
 
-    function getReportItem() {
-        var product_id = $("#product_id").val();
+        function getReportItem() {
+            var product_id = $("#product_id").val();
 
-        $("#dt_entries_item").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
+            $("#dt_entries_item").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
 
-        $.ajax({
-            type: "POST",
-            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
-            data: {
-                input: {
-                    product_id: product_id
+            $.ajax({
+                type: "POST",
+                url: "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
+                data: {
+                    input: {
+                        product_id: product_id
+                    }
+                },
+                success: function(data) {
+                    $("#dt_entries_item").html(data);
                 }
-            },
-            success: function(data) {
-                $("#dt_entries_item").html(data);
-            }
-        });
-    }
+            });
+        }
 
-    $(document).ready(function() {
-        $("#company_name_label").html(company_profile.company_name);
-        $("#company_address_label").html(company_profile.company_address);
-        getSelectOption('Products', 'product_id', 'product_name', '', [], -1, 'All');
-        getSelectOption('Products', 'product_id_2', 'product_name', '', [], -1, 'All', 1);
-        getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All');
-    });
-</script>
+        function getReportItem() {
+            var product_id = $("#product_id").val();
+
+            $("#dt_entries_item").DataTable().destroy();
+            $("#dt_entries_item").DataTable({
+                "processing": true,
+                "searching": false,
+                "paging": false,
+                "ordering": false,
+                "info": false,
+                "ajax": {
+                    "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
+                    "dataSrc": "data",
+                    "method": "POST",
+                    "data": {
+                        input: {
+                            product_id: product_id
+                        }
+                    },
+                },
+                "footerCallback": function(row, data, start, end, display) {
+                    var api = this.api();
+
+
+                },
+                "columns": [{
+                        "data": "item"
+                    },
+                    {
+                        "data": "on_hand",
+                        className: "text-right"
+                    },
+                    {
+                        "data": "for_withdrawal",
+                        className: "text-right"
+                    },
+                    {
+                        "data": "available",
+                        className: "text-right"
+                    },
+                ]
+
+            });
+        }
+
+        $(document).ready(function() {
+            $(".company_name_label").html(company_profile.company_name);
+            $(".company_address_label").html(company_profile.company_address);
+            getSelectOption('Products', 'product_id', 'product_name', '', [], -1, 'All');
+            getSelectOption('Products', 'product_id_2', 'product_name', '', [], -1, 'All', 1);
+            getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All');
+        });
+    </script>
