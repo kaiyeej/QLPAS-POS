@@ -142,7 +142,9 @@ class SalesReport extends Connection
             $row['total_sales_charge'] = number_format($Sales->total_charge_sales_summary($row['sales_summary_id']),2);
             $row['total_amount_collected'] = number_format($row['total_amount_collected'],2);
             $row['total_deficit'] = number_format($row['total_deficit'],2);   
-                
+            $row['date'] = date('M d, Y h:m A', strtotime($row["date_added"]));   
+
+
             $rows[] = $row;
         }
         return $rows;

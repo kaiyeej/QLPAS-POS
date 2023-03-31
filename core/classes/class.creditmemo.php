@@ -256,18 +256,45 @@ class CreditMemo extends Connection
         return ($row['total']-$row_sr['total']) == 0 ? 0 : ($row['total']-$row_sr['total']);
     }
 
-    private function delete_sales_details()
+    public function schema()
     {
-        $query = "CREATE TRIGGER `delete_po_details` AFTER DELETE ON `tbl_purchase_order` FOR EACH ROW DELETE FROM tbl_purchase_order_details WHERE po_id = OLD.po_id";
-    }
+        if (DEVELOPMENT) {
+            $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
+            $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', '', 'ON UPDATE CURRENT_TIMESTAMP');
+            $default['encoded_by'] = $this->metadata('encoded_by', 'int', 11);
 
-    private function finish_transaction()
-    {
-        $query = "CREATE TRIGGER `finish_transaction` AFTER UPDATE ON `tbl_sales` FOR EACH ROW UPDATE tbl_product_transactions SET status = IF (NEW.sales_status = 'F', 1, 0) WHERE header_id = NEW.sales_id AND module = 'SLS'";
-    }
 
-    private function add_transaction_in()
-    {
-        $query = "CREATE TRIGGER `add_transaction_in` AFTER INSERT ON `tbl_sales_details` FOR EACH ROW INSERT INTO tbl_product_transactions (product_id,quantity,cost,price,header_id,detail_id,module,type) VALUES (NEW.product_id,NEW.quantity,NEW.cost,NEW.price,NEW.sales_id,NEW.sales_detail_id,'SLS','OUT')";
-    }
-}
+            // TABLE HEADER
+            $tables[] = array(
+                'name'      => $this->table,
+                'primary'   => $this->pk,
+                'fields' => array(
+                    $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                    $this->metadata($this->name, 'varchar', 75),
+                    $this->metadata('memo_date', 'date'),
+                    $this->metadata('memo_type', 'varchar', 3),
+                    $this->metadata('account_id', 'int', 11),
+                    $this->metadata('remarks', 'varchar', 250),
+                    $this->metadata('status', 'varchar', 1, 'NOT NULL', "'S'", '', "'S = Saved; F = Finish'"),
+                    $default['encoded_by'],
+                    $default['date_added'],
+                    $default['date_last_modified']
+                )
+            );
+
+            // TABLE DETAILS
+            $tables[] = array(
+                'name'      => $this->table_detail,
+                'primary'   => $this->pk2,
+                'fields' => array(
+                    $this->metadata($this->pk2, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                    $this->metadata($this->pk, 'int', 11),
+                    $this->metadata($this->fk_det, 'int', 11),
+                    $this->metadata('ref_type', 'varchar', 3),
+                    $this->metadata('description', 'varchar', '250')    
+                )
+            );
+
+            return $this->schemaCreator($tables);
+        }
+    }}
