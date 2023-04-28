@@ -12,6 +12,15 @@ class Connection
     public function __construct()
     {
         $this->mysqli = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+        // Check for connection errors
+        if ($this->mysqli->connect_error) {
+            die("Connection failed: " . $this->mysqli->connect_error);
+        }
+
+        // Set the character set
+        if (!$this->mysqli->set_charset("utf8")) {
+            die("Error loading character set utf8: " . $this->mysqli->error);
+        }
     }
 
     public function query($sql)
@@ -306,6 +315,6 @@ class Connection
         $start_date = gregoriantojd($date_parts1[1], $date_parts1[2], $date_parts1[0]);
         $end_date = gregoriantojd($date_parts2[1], $date_parts2[2], $date_parts2[0]);
         $diff = abs($end_date - $start_date);
-         return $diff;
+        return $diff;
     }
 }
