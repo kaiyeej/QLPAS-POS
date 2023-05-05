@@ -198,7 +198,7 @@ class Sales extends Connection
             $amount = ($row['quantity'] * $row['price']) - $row['discount'];
             $row['amount'] = number_format($amount, 2);
             $row['pos_qty'] = number_format($row['quantity']);
-            $row['pos_price'] = "@" . $row['price'];
+            $row['pos_price'] = "@ &nbsp;" . $row['price'];
             $row['count'] = $count++;
             $rows[] = $row;
         }
@@ -747,20 +747,20 @@ class Sales extends Connection
                 $quantity = $row['quantity'] * 1;
                 $amount = ($quantity * $row['price']) - $row['discount'];
                 $discounted_price = $amount / $quantity;
+
+                $items[] = [
+                    'quantity' => '',
+                    'description' => substr(strtoupper($row['product']), 0, 30),
+                    'discount' => '',
+                    'amount' => ''
+                ];
+
                 $items[] = [
                     'quantity' => (float) $quantity,
                     'description' => $quantity . "&nbsp;" . $row['pos_price'],
                     'discounted_price' => (float) $discounted_price,
                     'discount' => (float) $row['discount'],
                     'amount' => number_format($amount, 2)
-                ];
-    
-    
-                $items[] = [
-                    'quantity' => '',
-                    'description' => substr(strtoupper($row['product']), 0, 15),
-                    'discount' => '',
-                    'amount' => ''
                 ];
                 $total_qty += $row['quantity'];
                 $total_amt += $amount;
@@ -773,7 +773,19 @@ class Sales extends Connection
             $response['payments'] = $CustomerPayment->getPaymentByRef($sales_id);
             $response['total_qty'] = $total_qty;
             $response['total_amt'] = number_format($total_amt, 2);
-        } else {
+        } else if($print_type == 'claim') {
+            $StockWithdrawal = new StockWithdrawal();
+            $this->inputs['param'] = "sales_id = '$sales_id'";
+            $details = $this->show_detail();
+            $items = [];
+            foreach ($details as $row) {
+                $items[] = [
+                    'remaining_qty' => (float) $StockWithdrawal->remaining_qty($row['sales_detail_id']),
+                    'product' => substr(strtoupper($row['product']), 0, 30)
+                ];
+            }
+            $response['items'] = $items;
+        }else {
     
             $StockWithdrawal = new StockWithdrawal();
             $withdrawal_id = $StockWithdrawal->getID("sales_id = '$sales_id' ORDER BY date_added DESC LIMIT 1");
