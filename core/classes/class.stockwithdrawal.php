@@ -167,7 +167,10 @@ class StockWithdrawal extends Connection
 
     public function generate()
     {
-        return 'SW-' . date('ymdHis');
+        // return 'SW-' . date('ymdHis');
+        $fetch = $this->select($this->table, "max(withdrawal_id) + 1 as max_id", $this->pk > 0);
+        $row = $fetch->fetch_assoc();
+        return sprintf("%'.06d", $row['max_id']);
     }
 
     public function remove()
