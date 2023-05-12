@@ -7,8 +7,6 @@ class ClaimSlip extends Connection
 
     public $module_name = "Claim Slip";
     public $inputs = [];
-    public $searchable = ['reference_number','remarks'];
-    public $uri = "claim-slip";
 
     public function add()
     {
@@ -34,6 +32,8 @@ class ClaimSlip extends Connection
     {
         $fetch = $this->select($this->table, "max(claim_slip_id) + 1 as max_id");
         $row = $fetch->fetch_assoc();
-        return sprintf("%'.06d", $row['max_id']);
+        if($row['max_id'] > 0)
+            return sprintf("%'.06d", $row['max_id']);
+        return sprintf("%'.06d", 1);
     }
 }
