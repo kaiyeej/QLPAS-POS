@@ -136,10 +136,10 @@ class Sales extends Connection
     public function dataRow($primary_id, $field)
     {
         $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
-        if($result->num_rows > 0){
+        if ($result->num_rows > 0) {
             $row = $result->fetch_array();
             return $row[$field];
-        }else{
+        } else {
             return "";
         }
     }
@@ -147,10 +147,10 @@ class Sales extends Connection
     public function detailsRow($primary_id, $field)
     {
         $result = $this->select($this->table_detail, $field, "$this->pk2 = '$primary_id'");
-        if($result->num_rows > 0){
+        if ($result->num_rows > 0) {
             $row = $result->fetch_array();
             return $row[$field];
-        }else{
+        } else {
             return "";
         }
     }
@@ -163,7 +163,7 @@ class Sales extends Connection
         // check inventory here ...
         $Inventory = new InventoryReport();
         $current_balance = $Inventory->balance($this->inputs['product_id']);
-        if($current_balance-$this->inputs['quantity'] >= 0){
+        if ($current_balance - $this->inputs['quantity'] >= 0) {
 
             $Products = new Products;
             $product_price = $Products->productPrice($fk_det);
@@ -182,7 +182,7 @@ class Sales extends Connection
                 'discount_id'   => $row_disc['discount_id'],
             );
             return $this->insert($this->table_detail, $form);
-        }else{
+        } else {
             return -3; //insufficient qty
         }
     }
@@ -392,7 +392,7 @@ class Sales extends Connection
             // check inventory here ...
             $Inventory = new InventoryReport();
             $current_balance = $Inventory->balance($this->inputs['product_id']);
-            if($current_balance-$this->inputs['quantity'] >= 0){
+            if ($current_balance - $this->inputs['quantity'] >= 0) {
 
                 $reference_number = $this->inputs['reference_number'];
                 $param = "reference_number = '$reference_number'";
@@ -442,12 +442,9 @@ class Sales extends Connection
                 }
 
                 return 1;
-
-            }else{
+            } else {
                 return -3; //insufficient qty
             }
-            
-            
         } else {
             return "Cannot find item. Please try again.";
         }
@@ -510,7 +507,7 @@ class Sales extends Connection
             );
 
             return $this->update($this->table, $form, "sales_id = '$sales_id'");
-        }else{
+        } else {
             return -2;
         }
     }
@@ -542,7 +539,7 @@ class Sales extends Connection
             $customer_payment_id = $CustomerPayment->add();
 
             $CustomerPayment->inputs['cp_id'] = $customer_payment_id;
-            $CustomerPayment->inputs['ref_id'] = "DR-".$primary_id;
+            $CustomerPayment->inputs['ref_id'] = "DR-" . $primary_id;
             $CustomerPayment->inputs['amount'] = $customer_payment_amount;
 
             $CustomerPayment->add_detail();
@@ -595,7 +592,8 @@ class Sales extends Connection
         }
     }
 
-    public function summary_of_charge_sales(){
+    public function summary_of_charge_sales()
+    {
         $user_id = $this->inputs['user_id'];
         $rows = array();
         $result = $this->select($this->table, $this->pk, "encoded_by='$user_id' AND sales_summary_id=0 AND status='F' AND sales_type='H' ");
@@ -622,11 +620,11 @@ class Sales extends Connection
                     ->get();*/
                 $fetch_payment = $this->select("tbl_customer_payment as cp, tbl_customer_payment_details as cd", "sum(cd.amount) as total_payment", "cp.cp_id=cd.cp_id AND cd.ref_id IN(" . implode(',', $rows) . ") AND cp.payment_type='C' AND cp.status='F' ");
 
-                    //SELECT sum(cd.amount) from tbl_customer_payment as cp INNER JOIN tbl_customer_payment_details as cd ON cp.cp_id=cd.cp_id WHERE cd.ref_id IN(2095,2096) AND cp.payment_type='C' AND cp.status='F'
+                //SELECT sum(cd.amount) from tbl_customer_payment as cp INNER JOIN tbl_customer_payment_details as cd ON cp.cp_id=cd.cp_id WHERE cd.ref_id IN(2095,2096) AND cp.payment_type='C' AND cp.status='F'
                 $payment_row = $fetch_payment->fetch_assoc();
-                
-                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales']*1;
-                $sales_rows['total_payment'] = $payment_row['total_payment']*1;
+
+                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'] * 1;
+                $sales_rows['total_payment'] = $payment_row['total_payment'] * 1;
                 return $sales_rows;
             }
         } else {
@@ -663,15 +661,15 @@ class Sales extends Connection
 
         array_map(function ($id, $qty, $product_id) use ($withdrawal_id) {
             //if ($qty > 0) {
-                $form_details = array(
-                    'withdrawal_id' => $withdrawal_id,
-                    'product_id' => $product_id,
-                    'qty' => $qty,
-                    'sales_detail_id' => $id,
-                    'status' => 'F'
-                );
-                $this->insert('tbl_stock_withdrawal_details', $form_details);
-           // }
+            $form_details = array(
+                'withdrawal_id' => $withdrawal_id,
+                'product_id' => $product_id,
+                'qty' => $qty,
+                'sales_detail_id' => $id,
+                'status' => 'F'
+            );
+            $this->insert('tbl_stock_withdrawal_details', $form_details);
+            // }
         }, $r_id, $r_qty, $p_id);
 
         $StockWithdrawal = new StockWithdrawal();
@@ -706,25 +704,25 @@ class Sales extends Connection
 
         $result_sr = $this->select("tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
         $total_sr = $result_sr->fetch_array();
-        
 
-        return ($row['total']-$total_sr['total']) == 0 ? 0 : ($row['total']-$total_sr['total']);
+
+        return ($row['total'] - $total_sr['total']) == 0 ? 0 : ($row['total'] - $total_sr['total']);
     }
 
     public function posPrintReceipt()
     {
         $print_type = $this->inputs['print_type'];
-    
+
         $reference_number = $this->inputs['reference_number'];
         $sales_id = $this->getID("reference_number = '$reference_number'");
-    
+
         $this->inputs['id'] = $sales_id;
         $header_data = $this->view();
-    
+
         $Users = new Users();
         $Settings = new Settings();
         $settings_data = $Settings->view();
-    
+
         $response = [
             'company_data' => $settings_data['company_name'] . "<br>" . $settings_data['company_address'],
             'print_header' => $settings_data['print_header'],
@@ -734,12 +732,12 @@ class Sales extends Connection
             'cashier' => $Users->getUser($header_data['encoded_by']),
             'customer' => $header_data['customer_name'],
         ];
-    
+
         if ($print_type == 'sales') {
-    
+
             $this->inputs['param'] = "sales_id = '$sales_id'";
             $details = $this->show_detail();
-    
+
             $total_qty = 0;
             $total_amt = 0;
             $items = [];
@@ -765,39 +763,53 @@ class Sales extends Connection
                 $total_qty += $row['quantity'];
                 $total_amt += $amount;
             }
-    
+
             $CustomerPayment = new CustomerPayment();
-    
+
             $response['reference_number'] = $header_data['reference_number'];
             $response['items'] = $items;
             $response['payments'] = $CustomerPayment->getPaymentByRef($sales_id);
             $response['total_qty'] = $total_qty;
             $response['total_amt'] = number_format($total_amt, 2);
-        } else if($print_type == 'claim') {
+        } else if ($print_type == 'claim') {
+            $ClaimSlip = new ClaimSlip();
+            $claim_slip_id = $ClaimSlip->generate();
+
             $StockWithdrawal = new StockWithdrawal();
             $this->inputs['param'] = "sales_id = '$sales_id'";
             $details = $this->show_detail();
             $items = [];
             foreach ($details as $row) {
-                $items[] = [
-                    'remaining_qty' => (float) $StockWithdrawal->remaining_qty($row['sales_detail_id']),
-                    'product' => substr(strtoupper($row['product']), 0, 30)
-                ];
+                $remaining_qty = (float) $StockWithdrawal->remaining_qty($row['sales_detail_id']);
+                if($remaining_qty > 0){
+                    $items[] = [
+                        'remaining_qty' => $remaining_qty,
+                        'product' => substr(strtoupper($row['product']), 0, 30)
+                    ];
+                }
             }
+            $ClaimSlip->inputs['sales_id'] = $sales_id;
+            $ClaimSlip->finish();
+            if(count($remaining_qty)>0){
+                $ClaimSlip->inputs['claim_slip_id'] = $claim_slip_id;
+                $ClaimSlip->inputs['total_amount'] = $this->total($sales_id);
+                $ClaimSlip->add();
+            }
+            $response['claim_slip_no'] = $claim_slip_id;
             $response['items'] = $items;
-        }else {
-    
+        } else {
+
             $StockWithdrawal = new StockWithdrawal();
             $withdrawal_id = $StockWithdrawal->getID("sales_id = '$sales_id' ORDER BY date_added DESC LIMIT 1");
-    
+
             $StockWithdrawal->inputs['param'] = "withdrawal_id = '$withdrawal_id'";
             $items = $StockWithdrawal->show_detail();
-    
+
             $response['reference_number'] = $StockWithdrawal->name($withdrawal_id);
             $response['items'] = $items;
             $response['withdrawal_date'] = date("Y-m-d H:i:s");
         }
-    
+
         return $response;
     }
 
@@ -903,7 +915,7 @@ class Sales extends Connection
         return $this->triggerCreator($triggers);
     }
 
-    
+
     public function getHeader()
     {
         $Customers = new Customers;
@@ -922,10 +934,10 @@ class Sales extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, "*", "$this->pk='$id'");
         while ($row = $result->fetch_assoc()) {
-            $amount = ($row['price']-$row['discount'])*$row['quantity'];
+            $amount = ($row['price'] - $row['discount']) * $row['quantity'];
             $row['product_name'] = $Products->name($row['product_id']);
-            $row['price'] = number_format($row['price'],2);
-            $row['amount'] = number_format($amount,2);
+            $row['price'] = number_format($row['price'], 2);
+            $row['amount'] = number_format($amount, 2);
             $rows[] = $row;
         }
         return $rows;
@@ -939,7 +951,7 @@ class Sales extends Connection
         return $row[0];
     }
 
-    
+
     public function total_charge_sales_summary($id)
     {
         $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_summary_id='$id' AND h.status='F' AND h.sales_type='H'");
@@ -948,21 +960,21 @@ class Sales extends Connection
         return $row[0];
     }
 
-    public static function search($words,&$rows)
+    public static function search($words, &$rows)
     {
         $self = new self;
-        if(count($self->searchable) > 0 ){
-            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+        if (count($self->searchable) > 0) {
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable) . " LIKE '%$words%'";
             $result = $self->select($self->table, '*', $where);
             while ($row = $result->fetch_assoc()) {
                 $names = [];
-                foreach($self->searchable as $f){
+                foreach ($self->searchable as $f) {
                     $names[] = $row[$f];
                 }
                 $rows[] = array(
                     'name' => implode(" ", $names),
                     'module' => $self->module_name,
-                    'slug' => $self->uri."?id=".$row[$self->pk]
+                    'slug' => $self->uri . "?id=" . $row[$self->pk]
                 );
             }
         }
@@ -978,7 +990,7 @@ class Sales extends Connection
 
         $rows = array();
         $count = 1;
-        while($count <= 12){
+        while ($count <= 12) {
             $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.status='F' AND MONTH(h.sales_date)='$count' AND YEAR(h.sales_date) = '$year'");
             $total_sales = $result->fetch_assoc();
 
@@ -986,14 +998,12 @@ class Sales extends Connection
             $total_return = $result_sr->fetch_assoc();
 
 
-            $rows[] = ($total_sales['total']-$total_return['total'])*1;
+            $rows[] = ($total_sales['total'] - $total_return['total']) * 1;
 
             $count++;
-
         }
 
         return $rows;
-
     }
 
     public function top_products()
@@ -1004,7 +1014,7 @@ class Sales extends Connection
         $rows = array();
         $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total,product_id, count(h.sales_id) as count", "h.sales_id = d.sales_id AND h.status='F' GROUP BY d.product_id ORDER BY sum((quantity*price)-discount) DESC LIMIT 10");
         while ($row = $result->fetch_assoc()) {
-            $total = $row['total']-$sales_return->total_return_by_product($row['product_id']);
+            $total = $row['total'] - $sales_return->total_return_by_product($row['product_id']);
             $row['product'] = $Products->name($row['product_id']);
             $row['qty'] = $row['count'];
             $row['total'] = number_format($total, 2);
@@ -1012,6 +1022,5 @@ class Sales extends Connection
         }
 
         return $rows;
-
     }
 }
