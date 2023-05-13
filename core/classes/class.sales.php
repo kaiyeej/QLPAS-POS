@@ -545,14 +545,6 @@ class Sales extends Connection
             $CustomerPayment->add_detail();
         }
 
-        if($this->inputs['for_pickup'] == 1){
-            $ClaimSlip = new ClaimSlip;
-            $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
-            $ClaimSlip->inputs['sales_id'] = $primary_id;
-            $ClaimSlip->inputs['total_amount'] = $this->inputs['total_amount'];
-            $ClaimSlip->add();
-        }
-
         $form = array(
             'status' => 'F',
             'for_pick_up' => $this->inputs['for_pickup'],
@@ -563,6 +555,16 @@ class Sales extends Connection
 
 
         if ($res == 1) {
+
+            // add claim slip
+            if($this->inputs['for_pickup'] == 1){
+                $ClaimSlip = new ClaimSlip;
+                $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
+                $ClaimSlip->inputs['sales_id'] = $primary_id;
+                $ClaimSlip->inputs['total_amount'] = $this->inputs['total_amount'];
+                $ClaimSlip->add();
+            }
+
             // finish all related customer payment
             return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
         } else {
@@ -819,6 +821,16 @@ class Sales extends Connection
         }
 
         return $response;
+    }
+
+    public function getLastSales(){
+        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $fetch = $this->select($this->table, "sales_id", $param);
+        $row = $fetch->fetch_assoc();
+
+        $this->inputs['id'] = $row['sales_id'];
+        $rows = $this->view();
+        return $rows;
     }
 
     public function schema()
