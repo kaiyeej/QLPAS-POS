@@ -52,7 +52,8 @@ class ClaimSlip extends Connection
 
             $customer_name = $sales_row['customer_id'] > 0 ? $Customers->name($sales_row['customer_id']) : 'Walk-in';
             $row['customer'] = $customer_name;
-            $total = $Sales->total($sales_id);
+            // $total = $Sales->total($sales_id);
+            $total = $row['total_amount'];
             $row['total'] = number_format($total, 2);
             $row['total_nonformat'] = $total;
             $row['reference_number'] = $sales_row['reference_number'];

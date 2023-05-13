@@ -545,6 +545,14 @@ class Sales extends Connection
             $CustomerPayment->add_detail();
         }
 
+        if($this->inputs['for_pickup'] == 1){
+            $ClaimSlip = new ClaimSlip;
+            $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
+            $ClaimSlip->inputs['sales_id'] = $primary_id;
+            $ClaimSlip->inputs['total_amount'] = $this->inputs['total_amount'];
+            $ClaimSlip->add();
+        }
+
         $form = array(
             'status' => 'F',
             'for_pick_up' => $this->inputs['for_pickup'],
