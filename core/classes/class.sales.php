@@ -783,7 +783,8 @@ class Sales extends Connection
             $response['total_amt'] = number_format($total_amt, 2);
         } else if ($print_type == 'claim') {
             $ClaimSlip = new ClaimSlip();
-            $claim_slip_id = $ClaimSlip->generate();
+            $ClaimSlip->inputs['sales_id'] = $sales_id;
+            $claim_slip_id = $ClaimSlip->get_claimslip();
 
             $StockWithdrawal = new StockWithdrawal();
             $this->inputs['param'] = "sales_id = '$sales_id'";
@@ -797,13 +798,6 @@ class Sales extends Connection
                         'product' => substr(strtoupper($row['product']), 0, 30)
                     ];
                 }
-            }
-            $ClaimSlip->inputs['sales_id'] = $sales_id;
-            $ClaimSlip->finish();
-            if(count($items)>0){
-                $ClaimSlip->inputs['reference_number'] = $claim_slip_id;
-                $ClaimSlip->inputs['total_amount'] = $this->total($sales_id);
-                $ClaimSlip->add();
             }
             $response['claim_slip_no'] = $claim_slip_id;
             $response['items'] = $items;

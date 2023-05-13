@@ -65,4 +65,12 @@ class ClaimSlip extends Connection
         }
         return $rows;
     }
+
+    public function get_claimslip()
+    {
+        $sales_id = $this->inputs['sales_id'];
+        $result = $this->select($this->table, $this->name, "sales_id = '$sales_id'");
+        $row = $result->fetch_assoc();
+        return $row[$this->name];
+    }
 }

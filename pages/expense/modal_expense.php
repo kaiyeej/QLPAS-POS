@@ -114,6 +114,15 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row">
+                                <div class="col">
+                                    <label><strong>Description</strong></label>
+                                    <div>
+                                        <textarea class="form-control form-control-sm input-item" name="input[description]" id="description" placeholder="Description" maxlength="255"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class='btn-group'>
                                 <button type="submit" class="btn btn-info btn-sm" id="btn_submit_2">Submit</button>
                             </div>
@@ -128,6 +137,7 @@
                                         <th>Expense</th>
                                         <th>Supplier</th>
                                         <th>Invoice</th>
+                                        <th>Description</th>
                                         <th>Amount</th>
                                     </tr>
                                 </thead>
@@ -135,7 +145,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="4" style="text-align:right">Total:</th>
+                                        <th colspan="5" style="text-align:right">Total:</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>

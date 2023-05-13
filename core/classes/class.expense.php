@@ -105,6 +105,7 @@ class Expense extends Connection
             'supplier_id'   => $this->inputs['supplier_id'],
             'invoice_no'    => $this->inputs['invoice_no'],
             'amount'        => $this->inputs['amount'],
+            'description'   => $this->clean($this->inputs['description']),
         );
         return $this->insert($this->table_detail, $form);
     }

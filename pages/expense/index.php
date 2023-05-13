@@ -195,6 +195,9 @@
                     "data": "invoice_no"
                 },
                 {
+                    "data": "description"
+                },
+                {
                     "data": "amount"
                 },
             ]
