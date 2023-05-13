@@ -799,7 +799,7 @@ class Sales extends Connection
             $ClaimSlip->inputs['sales_id'] = $sales_id;
             $ClaimSlip->finish();
             if(count($remaining_qty)>0){
-                $ClaimSlip->inputs['claim_slip_id'] = $claim_slip_id;
+                $ClaimSlip->inputs['reference_number'] = $claim_slip_id;
                 $ClaimSlip->inputs['total_amount'] = $this->total($sales_id);
                 $ClaimSlip->add();
             }
