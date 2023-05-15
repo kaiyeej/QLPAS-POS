@@ -32,6 +32,46 @@ class CustomerPayment extends Connection
         return $result;
     }
 
+    public function addCustomerPaymentPOS(){
+
+        $Sales = new Sales;
+        $sales_reference_number = $this->inputs['sales_reference_number'];
+        $customer_payment_amount = $this->inputs['customer_payment_amount'];
+        $param = "reference_number='$sales_reference_number'";
+        $sales_id = $Sales->getID($param);
+        
+        $this->inputs[$this->fk_det] = $sales_id;
+        $this->inputs[$this->name] = $this->generate();
+
+        $Sales->inputs['id'] = $sales_id;
+        $sales_row = $Sales->view();
+
+        if($sales_row != null){
+            $this->inputs['customer_id'] = $sales_row['customer_id'];
+            $this->inputs['payment_type'] = "C";
+            $this->inputs['payment_date'] = $this->getCurrentDate();
+            $this->inputs['check_date'] = "";
+            $this->inputs['check_number'] = "";
+            $this->inputs['check_bank'] = "";
+            $this->inputs['payment_option_id'] = 0;
+
+            $primary_id = $this->add();
+            $this->inputs[$this->pk] = $primary_id;
+            $this->inputs['amount'] = $customer_payment_amount;
+            $res = $this->add_detail();
+            
+            if($res == 1){
+                $this->inputs['id'] = $primary_id;
+                return $this->finish();
+            }else{
+                return $res;
+            }
+
+        }else{
+            return 0;
+        }
+    }
+
     public function edit()
     {
         $form = array(
@@ -192,7 +232,8 @@ class CustomerPayment extends Connection
     public function add_detail()
     {
         $primary_id = $this->inputs[$this->pk];
-        $fk_det     = substr($this->inputs[$this->fk_det], 3);
+        //$fk_det     = substr($this->inputs[$this->fk_det], 3);
+        $fk_det     = $this->inputs[$this->fk_det];
         $type = substr($this->inputs[$this->fk_det], 0, 2);
 
         if ($type == "BB") {
