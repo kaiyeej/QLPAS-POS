@@ -57,6 +57,7 @@ class ClaimSlip extends Connection
             $row['total'] = number_format($total, 2);
             $row['total_nonformat'] = $total;
             $row['reference_number'] = $row['reference_number'];
+            $row['sales_num'] = $sales_row['reference_number'];
             $row['sales_type'] = $sales_row['sales_type'];
             $row['customer_id'] = $sales_row['customer_id'];
             $row['for_pickup'] = $sales_row['for_pickup'];
