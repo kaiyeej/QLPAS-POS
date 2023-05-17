@@ -617,29 +617,16 @@ class Sales extends Connection
                 $fetch = $this->select($this->table_detail, "sum((quantity*price)-discount) as total_charge_sales", "sales_id IN(" . implode(',', $rows) . ") ");
                 $sales_row = $fetch->fetch_assoc();
 
-                //$fetch_payment = $this->select("tbl_customer_payment_details", "sum(amount) as total_payment", "ref_id IN(" . implode(',', $rows) . ") AND type='DR' ");
-                //$payment_row = $fetch_payment->fetch_assoc();
-
-                /*$fetch_payment = $this->table("tbl_customer_payment as cp")
-                    ->join("tbl_customer_payment_details as cd", "cd.cp_id","=","cp.cp_id")
-                    ->selectRaw("sum(cd.amount) as total_payment")
-                    ->where("cd.ref_id", "IN(" . implode(',', $rows) . ")")
-                    ->where("cd.type","DR")
-                    ->where("cp.payment_type","C")
-                    ->where("cp.status","F")
-                    ->get();*/
-                $fetch_payment = $this->select("tbl_customer_payment as cp, tbl_customer_payment_details as cd", "sum(cd.amount) as total_payment", "cp.cp_id=cd.cp_id AND cd.ref_id IN(" . implode(',', $rows) . ") AND cp.payment_type='C' AND cp.status='F' ");
-
-                //SELECT sum(cd.amount) from tbl_customer_payment as cp INNER JOIN tbl_customer_payment_details as cd ON cp.cp_id=cd.cp_id WHERE cd.ref_id IN(2095,2096) AND cp.payment_type='C' AND cp.status='F'
-                $payment_row = $fetch_payment->fetch_assoc();
-
-                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'] * 1;
-                $sales_rows['total_payment'] = $payment_row['total_payment'] * 1;
-                return $sales_rows;
+                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'] * 1;   
             }
-        } else {
-            return 0;
+
         }
+        
+        $fetch_payment = $this->select("tbl_customer_payment as cp, tbl_customer_payment_details as cd", "sum(cd.amount) as total_payment", "cp.cp_id=cd.cp_id AND cp.payment_type='C' and cp.status='F' and cp.sales_summary_id=0 and encoded_by='$user_id' ");
+        $payment_row = $fetch_payment->fetch_assoc();
+
+        $sales_rows['total_payment'] = $payment_row['total_payment'] * 1;
+        return $sales_rows;
     }
 
     public function update_review_sales_summary()

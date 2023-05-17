@@ -509,6 +509,15 @@ class CustomerPayment extends Connection
         return $this->total_paid($sales_id, 'DR');
     }
 
+    public function update_review_sales_summary()
+    {
+        $encoded_by = $this->inputs['encoded_by'];
+        $form = array(
+            'sales_summary_id' => $this->inputs['sales_summary_id']
+        );
+        return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
+    }
+
     public static function search($words,&$rows)
     {
         $self = new self;
