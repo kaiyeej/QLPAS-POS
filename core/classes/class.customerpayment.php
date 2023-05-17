@@ -192,8 +192,7 @@ class CustomerPayment extends Connection
     public function add_detail()
     {
         $primary_id = $this->inputs[$this->pk];
-        //$fk_det     = substr($this->inputs[$this->fk_det], 3);
-        $fk_det     = $this->inputs[$this->fk_det];
+        $fk_det     = substr($this->inputs[$this->fk_det], 3);
         $type = substr($this->inputs[$this->fk_det], 0, 2);
 
         if ($type == "BB") {
@@ -467,12 +466,12 @@ class CustomerPayment extends Connection
     public function addCustomerPaymentPOS(){
 
         $Sales = new Sales;
-        $sales_reference_number = $this->inputs['sales_reference_number'];
+        $this->inputs[$this->fk_det] = $this->inputs['sales_reference_number'];
+        $sales_id     = substr($this->inputs['sales_reference_number'], 3);
         $customer_payment_amount = $this->inputs['customer_payment_amount'];
-        $param = "reference_number='$sales_reference_number'";
-        $sales_id = $Sales->getID($param);
+        //$param = "reference_number='$sales_reference_number'";
+        //$sales_id = $Sales->getID($param);
         
-        $this->inputs[$this->fk_det] = $sales_id;
         $this->inputs[$this->name] = $this->generate();
 
         $Sales->inputs['id'] = $sales_id;
@@ -506,9 +505,7 @@ class CustomerPayment extends Connection
 
     public function getCustomerBalancePerSales(){
         $Sales = new Sales;
-        $sales_reference_number = $this->inputs['sales_reference_number'];
-        $param = "reference_number='$sales_reference_number'";
-        $sales_id = $Sales->getID($param);
+        $sales_id = $this->inputs['sales_reference_number'];
         return $this->total_paid($sales_id, 'DR');
     }
 
