@@ -768,6 +768,7 @@ class Sales extends Connection
             $response['payments'] = $CustomerPayment->getPaymentByRef($sales_id);
             $response['total_qty'] = $total_qty;
             $response['total_amt'] = number_format($total_amt, 2);
+            $response['duplicate_copy'] = $settings_data['duplicate_order_slip'];
         } else if ($print_type == 'claim') {
             $ClaimSlip = new ClaimSlip();
             $ClaimSlip->inputs['sales_id'] = $sales_id;
@@ -788,6 +789,7 @@ class Sales extends Connection
             }
             $response['claim_slip_no'] = $claim_slip_id;
             $response['items'] = $items;
+            $response['duplicate_copy'] = $settings_data['duplicate_claim_slip'];
         } else {
 
             $StockWithdrawal = new StockWithdrawal();
@@ -799,6 +801,7 @@ class Sales extends Connection
             $response['reference_number'] = $StockWithdrawal->name($withdrawal_id);
             $response['items'] = $items;
             $response['withdrawal_date'] = date("Y-m-d H:i:s");
+            $response['duplicate_copy'] = $settings_data['duplicate_withdrawal_slip'];
         }
 
         return $response;

@@ -32,8 +32,16 @@ class Settings extends Connection
             'company_address'   => $this->clean($this->inputs['company_address']),
             'print_header'      => $this->clean($this->inputs['print_header']),
             'print_footer'      => $this->clean($this->inputs['print_footer']),
+            'duplicate_order_slip'      => 0,
+            'duplicate_withdrawal_slip' => 0,
+            'duplicate_claim_slip'      => 0,
         );
-
+        $loop = $this->inputs['allows'];
+        if (count($loop) > 0) {
+            foreach ($loop as $value) {
+                $form[$value] = 1;
+            }
+        }
         $result = $this->select($this->table, 'settings_id');
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();

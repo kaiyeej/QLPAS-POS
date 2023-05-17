@@ -15,31 +15,65 @@
         <br>
         <div id="tabsContent" class="tab-content">
             <div id="company-profile" class="tab-pane fade active show">
-                <div class="col-6">
-                    <h4 class="card-title">Company Profile</h4>
-                    <p class="card-description">
-                        Set your company profile here.
-                    </p>
+                
                     <form class="forms-sample" id="frm_submit_profile">
-                        <div class="form-group">
-                            <label for="company_name">Company Name</label>
-                            <input name="input[company_name]" type="text" class="form-control input-item" id="company_name" placeholder="Company Name" autocomplete="off">
+                        <div class="row">
+                        <div class="col-6">
+                            <h4 class="card-title">Company Profile</h4>
+                            <p class="card-description">
+                                Set your company profile here.
+                            </p>
+                            <div class="form-group">
+                                <label for="company_name">Company Name</label>
+                                <textarea name="input[company_name]" class="form-control input-item" id="company_name"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="company_address">Company Address</label>
+                                <textarea name="input[company_address]" class="form-control input-item" id="company_address"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="print_header">Customize Header Text (POS Print)</label>
+                                <textarea name="input[print_header]" class="form-control input-item" id="print_header"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="print_footer">Customize Footer Text (POS Print)</label>
+                                <textarea name="input[print_footer]" class="form-control input-item" id="print_footer"></textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="company_address">Company Address</label>
-                            <input name="input[company_address]" type="text" class="form-control input-item" id="company_address" placeholder="Company Address" autocomplete="off">
+                        <div class="col-6">
+                            <h4 class="card-title">&nbsp;</h4>
+                            <p class="card-description">
+                                Set POS printer settings.
+                            </p>
+                            <div class="list-wrapper px-3">
+                                <ul class="d-flex flex-column" id="report_column">
+                                    <li>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_order_slip" value="duplicate_order_slip" type="checkbox">Allow Cashier's Copy in Order Slip<i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_withdrawal_slip" value="duplicate_withdrawal_slip" type="checkbox">Allow Cashier's Copy in Withdrawal Slip<i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_claim_slip" value="duplicate_claim_slip" type="checkbox">Allow Cashier's Copy in Claim Slip<i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="print_header">Customize Header Text (POS Print)</label>
-                            <textarea name="input[print_header]" class="form-control input-item" id="print_header"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="print_footer">Customize Footer Text (POS Print)</label>
-                            <textarea name="input[print_footer]" class="form-control input-item" id="print_footer"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary mr-2" id="btn_submit_2">Submit</button>
                     </form>
-                </div>
             </div>
 
             <div id="access-codes" class="tab-pane fade">
@@ -142,6 +176,12 @@
                     $('.input-item').map(function() {
                         const id_name = this.id;
                         this.value = json[id_name];
+                    });
+
+                    $('.check-items').map(function() {
+                        if(json[this.id] == 1){
+                            this.checked = true;
+                        }
                     });
                 }
             }
