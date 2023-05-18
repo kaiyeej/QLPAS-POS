@@ -518,6 +518,13 @@ class CustomerPayment extends Connection
         return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
     }
 
+    public function get_pk_by_ref($ref_id,$type)
+    {
+        $result = $this->select('tbl_customer_payment as h, tbl_customer_payment_details as d', 'h.cp_id', "d.ref_id = '$ref_id' AND h.cp_id=d.cp_id AND d.type='$type'");
+        $row = $result->fetch_array();
+        return $row[0];
+    }
+
     public static function search($words,&$rows)
     {
         $self = new self;

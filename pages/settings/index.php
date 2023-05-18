@@ -68,6 +68,13 @@
                                             </label>
                                         </div>
                                     </li>
+                                    <li>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_payment_slip" value="duplicate_payment_slip" type="checkbox">Allow Cashier's Copy in Payment Slip<i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

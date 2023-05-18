@@ -711,7 +711,7 @@ class Sales extends Connection
         $print_type = $this->inputs['print_type'];
 
         $reference_number = $this->inputs['reference_number'];
-        $sales_id = $this->getID("reference_number = '$reference_number'");
+        $sales_id = $print_type == 'payment' ? $reference_number : $this->getID("reference_number = '$reference_number'");
 
         $this->inputs['id'] = $sales_id;
         $header_data = $this->view();
@@ -728,6 +728,7 @@ class Sales extends Connection
             'current_time' => date('m/d/Y h:i:s A'),
             'cashier' => $Users->getUser($header_data['encoded_by']),
             'customer' => $header_data['customer_name'],
+            'order_no' => $header_data['reference_number'],
         ];
 
         if ($print_type == 'sales') {
@@ -790,6 +791,17 @@ class Sales extends Connection
             $response['claim_slip_no'] = $claim_slip_id;
             $response['items'] = $items;
             $response['duplicate_copy'] = $settings_data['duplicate_claim_slip'];
+        } else if ($print_type == 'payment') {
+            $CustomerPayment = new CustomerPayment();
+            $payment_amount = $CustomerPayment->total_paid($sales_id, "DR");
+            $cp_id = $CustomerPayment->get_pk_by_ref($sales_id, "DR");
+            $CustomerPayment->inputs['id'] = $cp_id;
+            $payment_data = $CustomerPayment->view();
+
+            $response['payment_slip_no'] = $payment_data['reference_number'];
+            $response['payment_date'] = $payment_data['payment_date'];
+            $response['payment_amount'] = (float) $payment_amount;
+            $response['duplicate_copy'] = $settings_data['duplicate_payment_slip'];
         } else {
 
             $StockWithdrawal = new StockWithdrawal();
