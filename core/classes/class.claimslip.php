@@ -60,7 +60,7 @@ class ClaimSlip extends Connection
             $row['sales_num'] = $sales_row['reference_number'];
             $row['sales_type'] = $sales_row['sales_type'];
             $row['customer_id'] = $sales_row['customer_id'];
-            $row['for_pickup'] = $sales_row['for_pickup'];
+            $row['for_pick_up'] = $sales_row['for_pick_up'];
 
             $rows[] = $row;
         }
