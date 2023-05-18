@@ -89,6 +89,10 @@ class Settings extends Connection
                     $this->metadata('company_address', 'varchar', 100),
                     $this->metadata('print_header', 'text'),
                     $this->metadata('print_footer', 'text'),
+                    $this->metadata('duplicate_order_slip', 'int' , 1),
+                    $this->metadata('duplicate_withdrawal_slip', 'int' , 1),
+                    $this->metadata('duplicate_claim_slip', 'int' , 1),
+                    $this->metadata('duplicate_payment_slip', 'int' , 1),
                     $default['date_added'],
                     $default['date_last_modified']
                 )

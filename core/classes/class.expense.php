@@ -164,4 +164,42 @@ class Expense extends Connection
             }
         }
     }
+
+    public function schema()
+    {
+        $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
+        $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', '', 'ON UPDATE CURRENT_TIMESTAMP');
+
+        // TABLE HEADER
+        $tables[] = array(
+            'name'      => $this->table,
+            'primary'   => $this->pk,
+            'fields' => array(
+                $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                $this->metadata($this->name, 'varchar', 50),
+                $this->metadata('expense_date', 'datetime', 'NOT NULL'),
+                $this->metadata('remarks', 'varchar', 255, 'NOT NULL'),
+                $this->metadata('status', 'varchar', 1, 'NOT NULL'),
+                $this->metadata('encoded_by', 'int', 11, 'NOT NULL'),
+                $default['date_added'],
+                $default['date_last_modified']
+            )
+        );
+
+        // TABLE DETAIL
+        $tables[] = array(
+            'name'      => $this->table_detail,
+            'primary'   => $this->pk2,
+            'fields' => array(
+                $this->metadata($this->pk2, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                $this->metadata($this->pk, 'int', 11),
+                $this->metadata('supplier_id', 'int', 11),
+                $this->metadata('expense_category_id', 'int', 11),
+                $this->metadata('invoice_no', 'varchar', '15'),
+                $this->metadata('amount', 'decimal', '12,2'),
+                $this->metadata('description', 'text')
+            )
+        );
+        return $this->schemaCreator($tables);
+    }
 }
