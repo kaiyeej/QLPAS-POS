@@ -544,4 +544,54 @@ class CustomerPayment extends Connection
             }
         }
     }
+
+    public function schema()
+    {
+        if (DEVELOPMENT) {
+            $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
+            $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', '', 'ON UPDATE CURRENT_TIMESTAMP');
+            $default['encoded_by'] = $this->metadata('encoded_by', 'int', 11);
+
+
+            // TABLE HEADER
+            $tables[] = array(
+                'name'      => $this->table,
+                'primary'   => $this->pk,
+                'fields' => array(
+                    $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                    $this->metadata($this->name, 'varchar', 75),
+                    $this->metadata('customer_id', 'int', 11),
+                    $this->metadata('payment_type', 'varchar', 1),
+                    $this->metadata('payment_option_id', 'int', 11),
+                    $this->metadata('payment_date', 'date'),
+                    $this->metadata('remarks', 'varchar', 255),
+                    $this->metadata('sales_date', 'date'),
+                    $this->metadata('status', 'varchar', 1),
+                    $this->metadata('deposit_status', 'int', 1, '', '0', '', "'1 = Deposited'"),
+                    $this->metadata('check_number', 'varchar', 30),
+                    $this->metadata('check_bank', 'varchar', 30),
+                    $this->metadata('check_date', 'date'),
+                    $this->metadata('sales_summary_id', 'int', 11),
+                    $default['encoded_by'],
+                    $default['date_added'],
+                    $default['date_last_modified']
+                )
+            );
+
+            // TABLE DETAILS
+            $tables[] = array(
+                'name'      => $this->table_detail,
+                'primary'   => $this->pk2,
+                'fields' => array(
+                    $this->metadata($this->pk2, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                    $this->metadata($this->pk, 'int', 11),
+                    $this->metadata($this->fk_det, 'int', 11),
+                    $this->metadata('amount', 'decimal', '12,2'),
+                    $this->metadata('type', 'varchar', '2'),
+                )
+            );
+
+            return $this->schemaCreator($tables);
+        }
+    }
 }
