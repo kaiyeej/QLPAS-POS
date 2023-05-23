@@ -10,14 +10,15 @@
         <ul id="tabs" class="nav nav-tabs">
             <li class="nav-item"><a href="" data-target="#company-profile" data-toggle="tab" class="nav-link small text-uppercase active">Company Profile</a></li>
             <li class="nav-item"><a href="" data-target="#access-codes" data-toggle="tab" class="nav-link small text-uppercase">Access Codes</a></li>
+            <li class="nav-item"><a href="" data-target="#backup" data-toggle="tab" class="nav-link small text-uppercase">Backup Database</a></li>
             <li class="nav-item" style="display:none;"><a href="" data-target="#version-update" data-toggle="tab" class="nav-link small text-uppercase">Version Update</a></li>
         </ul>
         <br>
         <div id="tabsContent" class="tab-content">
             <div id="company-profile" class="tab-pane fade active show">
-                
-                    <form class="forms-sample" id="frm_submit_profile">
-                        <div class="row">
+
+                <form class="forms-sample" id="frm_submit_profile">
+                    <div class="row">
                         <div class="col-6">
                             <h4 class="card-title">Company Profile</h4>
                             <p class="card-description">
@@ -41,11 +42,18 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <h4 class="card-title">&nbsp;</h4>
+                            <p class="card-description">
+                                Set your rewards points value.
+                            </p>
+                            <div class="form-group">
+                                <label for="print_header">Amount for every one point e.g., <mark class="bg-success text-white">P 1000 = +1 point</mark></label>
+                                <input type="number" name="input[rewards_point_factor]" class="form-control input-item" id="rewards_point_factor" required>
+                            </div>
+                            <hr>
                             <p class="card-description">
                                 Set POS printer settings.
                             </p>
-                            <div class="list-wrapper px-3">
+                            <div class="list-wrapper px-3" style="overflow: auto;">
                                 <ul class="d-flex flex-column" id="report_column">
                                     <li>
                                         <div class="form-check">
@@ -78,9 +86,9 @@
                                 </ul>
                             </div>
                         </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary mr-2" id="btn_submit_2">Submit</button>
-                    </form>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2" id="btn_submit_2">Submit</button>
+                </form>
             </div>
 
             <div id="access-codes" class="tab-pane fade">
@@ -125,7 +133,19 @@
                     </div>
                 </form>
             </div>
-
+            <div id="backup" class="tab-pane fade">
+                <div class="col-12">
+                    <h4 class="card-title">Backup Database</h4>
+                    <p class="card-description">
+                        Backup your database for future reference.
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary mr-2" id="btn_backup" onclick="backupDatabase()">Backup Database</button>
+                    </div>
+                </div>
+            </div>
             <div id="version-update" class="tab-pane fade">
                 <div class="col-12">
                     <h4 class="card-title">Version Update</h4>
@@ -186,7 +206,7 @@
                     });
 
                     $('.check-items').map(function() {
-                        if(json[this.id] == 1){
+                        if (json[this.id] == 1) {
                             this.checked = true;
                         }
                     });
@@ -195,8 +215,8 @@
         });
     }
 
-    function pullVersionControl(){
-        $("#btn_pull").prop("disabled",true);
+    function pullVersionControl() {
+        $("#btn_pull").prop("disabled", true);
         $.ajax({
             type: "POST",
             url: "controllers/sql.php?c=Settings&q=version",
@@ -204,7 +224,26 @@
                 var jsonParse = JSON.parse(data);
                 const json = jsonParse.data;
                 $("#output_pull").html(json);
-                $("#btn_pull").prop("disabled",false);
+                $("#btn_pull").prop("disabled", false);
+            }
+        });
+    }
+
+    function backupDatabase() {
+        $("#btn_backup").prop("disabled", true);
+        $("#btn_backup").html("<span class='fa fa-spin fa-spinner'></span> Backuping database");
+        $.ajax({
+            url: "controllers/sql.php?c=Settings&q=backup",
+            type: 'GET',
+            success: function(response) {
+                swal("Success!", "Successfully backed up database!", "success");
+                // Handle the success response (e.g., display a success message, initiate download, etc.)
+                $("#btn_backup").prop("disabled", false);
+                $("#btn_backup").html("Backup Database");
+            },
+            error: function(xhr, status, error) {
+                // Handle the error response
+                swal("Error!", "Please contact your support!", "warning");
             }
         });
     }
