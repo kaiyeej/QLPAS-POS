@@ -74,4 +74,19 @@ class ClaimSlip extends Connection
         $row = $result->fetch_assoc();
         return $row[$this->name];
     }
+
+    public function runner()
+    {
+        $Sales = new Sales;
+        $result = $this->select("tbl_sales", "sales_id", "withdrawal_status = '1'");
+        while($row = $result->fetch_assoc()){
+            $reference_number = $this->generate();
+            $sales_id = $row['sales_id'];
+            $total_amount = $Sales->total($sales_id);
+            $this->inputs['reference_number'] = $reference_number;
+            $this->inputs['sales_id'] = $sales_id;
+            $this->inputs['total_amount'] = $total_amount;
+            $this->add();            
+        }
+    }
 }
