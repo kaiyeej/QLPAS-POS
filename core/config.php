@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
-
+ini_set('date.timezone','Asia/Manila');
+date_default_timezone_set('Asia/Manila');
 require 'env.php';
 
 // connection

@@ -85,8 +85,12 @@ class SalesSummary extends Connection
         $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
         if($res == 1){
             $Sales = new Sales();
+            $CustomerPayment = new CustomerPayment;
             $Sales->inputs['sales_summary_id'] = $primary_id;
             $Sales->inputs['encoded_by'] = $this->inputs['encoded_by'];
+            $CustomerPayment->inputs['sales_summary_id'] = $primary_id;
+            $CustomerPayment->inputs['encoded_by'] = $this->inputs['encoded_by'];
+            $CustomerPayment->update_review_sales_summary();
             return $Sales->update_review_sales_summary();
         }
     }

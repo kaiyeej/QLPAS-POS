@@ -236,6 +236,7 @@
 
 
     $(document).ready(function() {
+        schema();
         getEntries();
         getSelectOption('Customers', 'customer_id', 'customer_name');
         getSelectOption('PaymentOption', 'payment_option_id', 'payment_option');
