@@ -640,8 +640,9 @@ class Sales extends Connection
 
     public function released()
     {
+        $StockWithdrawal = new StockWithdrawal;
         $sales_id = $this->inputs['sales_id'];
-        $ref_number = 'SW-' . date('YmdHis');
+        $ref_number = $StockWithdrawal->generate(); //'SW-' . date('YmdHis');
         $r_qty = $this->inputs['r_qty'];
         $r_id = $this->inputs['r_id'];
         $p_id = $this->inputs['p_id'];
@@ -669,7 +670,6 @@ class Sales extends Connection
             // }
         }, $r_id, $r_qty, $p_id);
 
-        $StockWithdrawal = new StockWithdrawal();
         $StockWithdrawal->finish($withdrawal_id);
     }
 
