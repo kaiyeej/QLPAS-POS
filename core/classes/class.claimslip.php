@@ -92,4 +92,25 @@ class ClaimSlip extends Connection
             $ClaimSlip->add();            
         }
     }
+
+    public function finish_checker()
+    {
+        $StockWithdrawal = new StockWithdrawal;
+
+        $result = $this->select($this->table, "*", "status = 'S'");
+        while($row = $result->fetch_assoc()){
+
+            $sales_id = $row['sales_id'];
+            $result2 = $this->select("tbl_sales_details", 'sales_detail_id', "sales_id = '$sales_id'");
+            $remain_qty = 0;
+            while ($row2 = $result2->fetch_assoc()) {
+                $remain_qty += $StockWithdrawal->remaining_qty($row2['sales_detail_id']);
+            }
+
+            if($remain_qty == 0){
+                $this->update($this->table, ["status" => "F"], "sales_id = '$sales_id'");
+            }
+        }
+        return 1;
+    }
 }
