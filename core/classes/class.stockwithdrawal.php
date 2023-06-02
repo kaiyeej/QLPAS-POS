@@ -150,11 +150,23 @@ class StockWithdrawal extends Connection
         } else {
             $getID = $this->select($this->table, 'sales_id', "withdrawal_id='$primary_id'");
             $sales_id = $getID->fetch_assoc();
+            
+            $ClaimSlip = new ClaimSlip;
+            $ClaimSlip->inputs['sales_id'] = $sales_id['sales_id'];
+            $ClaimSlip->finish();
+
             if ($total <= 0) {
                 $form_ = array(
                     'withdrawal_status' => 0,
                 );
                 $this->update("tbl_sales", $form_, "sales_id = '$sales_id[sales_id]'");
+            }else{
+                $ClaimSlip = new ClaimSlip;
+                $Sales = new Sales;
+                $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
+                $ClaimSlip->inputs['sales_id'] = $sales_id['sales_id'];
+                $ClaimSlip->inputs['total_amount'] = $Sales->total($sales_id['sales_id']);
+                $ClaimSlip->add();
             }
 
             $form = array(
