@@ -10,31 +10,38 @@
 
             <div class="col-12 col-xl-12 card shadow mb-4">
                 <div class="card-header py-3">
-                <div class="form-group row">
+                    <div class="form-group row">
                         <div class="col">
                             <label><strong>Start Date</strong></label>
                             <div>
-                                <input type="date" required class="form-control form-control-sm" id="start_date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" name="input[start_date]">
+                                <input type="date" required class="form-control form-control-sm" id="start_date"
+                                    value="<?php echo date('Y-m-01', strtotime(date(" Y-m-d"))); ?>"
+                                name="input[start_date]">
                             </div>
                         </div>
                         <div class="col">
                             <label><strong>End Date</strong></label>
                             <div>
-                                <input type="date" required class="form-control form-control-sm" id="end_date" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" name="input[end_date]">
+                                <input type="date" required class="form-control form-control-sm" id="end_date"
+                                    value="<?php echo date('Y-m-t', strtotime(date(" Y-m-d"))) ?>"
+                                name="input[end_date]">
                             </div>
                         </div>
                         <div class="col">
                             <label>&nbsp;</label>
                             <div>
-                                
+
                                 <div class="btn-group">
-                                    <a href="#" class="btn btn-primary btn-sm" style="padding: 10px;" onclick="getEntries()">
+                                    <a href="#" class="btn btn-primary btn-sm" style="padding: 10px;"
+                                        onclick="getEntries()">
                                         <span class="text"> Generate</span>
                                     </a>
-                                    <a href="#" class="btn btn-success btn-sm" style="padding: 10px;" onclick="addModal()">
+                                    <a href="#" class="btn btn-success btn-sm" style="padding: 10px;"
+                                        onclick="addModal()">
                                         <span class="text">Add Entry</span>
                                     </a>
-                                    <a href="#" class="btn btn-danger btn-sm" style="padding: 10px;" onclick='deleteEntry()' id='btn_delete'>
+                                    <a href="#" class="btn btn-danger btn-sm" style="padding: 10px;"
+                                        onclick='deleteEntry()' id='btn_delete'>
                                         <span class="text">Delete Entry</span>
                                     </a>
                                 </div>
@@ -71,57 +78,57 @@
 <?php include 'modal_expense.php' ?>
 <script type="text/javascript">
     function getEntries() {
-        var  start_date = $("#start_date").val();
+        var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var param = "(expense_date >= '"+start_date+"' AND expense_date <= '"+end_date+"')";
+        var param = "(expense_date >= '" + start_date + "' AND expense_date <= '" + end_date + "')";
 
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
-            "order": [[ 3, 'desc' ]],
+            "order": [[3, 'desc']],
             "ajax": {
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
                 "dataSrc": "data",
                 "type": "POST",
                 "data": {
                     input: {
-                        param:param
+                        param: param
                     }
                 }
             },
             "columns": [{
-                    "mRender": function(data, type, row) {
-                        return row.status == 'F' ? '' : "<input type='checkbox' value=" + row.expense_id + " class='dt_id' style='position: initial; opacity:1;'>";
-                    }
-                },
-                {
-                    "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.expense_id + ")'><span class='ti ti-list'></span></button></center>";
-                    }
-                },
-                {
-                    "data": "expense_date"
-                },
-                {
-                    "data": "reference_number"
-                },
-                {
-                    "data": "total"
-                },
-                {
-                    "data": "encoded_name"
-                },
-                {
-                    "mRender": function(data, type, row) {
-                        return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : "<span class='badge badge-danger'>Saved</span>";
-                    }
-                },
-                {
-                    "data": "date_added"
-                },
-                {
-                    "data": "date_last_modified"
+                "mRender": function(data, type, row) {
+                    return row.status == 'F' ? '' : "<input type='checkbox' value=" + row.expense_id + " class='dt_id' style='position: initial; opacity:1;'>";
                 }
+            },
+            {
+                "mRender": function(data, type, row) {
+                    return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.expense_id + ")'><span class='ti ti-list'></span></button></center>";
+                }
+            },
+            {
+                "data": "expense_date"
+            },
+            {
+                "data": "reference_number"
+            },
+            {
+                "data": "total"
+            },
+            {
+                "data": "encoded_name"
+            },
+            {
+                "mRender": function(data, type, row) {
+                    return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : "<span class='badge badge-danger'>Saved</span>";
+                }
+            },
+            {
+                "data": "date_added"
+            },
+            {
+                "data": "date_last_modified"
+            }
             ]
         });
     }
@@ -154,12 +161,12 @@
                     return typeof i === 'string' ?
                         i.replace(/[\$,]/g, '') * 1 :
                         typeof i === 'number' ?
-                        i : 0;
+                            i : 0;
                 };
 
                 // Total over all pages
                 total = api
-                    .column(4)
+                    .column(5)
                     .data()
                     .reduce(function(a, b) {
                         return intVal(a) + intVal(b);
@@ -167,7 +174,7 @@
 
                 // Total over this page
                 pageTotal = api
-                    .column(4, {
+                    .column(5, {
                         page: 'current'
                     })
                     .data()
@@ -176,30 +183,30 @@
                     }, 0);
 
                 // Update footer
-                $(api.column(4).footer()).html(
-                    "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total).toFixed(2))) 
+                $(api.column(5).footer()).html(
+                    "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total).toFixed(2)))
                 );
             },
             "columns": [{
-                    "mRender": function(data, type, row) {
-                        return "<input type='checkbox' value=" + row.expense_detail_id + " class='dt_id_2' style='position: initial; opacity:1;'>";
-                    }
-                },
-                {
-                    "data": "expense_category"
-                },
-                {
-                    "data": "supplier"
-                },
-                {
-                    "data": "invoice_no"
-                },
-                {
-                    "data": "description"
-                },
-                {
-                    "data": "amount"
-                },
+                "mRender": function(data, type, row) {
+                    return "<input type='checkbox' value=" + row.expense_detail_id + " class='dt_id_2' style='position: initial; opacity:1;'>";
+                }
+            },
+            {
+                "data": "expense_category"
+            },
+            {
+                "data": "supplier"
+            },
+            {
+                "data": "invoice_no"
+            },
+            {
+                "data": "description"
+            },
+            {
+                "data": "amount"
+            },
             ]
         });
     }
