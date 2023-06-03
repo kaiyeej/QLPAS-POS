@@ -32,7 +32,7 @@ class ClaimSlip extends Connection
     {
         $fetch = $this->select($this->table, "max(claim_slip_id) + 1 as max_id");
         $row = $fetch->fetch_assoc();
-        if($row['max_id'] > 0)
+        if ($row['max_id'] > 0)
             return sprintf("%'.06d", $row['max_id']);
         return sprintf("%'.06d", 1);
     }
@@ -70,7 +70,7 @@ class ClaimSlip extends Connection
     public function get_claimslip()
     {
         $sales_id = $this->inputs['sales_id'];
-        $result = $this->select($this->table, $this->name, "sales_id = '$sales_id'");
+        $result = $this->select($this->table, $this->name, "sales_id = '$sales_id' AND status = 'S'");
         $row = $result->fetch_assoc();
         return $row[$this->name];
     }
@@ -79,7 +79,7 @@ class ClaimSlip extends Connection
     {
         $Sales = new Sales;
         $result = $this->select("tbl_sales", "sales_id", "withdrawal_status = '1'");
-        while($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
 
             $ClaimSlip = new ClaimSlip;
             $reference_number = $ClaimSlip->generate();
@@ -89,7 +89,7 @@ class ClaimSlip extends Connection
             $ClaimSlip->inputs['reference_number'] = $reference_number;
             $ClaimSlip->inputs['sales_id'] = $sales_id;
             $ClaimSlip->inputs['total_amount'] = $total_amount;
-            $ClaimSlip->add();            
+            $ClaimSlip->add();
         }
     }
 
@@ -98,7 +98,7 @@ class ClaimSlip extends Connection
         $StockWithdrawal = new StockWithdrawal;
 
         $result = $this->select($this->table, "*", "status = 'S'");
-        while($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
 
             $sales_id = $row['sales_id'];
             $result2 = $this->select("tbl_sales_details", 'sales_detail_id', "sales_id = '$sales_id'");
@@ -107,7 +107,7 @@ class ClaimSlip extends Connection
                 $remain_qty += $StockWithdrawal->remaining_qty($row2['sales_detail_id']);
             }
 
-            if($remain_qty == 0){
+            if ($remain_qty == 0) {
                 $this->update($this->table, ["status" => "F"], "sales_id = '$sales_id'");
             }
         }
