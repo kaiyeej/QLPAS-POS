@@ -242,6 +242,7 @@
     }
 
     $(document).ready(function() {
+        schema();
         getEntries();
     });
 
