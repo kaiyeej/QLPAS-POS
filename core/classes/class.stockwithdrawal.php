@@ -11,7 +11,7 @@ class StockWithdrawal extends Connection
 
     public $module_name = "Stock Withdrawal";
     public $inputs = [];
-    public $searchable = ['reference_number','remarks'];
+    public $searchable = ['reference_number', 'remarks'];
     public $uri = "stock-withdrawal";
     public function add()
     {
@@ -145,28 +145,28 @@ class StockWithdrawal extends Connection
             $counter += $row['qty'];
         }
 
+        $sales_id = $this->sales_id($primary_id);
+
         if ($counter <= 0) {
             return -1;
         } else {
-            $getID = $this->select($this->table, 'sales_id', "withdrawal_id='$primary_id'");
-            $sales_id = $getID->fetch_assoc();
-            
+
             $ClaimSlip = new ClaimSlip;
-            $ClaimSlip->inputs['sales_id'] = $sales_id['sales_id'];
+            $ClaimSlip->inputs['sales_id'] = $sales_id;
             $ClaimSlip->finish();
 
             if ($total <= 0) {
                 $form_ = array(
                     'withdrawal_status' => 0,
                 );
-                $this->update("tbl_sales", $form_, "sales_id = '$sales_id[sales_id]'");
-            }else{
-                $ClaimSlip = new ClaimSlip;
+                $this->update("tbl_sales", $form_, "sales_id = '$sales_id'");
+            } else {
+                $ClaimSlip2 = new ClaimSlip;
                 $Sales = new Sales;
-                $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
-                $ClaimSlip->inputs['sales_id'] = $sales_id['sales_id'];
-                $ClaimSlip->inputs['total_amount'] = $Sales->total($sales_id['sales_id']);
-                $ClaimSlip->add();
+                $ClaimSlip2->inputs['reference_number'] = $ClaimSlip2->generate();
+                $ClaimSlip2->inputs['sales_id'] = $sales_id;
+                $ClaimSlip2->inputs['total_amount'] = $Sales->total($sales_id);
+                $ClaimSlip2->add();
             }
 
             $form = array(
@@ -280,6 +280,14 @@ class StockWithdrawal extends Connection
         }
     }
 
+    public function sales_id($primary_id)
+    {
+
+        $result = $this->select($this->table, "sales_id", "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row['sales_id'];
+    }
+
     private function delete_sales_details()
     {
         $query = "CREATE TRIGGER `delete_po_details` AFTER DELETE ON `tbl_purchase_order` FOR EACH ROW DELETE FROM tbl_purchase_order_details WHERE po_id = OLD.po_id";
@@ -295,7 +303,7 @@ class StockWithdrawal extends Connection
         $query = "CREATE TRIGGER `add_transaction_in` AFTER INSERT ON `tbl_sales_details` FOR EACH ROW INSERT INTO tbl_product_transactions (product_id,quantity,cost,price,header_id,detail_id,module,type) VALUES (NEW.product_id,NEW.quantity,NEW.cost,NEW.price,NEW.sales_id,NEW.sales_detail_id,'SLS','OUT')";
     }
 
-    
+
     public function getHeader()
     {
         $Customers = new Customers;
@@ -319,21 +327,21 @@ class StockWithdrawal extends Connection
         return $rows;
     }
 
-    public static function search($words,&$rows)
+    public static function search($words, &$rows)
     {
         $self = new self;
-        if(count($self->searchable) > 0 ){
-            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+        if (count($self->searchable) > 0) {
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable) . " LIKE '%$words%'";
             $result = $self->select($self->table, '*', $where);
             while ($row = $result->fetch_assoc()) {
                 $names = [];
-                foreach($self->searchable as $f){
+                foreach ($self->searchable as $f) {
                     $names[] = $row[$f];
                 }
                 $rows[] = array(
                     'name' => implode(" ", $names),
                     'module' => $self->module_name,
-                    'slug' => $self->uri."?id=".$row[$self->pk]
+                    'slug' => $self->uri . "?id=" . $row[$self->pk]
                 );
             }
         }
