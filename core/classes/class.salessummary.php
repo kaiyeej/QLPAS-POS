@@ -70,9 +70,10 @@ class SalesSummary extends Connection
     {
         $row = $this->getLatestSalesSummary();
         $primary_id = $row['sales_summary_id'];
-        $total_sales_amount = $this->inputs['ss_total_sales_amount'];
-        $total_amount_collected = $this->inputs['ss_total_amount_collected'];
         $starting_balance = $this->inputs['ss_starting_balance'];
+        $total_sales_amount = $this->inputs['ss_total_sales_amount'];
+        $total_sales_amount = $total_sales_amount - $starting_balance;
+        $total_amount_collected = $this->inputs['ss_total_amount_collected'];
         $total_deficit = $starting_balance + $total_sales_amount - $total_amount_collected;
 
         $form = array(
