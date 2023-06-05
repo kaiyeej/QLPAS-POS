@@ -557,7 +557,7 @@ class Sales extends Connection
         if ($res == 1) {
 
             // add claim slip
-            if($this->inputs['for_pickup'] == 1 && $this->inputs['action'] != "wp"){
+            if ($this->inputs['for_pickup'] == 1 && $this->inputs['action'] != "wp") {
                 $ClaimSlip = new ClaimSlip;
                 $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
                 $ClaimSlip->inputs['sales_id'] = $primary_id;
@@ -617,11 +617,10 @@ class Sales extends Connection
                 $fetch = $this->select($this->table_detail, "sum((quantity*price)-discount) as total_charge_sales", "sales_id IN(" . implode(',', $rows) . ") ");
                 $sales_row = $fetch->fetch_assoc();
 
-                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'] * 1;   
+                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'] * 1;
             }
-
         }
-        
+
         $fetch_payment = $this->select("tbl_customer_payment as cp, tbl_customer_payment_details as cd", "sum(cd.amount) as total_payment", "cp.cp_id=cd.cp_id AND cp.payment_type='C' and cp.status='F' and cp.sales_summary_id=0 and encoded_by='$user_id' ");
         $payment_row = $fetch_payment->fetch_assoc();
 
@@ -650,7 +649,7 @@ class Sales extends Connection
         $form = array(
             $this->name => $ref_number,
             'sales_id' => $sales_id,
-            'withdrawal_date' => $this->sales_date($sales_id),
+            'withdrawal_date' => date("Y-m-d"), //$this->sales_date($sales_id),
             'status' => 'S',
             'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
         );
@@ -781,7 +780,7 @@ class Sales extends Connection
             $items = [];
             foreach ($details as $row) {
                 $remaining_qty = (float) $StockWithdrawal->remaining_qty($row['sales_detail_id']);
-                if($remaining_qty > 0){
+                if ($remaining_qty > 0) {
                     $items[] = [
                         'remaining_qty' => $remaining_qty,
                         'product' => substr(strtoupper($row['product']), 0, 30)
@@ -819,7 +818,8 @@ class Sales extends Connection
         return $response;
     }
 
-    public function getLastSales(){
+    public function getLastSales()
+    {
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $fetch = $this->select($this->table, "sales_id", $param);
         $row = $fetch->fetch_assoc();
