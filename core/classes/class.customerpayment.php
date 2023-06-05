@@ -300,9 +300,9 @@ class CustomerPayment extends Connection
     public function addPaymentPOS()
     {
 
-        $amount = $this->inputs['amount'];
-        $totalPayable = $this->inputs['total_payment_amount'];
-        $amount_paid = $this->getTotalPaymentPOS();
+        $amount = $this->inputs['amount'] * 1;
+        $totalPayable = $this->inputs['total_payment_amount'] * 1;
+        $amount_paid = $this->getTotalPaymentPOS() * 1;
 
         if (($amount + $amount_paid) <= $totalPayable) {
             $Sales = new Sales;

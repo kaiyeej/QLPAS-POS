@@ -557,7 +557,7 @@ class Sales extends Connection
         if ($res == 1) {
 
             // add claim slip
-            if($this->inputs['for_pickup'] == 1){
+            if($this->inputs['for_pickup'] == 1 && $this->inputs['action'] != "wp"){
                 $ClaimSlip = new ClaimSlip;
                 $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
                 $ClaimSlip->inputs['sales_id'] = $primary_id;
