@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Credit Memo</h3>
-                    <h6 class="font-weight-normal mb-0">Manage credit memo here</h6>
+                    <h6 class="font-weight-normal mb-0">Manage credit memo here. Use this module to encode customer discounts, supplier's interests, and other transactions related to debit in Accounts Payable and credit in Accounts Receivable.</h6>
                 </div>
             </div>
 
@@ -242,6 +242,7 @@
     }
 
     $(document).ready(function() {
+        schema();
         getEntries();
     });
 

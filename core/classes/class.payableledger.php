@@ -12,12 +12,14 @@ class PayableLedger extends Connection
         
         $rows = array();
 
-        $result = $this->select("tbl_purchase_order","reference_number","supplier_id='$supplier_id' AND (po_date >= '$start_date' AND po_date <= '$end_date') AND status='F' AND po_type='H' UNION ALL SELECT reference_number FROM tbl_supplier_payment WHERE supplier_id='$supplier_id' AND (payment_date >= '$start_date' AND payment_date <= '$end_date') AND status='F' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$supplier_id' AND (bb_date >= '$start_date' AND bb_date <= '$end_date') AND bb_module='AP'");
+        $result = $this->select("tbl_purchase_order","reference_number","supplier_id='$supplier_id' AND (po_date >= '$start_date' AND po_date <= '$end_date') AND status='F' AND po_type='H' UNION ALL SELECT reference_number FROM tbl_supplier_payment WHERE supplier_id='$supplier_id' AND (payment_date >= '$start_date' AND payment_date <= '$end_date') AND status='F' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$supplier_id' AND (bb_date >= '$start_date' AND bb_date <= '$end_date') AND bb_module='AP' UNION ALL SELECT reference_number FROM tbl_credit_memo WHERE account_id='$supplier_id' AND (memo_date >= '$start_date' AND memo_date <= '$end_date') AND status='F' AND memo_type='AP' UNION ALL SELECT reference_number FROM tbl_debit_memo WHERE account_id='$supplier_id' AND (memo_date >= '$start_date' AND memo_date <= '$end_date') AND status='F' AND memo_type='AP'");
         
         $PurchaseOrder = new PurchaseOrder;
         $SupplierPayment = new SupplierPayment;
         $BeginningBalance = new BeginningBalance;
         $PurchaseReturn = new PurchaseReturn;
+        $CreditMemo = new CreditMemo;
+        $DebitMemo = new DebitMemo;
         $bf = $this->total();
         $balance = (float) $bf[0];
         while ($row = $result->fetch_assoc()) {
@@ -47,6 +49,22 @@ class PayableLedger extends Connection
                 $credit = 0;
                 $balance += $debit;
                 $date = $BeginningBalance->get_row($id, 'bb_date');
+                $ref_number = $row['reference_number'];
+            }else if($trans == "CM"){
+                $trans = "Credit Memo";
+                $id = $CreditMemo->pk_by_name($row['reference_number']);
+                $credit = 0;
+                $debit = $CreditMemo->total($id);
+                $balance += $debit;
+                $date = $CreditMemo->get_row($id, 'memo_date');
+                $ref_number = $row['reference_number'];
+            }else if($trans == "DM"){
+                $trans = "Debit Memo";
+                $id = $DebitMemo->pk_by_name($row['reference_number']);
+                $credit = $DebitMemo->total($id);
+                $debit = 0;
+                $balance -= $credit;
+                $date = $DebitMemo->get_row($id, 'memo_date');
                 $ref_number = $row['reference_number'];
             }
 
@@ -84,7 +102,14 @@ class PayableLedger extends Connection
         $get_bb = $this->select("tbl_beginning_balance","sum(bb_amount)","bb_ref_id='$supplier_id' AND bb_date < '$start_date' AND bb_module='AP'");
         $total_bb = $get_bb->fetch_array();
 
-        $bf = ($total_po[0]+$total_bb[0])-($total_payment[0]+$total_pr);
+        
+        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d","sum(d.amount)","h.account_id='$supplier_id' AND h.memo_date < '$start_date'  AND memo_type='AP' AND h.status='F' AND h.cm_id=d.cm_id");
+        $total_cm = $get_credit_memo->fetch_array();
+
+        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d","sum(d.amount)","h.account_id='$supplier_id' AND h.memo_date < '$start_date'  AND memo_type='AP' AND h.status='F' AND h.dm_id=d.dm_id");
+        $total_dm = $get_debit_memo->fetch_array();
+
+        $bf = ($total_po[0]+$total_bb[0]+$total_cm[0])-($total_payment[0]+$total_pr+$total_dm[0]);
         $total = "";
         
         return [$bf,$total];

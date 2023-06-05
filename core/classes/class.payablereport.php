@@ -44,7 +44,13 @@ class PayableReport extends Connection
         $get_payment_bb = $this->select("tbl_supplier_payment AS sh, tbl_supplier_payment_details AS sd", "SUM(sd.amount) as total", "sh.supplier_id='$supplier_id' AND sh.sp_id=sd.sp_id AND sd.type='BB' AND sh.status='F'");
         $payment_bb = $get_payment_bb->fetch_assoc();
 
+        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d","sum(d.amount)","h.account_id='$supplier_id' AND memo_type='AP' AND h.status='F' AND h.cm_id=d.cm_id");
+        $total_cm = $get_credit_memo->fetch_array();
+
+        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d","sum(d.amount)","h.account_id='$supplier_id' AND memo_type='AP' AND h.status='F' AND h.dm_id=d.dm_id");
+        $total_dm = $get_debit_memo->fetch_array();
+
         
-        return (($po_row['total']-$pr_row['total'])+$bb_row['total'])-($payment_po['total']+$payment_bb['total']);
+        return (($po_row['total']-$pr_row['total'])+$bb_row['total']+$total_cm[0])-($payment_po['total']+$payment_bb['total']+$total_dm[0]);
     }
 }
