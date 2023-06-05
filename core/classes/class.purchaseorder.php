@@ -196,7 +196,13 @@ class PurchaseOrder extends Connection
             $paid_total += $row['total'];
         }
 
-        return $po_total - $paid_total;
+        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d","sum(d.amount)","memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id AND d.reference_id='$primary_id' AND d.ref_type='PO'");
+        $total_cm = $get_credit_memo->fetch_array();
+
+        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d","sum(d.amount)","h.memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id AND d.reference_id='$primary_id' AND d.ref_type='PO'");
+        $total_dm = $get_debit_memo->fetch_array();
+
+        return ($po_total+$total_cm[0]) - ($paid_total+$total_dm[0]);
     }
 
     public function getHeader()

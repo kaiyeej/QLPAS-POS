@@ -292,6 +292,7 @@ class DebitMemo extends Connection
                     $this->metadata($this->pk, 'int', 11),
                     $this->metadata($this->fk_det, 'int', 11),
                     $this->metadata('ref_type', 'varchar', 3),
+                    $this->metadata('amount', 'decimal', '12,3'),  
                     $this->metadata('description', 'varchar', '250')    
                 )
             );
