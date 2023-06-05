@@ -44,7 +44,13 @@ class ReceivableReport extends Connection
         $get_payment_bb = $this->select("tbl_customer_payment AS ch, tbl_customer_payment_details AS cd", "SUM(cd.amount) as total", "ch.customer_id='$customer_id' AND ch.cp_id=cd.cp_id AND cd.type='BB' AND ch.status='F' AND ch.status='F'");
         $payment_bb = $get_payment_bb->fetch_assoc();
 
+        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d","sum(d.amount)","h.account_id='$customer_id'  AND memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id");
+        $total_cm = $get_credit_memo->fetch_array();
+
+        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d","sum(d.amount)","h.account_id='$customer_id'  AND memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id");
+        $total_dm = $get_debit_memo->fetch_array();
+
         
-        return (($sales_row['total']-$sr_row['total'])+$bb_row['total'])-($payment_h['total']+$payment_bb['total']);
+        return (($sales_row['total']-$sr_row['total'])+$bb_row['total']+$total_dm[0])-($payment_h['total']+$payment_bb['total']+$total_cm[0]);
     }
 }

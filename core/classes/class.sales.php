@@ -683,14 +683,19 @@ class Sales extends Connection
     public function dr_balance($primary_id)
     {
         $dr_total = $this->total($primary_id);
-
         $fetch_cp = $this->select('tbl_customer_payment_details as d, tbl_customer_payment as h', "sum(amount) as total", "d.ref_id = $primary_id AND h.cp_id=d.cp_id AND h.status='F'");
         $paid_total = 0;
         while ($row = $fetch_cp->fetch_assoc()) {
             $paid_total += $row['total'];
         }
 
-        return $dr_total - $paid_total;
+        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d","sum(d.amount)","memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
+        $total_cm = $get_credit_memo->fetch_array();
+
+        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d","sum(d.amount)","h.memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
+        $total_dm = $get_debit_memo->fetch_array();
+
+        return ($dr_total+$total_dm[0]) - ($paid_total+$total_cm[0]);
     }
 
     public function totalSalesDays($days)
