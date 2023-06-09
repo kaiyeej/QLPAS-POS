@@ -59,6 +59,7 @@ class ClaimSlip extends Connection
             $row['reference_number'] = $row['reference_number'];
             $row['sales_num'] = $sales_row['reference_number'];
             $row['sales_type'] = $sales_row['sales_type'];
+            $row['claim_sales_type'] = $sales_row['sales_type'] == "C" ? "Cash" : "Charge";
             $row['customer_id'] = $sales_row['customer_id'];
             $row['for_pick_up'] = $sales_row['for_pick_up'];
 
