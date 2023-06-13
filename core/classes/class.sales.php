@@ -575,7 +575,7 @@ class Sales extends Connection
     public function sales_summary()
     {
         $user_id = $this->inputs['user_id'];
-        $rows = array();
+        /*$rows = array();
         $result = $this->select($this->table, $this->pk, "encoded_by='$user_id' AND sales_summary_id=0 AND status='F' ORDER BY date_added ASC ");
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_array()) {
@@ -599,7 +599,29 @@ class Sales extends Connection
             }
         } else {
             return [];
+        }*/
+
+        $result = $this->table("$this->table AS s")
+            ->join("$this->table_detail AS d", 's.sales_id', '=', 'd.sales_id')
+            ->join("tbl_products AS p", 'p.product_id', '=', 'd.product_id')
+            ->selectRaw('p.product_name', 'd.quantity', 'd.price', 'd.discount', 's.reference_number', 's.date_added')
+            ->where('s.encoded_by', $user_id)
+            ->where('s.sales_summary_id', 0)
+            ->where('s.status', 'F')
+            ->get();
+
+        $count = 1;
+        $rows = array();
+        while ($row = $result->fetch_assoc()) {
+            $amount = ($row['quantity'] * $row['price']) - $row['discount'];
+            $row['product'] = $row['product_name'];
+            $row['amount'] = number_format($amount, 2);
+            $row['discount'] = number_format($row['discount'], 2);
+            $row['pos_qty'] = number_format($row['quantity']);
+            $row['pos_price'] = "@" . $row['price'];
+            $rows[] = $row;
         }
+        return $rows;
     }
 
     public function summary_of_charge_sales()
