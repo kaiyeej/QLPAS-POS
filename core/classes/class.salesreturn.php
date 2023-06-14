@@ -25,7 +25,7 @@ class SalesReturn extends Connection
             'sales_id'      => $sales_id,
             'remarks'       => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
         );
         $sales_return_id = $this->insert($this->table, $form, 'Y');
 
@@ -41,6 +41,19 @@ class SalesReturn extends Connection
 
         $this->insert_select($this->table_detail, 'tbl_sales_details', $form_detail, "sales_id = '$sales_id'");
         return $sales_return_id;
+    }
+
+    public function add_sales_return_pos(){
+        $this->inputs['sales_reference_number'] = $this->inputs['sales_num'];
+        $this->inputs[$this->name] = $this->generate();
+        $this->inputs['return_date'] = $this->getCurrentDate();
+        $sales_return_id = $this->add();
+        if($sales_return_id > 0){
+            $this->inputs['param'] = "sales_return_id = '$sales_return_id'";
+            return $this->show_detail();
+        }else{
+            return "sr = " . $sales_return_id;
+        }
     }
 
     public function edit()
@@ -196,6 +209,8 @@ class SalesReturn extends Connection
         $ids = implode(",", $this->inputs['ids']);
         return $this->update($this->table_detail, $form, "$this->pk2 IN($ids)");
     }
+
+    
 
     private function delete_sales_details()
     {

@@ -71,6 +71,7 @@ class Sales extends Connection
             $rows[] = $row;
         }
         return $rows;
+        
     }
 
     public function view()
