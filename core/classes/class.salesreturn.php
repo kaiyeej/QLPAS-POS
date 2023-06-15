@@ -143,6 +143,38 @@ class SalesReturn extends Connection
         }
     }
 
+    public function add_detail_pos()
+    {
+        $Sales = new Sales();
+
+        $primary_id_2       = $this->inputs['sr_id'];
+        $quantity_return    = $this->inputs['sr_qty'];
+        $encoded_by    = $this->inputs['encoded_by'];
+        $reference_number = $this->inputs['reference_number'];
+        $param = "reference_number='$reference_number'";
+        $sales_id = $Sales->getID($param);
+
+
+        $fetch_sr = $this->select($this->table, "sales_return_id", "sales_id = '$sales_id' AND encoded_by = '$encoded_by' ORDER BY date_added DESC LIMIT 1");
+        $sales_return_row = $fetch_sr->fetch_assoc();
+
+        array_map(function ($return_detail_id, $qty) {
+            $result = $this->select($this->table_detail, 'quantity,quantity_return,sales_detail_id', "$this->pk2 = '$return_detail_id'");
+            $row = $result->fetch_assoc();
+            
+            $form = array(
+                'quantity_return' => $qty,
+            );
+            $this->update($this->table_detail, $form, "$this->pk2 = '$return_detail_id'");
+
+        }, $primary_id_2, $quantity_return);
+        
+
+        $this->inputs['id'] = $sales_return_row['sales_return_id'];
+        return $this->finish();
+        
+    }
+
     public function total_return($primary_id)
     {
         $result = $this->select("tbl_sales_return_details as d, tbl_sales_return as p", 'sum(d.quantity_return)', "p.sales_return_id=d.sales_return_id AND p.status='F' AND d.sales_detail_id='$primary_id'");
@@ -189,6 +221,7 @@ class SalesReturn extends Connection
             $row['product'] = Products::name($row['product_id']);
             $row['amount'] = $row['quantity'] * $row['price'];
             $row['quantity_return'] = $total;
+            $row['remaining_qty'] = $row['quantity'] - $total;
             $rows[] = $row;
         }
         return $rows;
