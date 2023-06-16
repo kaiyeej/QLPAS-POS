@@ -628,26 +628,22 @@ class Sales extends Connection
     public function summary_of_charge_sales()
     {
         $user_id = $this->inputs['user_id'];
-        $rows = array();
-        $result = $this->select($this->table, $this->pk, "encoded_by='$user_id' AND sales_summary_id=0 AND status='F' AND sales_type='H' ");
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_array()) {
-                $rows[] = $row[0];
-            }
 
-            if (sizeof($rows) > 0) {
-                $count = 0;
-                $fetch = $this->select($this->table_detail, "sum((quantity*price)-discount) as total_charge_sales", "sales_id IN(" . implode(',', $rows) . ") ");
-                $sales_row = $fetch->fetch_assoc();
+        // charge sales
+        $fetch_charge_sales = $this->select("tbl_sales as s, tbl_sales_details as d", "sum((d.quantity*d.price)-d.discount) as total_charge_sales", "s.sales_id=d.sales_id AND s.sales_type='C' and s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' ");
+        $sales_row = $fetch_charge_sales->fetch_assoc();
+        $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'];
 
-                $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'] * 1;
-            }
-        }
-
+        // customer payment
         $fetch_payment = $this->select("tbl_customer_payment as cp, tbl_customer_payment_details as cd", "sum(cd.amount) as total_payment", "cp.cp_id=cd.cp_id AND cp.payment_type='C' and cp.status='F' and cp.sales_summary_id=0 and encoded_by='$user_id' ");
         $payment_row = $fetch_payment->fetch_assoc();
-
         $sales_rows['total_payment'] = $payment_row['total_payment'] * 1;
+
+        // sales return
+        $fetch_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details as d", "sum((d.quantity_return*d.price)-d.discount) as total_sr", "s.sales_return_id=d.sales_return_id AND s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' ");
+        $sales_return_row = $fetch_sales_return->fetch_assoc();
+        $sales_rows['total_sales_return'] = $sales_return_row['total_sr'] * 1;
+        
         return $sales_rows;
     }
 

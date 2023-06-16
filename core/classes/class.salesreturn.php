@@ -154,7 +154,6 @@ class SalesReturn extends Connection
         $param = "reference_number='$reference_number'";
         $sales_id = $Sales->getID($param);
 
-
         $fetch_sr = $this->select($this->table, "sales_return_id", "sales_id = '$sales_id' AND encoded_by = '$encoded_by' ORDER BY date_added DESC LIMIT 1");
         $sales_return_row = $fetch_sr->fetch_assoc();
 
@@ -173,6 +172,15 @@ class SalesReturn extends Connection
         $this->inputs['id'] = $sales_return_row['sales_return_id'];
         return $this->finish();
         
+    }
+
+    public function update_review_sales_summary()
+    {
+        $encoded_by = $this->inputs['encoded_by'];
+        $form = array(
+            'sales_summary_id' => $this->inputs['sales_summary_id']
+        );
+        return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
     }
 
     public function total_return($primary_id)
