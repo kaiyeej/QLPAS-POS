@@ -64,11 +64,15 @@
                         <table class="display table table-bordered" id="dt_entries" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Sales</th>
-                                    <th style="text-align:right;font-weight:bold;"><span id="sales_total_label" class="label-item"></span></th>
+                                    <th>Revenue</th>
+                                    <th style="text-align:right;font-weight:bold;">+</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td style="padding-left: 100px;">Sales</td>
+                                    <td style="text-align:right;"><span id="sales_total_label" class="label-item"></span></td>
+                                </tr>
                                 <tr>
                                     <td style="padding-left: 100px;">Sales Discount</td>
                                     <td style="text-align:right;"><span id="discount_total_label" class="label-item"></span></td>
@@ -79,12 +83,12 @@
                                 </tr>
                             </tbody>
 
-                            <!-- <thead>
+                            <thead>
                                 <tr>
                                     <th>Cost</th>
                                     <th style="text-align:right;font-weight:bold;">-</th>
                                 </tr>
-                            </thead> -->
+                            </thead>
                             <tbody>
                                 <tr>
                                     <td style="padding-left: 100px;">Purchases</td>

@@ -78,6 +78,20 @@ class DebitMemo extends Connection
         return $row;
     }
 
+    public function rows($name = null)
+    { 
+        $Suppliers = new Suppliers;
+        $Customers = new Customers;
+        $Users = new Users;
+        $name = $name == "" ? $this->inputs['id'] : $name;
+        $result = $this->select($this->table, "*", "$this->name = '$name'");
+        $row = $result->fetch_assoc();
+        $row['account'] = $row['memo_type'] == "AP" ? $Suppliers->name($row['account_id']) : $Customers->name($row['account_id']);
+        $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+        $row['po_type_name'] = $row['po_type'] == "C" ? "Cash" : "Charge";
+        return $row;
+    }
+
     public function show_detail()
     {
         $Sales = new Sales();

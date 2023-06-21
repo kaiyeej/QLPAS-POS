@@ -104,6 +104,13 @@ class BeginningBalance extends Connection
         return $result->fetch_assoc();
     }
 
+    public function rows($name = null)
+    {
+        $name = $name == "" ? $this->inputs['id'] : $name;
+        $result = $this->select($this->table, "*", "$this->name = '$name'");
+        return $result->fetch_assoc();
+    }
+
     public function remove()
     {
         $ids = implode(",", $this->inputs['ids']);

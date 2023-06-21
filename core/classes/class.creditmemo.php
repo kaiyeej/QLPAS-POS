@@ -31,13 +31,13 @@ class CreditMemo extends Connection
 
         $trans = substr($refID, 0, 2);
 
-        if($trans == "PO"){
+        if ($trans == "PO") {
             $reference_id = $PurchaseOrder->pk_by_name($refID);
             $type = "PO";
-        }else if($trans == "BB"){
+        } else if ($trans == "BB") {
             $reference_id = $BeginningBalance->pk_by_name($refID);
             $type = "BB";
-        }else{
+        } else {
             $reference_id = $Sales->pk_by_name($refID);
             $type = "DR";
         }
@@ -48,7 +48,7 @@ class CreditMemo extends Connection
             'amount' => $this->inputs['amount'],
             'ref_type' => $type,
             'description' => $this->inputs['description'],
-            
+
         );
 
         return $this->insert($this->table_detail, $form);
@@ -78,6 +78,20 @@ class CreditMemo extends Connection
         return $row;
     }
 
+    public function rows($name = null)
+    { 
+        $Suppliers = new Suppliers;
+        $Customers = new Customers;
+        $Users = new Users;
+        $name = $name == "" ? $this->inputs['id'] : $name;
+        $result = $this->select($this->table, "*", "$this->name = '$name'");
+        $row = $result->fetch_assoc();
+        $row['account'] = $row['memo_type'] == "AP" ? $Suppliers->name($row['account_id']) : $Customers->name($row['account_id']);
+        $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+        $row['po_type_name'] = $row['po_type'] == "C" ? "Cash" : "Charge";
+        return $row;
+    }
+
     public function show_detail()
     {
         $Sales = new Sales();
@@ -87,15 +101,15 @@ class CreditMemo extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, '*', $param);
         while ($row = $result->fetch_assoc()) {
-            if($row['ref_type'] == "PO"){
+            if ($row['ref_type'] == "PO") {
                 $ref = $PurchaseOrder->name($row['reference_id']);
-            }else if($row['ref_type'] == "BB"){
+            } else if ($row['ref_type'] == "BB") {
                 $ref = $BeginningBalance->name($row['reference_id']);
-            }else{
+            } else {
                 $ref = $Sales->name($row['reference_id']);
             }
 
-            $row['amount'] = number_format($row['amount'],2);
+            $row['amount'] = number_format($row['amount'], 2);
             $row['reference'] = $ref;
             $rows[] = $row;
         }
@@ -153,7 +167,8 @@ class CreditMemo extends Connection
     }
 
 
-    function ref_checker(){
+    function ref_checker()
+    {
         $refID = $this->inputs['reference_id'];
         $primary_id = $this->inputs['id'];
 
@@ -162,20 +177,20 @@ class CreditMemo extends Connection
 
         $trans = substr($refID, 0, 2);
 
-        if($row['memo_type'] == "AP"){
-            if($trans == "PO"){
+        if ($row['memo_type'] == "AP") {
+            if ($trans == "PO") {
                 $PurchaseOrder = new PurchaseOrder;
-                $reference_id = $PurchaseOrder->pk_name($refID,$row['account_id']);
-            }else if($trans == "BB"){
+                $reference_id = $PurchaseOrder->pk_name($refID, $row['account_id']);
+            } else if ($trans == "BB") {
                 $BeginningBalance = new BeginningBalance;
-                $reference_id = $BeginningBalance->pk_name($refID,$row['account_id']);
+                $reference_id = $BeginningBalance->pk_name($refID, $row['account_id']);
             }
-        }else{
+        } else {
             $Sales = new Sales;
-            $reference_id = $Sales->pk_name($refID,$row['account_id']);
+            $reference_id = $Sales->pk_name($refID, $row['account_id']);
         }
-        
-        return $reference_id*1; 
+
+        return $reference_id * 1;
     }
 
     public function pk_by_name($name = null)
@@ -203,10 +218,10 @@ class CreditMemo extends Connection
     public function total($primary_id)
     {
         $result = $this->select($this->table_detail, 'sum(amount)', "$this->pk = '$primary_id'");
-        if($result->num_rows > 0){
+        if ($result->num_rows > 0) {
             $total = $result->fetch_array();
             return $total[0];
-        }else{
+        } else {
             return "";
         }
     }
@@ -232,11 +247,11 @@ class CreditMemo extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, "*", "$this->pk='$id'");
         while ($row = $result->fetch_assoc()) {
-            if($row['ref_type'] == "PO"){
+            if ($row['ref_type'] == "PO") {
                 $ref = $PurchaseOrder->name($row['reference_id']);
-            }else if($row['ref_type'] == "BB"){
+            } else if ($row['ref_type'] == "BB") {
                 $ref = $BeginningBalance->name($row['reference_id']);
-            }else{
+            } else {
                 $ref = $Sales->name($row['reference_id']);
             }
             $row['reference'] = $ref;
@@ -253,7 +268,7 @@ class CreditMemo extends Connection
         $result_pr = $this->select("tbl_purchase_return as pr, tbl_purchase_return_details as prd", "SUM(prd.qty_return*prd.supplier_price) as total", "pr.pr_id=prd.pr_id AND pr.status='F' AND pr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
         $row_sr = $result_pr->fetch_assoc();
 
-        return ($row['total']-$row_sr['total']) == 0 ? 0 : ($row['total']-$row_sr['total']);
+        return ($row['total'] - $row_sr['total']) == 0 ? 0 : ($row['total'] - $row_sr['total']);
     }
 
     public function schema()
@@ -291,11 +306,12 @@ class CreditMemo extends Connection
                     $this->metadata($this->pk, 'int', 11),
                     $this->metadata($this->fk_det, 'int', 11),
                     $this->metadata('ref_type', 'varchar', 3),
-                    $this->metadata('amount', 'decimal', '12,3') ,   
-                    $this->metadata('description', 'varchar', '250')    
+                    $this->metadata('amount', 'decimal', '12,3'),
+                    $this->metadata('description', 'varchar', '250')
                 )
             );
 
             return $this->schemaCreator($tables);
         }
-    }}
+    }
+}

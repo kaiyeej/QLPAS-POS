@@ -64,6 +64,7 @@
             array('Inventory Report', 'inventory-report'),
             array('Stock Card', 'stock-card'),
             array('Income Statement', 'income-statement'),
+            array('Statement of Accounts', 'statement-of-accounts'),
         ));
 
         // ADMIN
