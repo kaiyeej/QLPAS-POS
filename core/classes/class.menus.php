@@ -51,6 +51,7 @@ class Menus extends Connection
                 array('url' => 'inventory-report', 'name' => 'Inventory Report', 'class_name' => 'InventoryReport', 'has_detail' => 0),
                 array('url' => 'stock-card', 'name' => 'Stock Card', 'class_name' => 'StockCard', 'has_detail' => 0),
                 array('url' => 'income-statement', 'name' => 'Income Statement', 'class_name' => 'IncomeStatement', 'has_detail' => 0),
+                array('url' => 'statement-of-accounts', 'name' => 'Statement of Accounts', 'class_name' => 'StatementOfAccounts', 'has_detail' => 0),
             ),
             'admin' => array(
                 array('url' => 'users', 'name' => 'User Account', 'class_name' => 'Users', 'has_detail' => 0),

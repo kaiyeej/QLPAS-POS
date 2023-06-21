@@ -89,6 +89,21 @@ class Sales extends Connection
         }
     }
 
+    public function rows($name = null)
+    {
+        $name = $name == "" ? $this->inputs['id'] : $name;
+        $result = $this->select($this->table, "*", "$this->name = '$name'");
+        if ($result->num_rows > 0) {
+            $Customers = new Customers;
+            $row = $result->fetch_assoc();
+            $row['customer_name'] = $row['customer_id'] > 0 ? $Customers->name($row['customer_id']) : 'Walk-in';
+            $row['salestype'] = $row['sales_type'] == "C" ? "Cash" : "Charge";
+            return $row;
+        } else {
+            return null;
+        }
+    }
+
     public function remove()
     {
         $ids = implode(",", $this->inputs['ids']);

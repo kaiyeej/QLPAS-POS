@@ -61,10 +61,10 @@ class CustomerPayment extends Connection
         return $rows;
     }
 
-    public function view()
+    public function view($primary_id = null)
     {
         $Customers = new Customers;
-        $primary_id = $this->inputs['id'];
+        $primary_id = $primary_id == "" ? $this->inputs['id'] : $primary_id;
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         $row['customer'] = $Customers->name($row['customer_id']);
@@ -73,6 +73,18 @@ class CustomerPayment extends Connection
         return $row;
     }
 
+    public function rows($name = null)
+    {
+        $Customers = new Customers;
+        $name = $name == "" ? $this->inputs['id'] : $name;
+        $result = $this->select($this->table, "*", "$this->name = '$name'");
+        $row = $result->fetch_assoc();
+        $row['customer'] = $Customers->name($row['customer_id']);
+        $row['payment_type'] = $row['payment_type'];
+        $row['paymenttype'] = ($row['payment_type'] == "C" ? "Cash" : ($row['payment_type'] == "H" ? "Check" : "Online Payment"));
+        return $row;
+    }
+    
     public function show_ref()
     {
         $Sales = new Sales;
