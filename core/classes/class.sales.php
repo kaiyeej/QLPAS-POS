@@ -531,6 +531,8 @@ class Sales extends Connection
     public function finishSalesPOS()
     {
         $CustomerPayment = new CustomerPayment;
+        $RedeemedPoints = new RedeemedPoints;
+        $Customers = new Customers;
         $reference_number = $this->inputs['reference_number'];
         $customer_payment_amount = $this->inputs['customer_payment_amount'];
         $sales_type = $this->inputs['sales_type'];
@@ -538,6 +540,17 @@ class Sales extends Connection
         $param = "reference_number='$reference_number'";
 
         $primary_id = $this->getID($param);
+        
+        // suki card calculation
+        $Customers->inputs['customer_id'] = $this->inputs['customer_id'];
+        $suki_card_number = $Customers->get_suki_card_number();
+        if($suki_card_number != null){
+            $reward_points = $RedeemedPoints->get_reward_points($primary_id);
+        }else{
+            $reward_points = 0;
+            $suki_card_number = "walk-in";
+        }
+        
 
         // add customer payment if charge
         if ($sales_type == "H" && $customer_payment_amount > 0) {
@@ -565,7 +578,9 @@ class Sales extends Connection
             'status' => 'F',
             'for_pick_up' => $this->inputs['for_pickup'],
             'withdrawal_status' => $this->inputs['for_pickup'],
-            'encoded_by' => $this->inputs['encoded_by']
+            'encoded_by' => $this->inputs['encoded_by'],
+            'reward_points' => $reward_points,
+            'remarks' => $suki_card_number
         );
         $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 

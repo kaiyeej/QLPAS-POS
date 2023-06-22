@@ -53,4 +53,5 @@ $classes = array(
     'Search'                => $pre_class . 'search.php',
     'ClaimSlip'             => $pre_class . 'claimslip.php',
     'StatementOfAccounts'   => $pre_class . 'statementofaccounts.php',
+    'RedeemedPoints'   => $pre_class . 'redeemedpoints.php',
 );

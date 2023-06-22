@@ -60,6 +60,19 @@ class RedeemedPoints extends Connection {
         }
         return $rows;
     }
+
+    public function get_reward_points($sales_id){
+        $Settings = new Settings;
+        
+        $fetch_total_sales = $this->select("tbl_sales_details", "sum((quantity*price)-discount) as total", "sales_id = '$sales_id'");
+        $sales_row = $fetch_total_sales->fetch_assoc();
+        $reward_points_factor = $Settings->get_reward_points_factor();
+
+        $reward_points = $reward_points_factor > 0 ? floor($sales_row['total']/$reward_points_factor) : 0;
+
+        return $reward_points;
+        
+    }
 }
 
 /*

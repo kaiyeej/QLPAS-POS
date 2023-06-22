@@ -61,6 +61,12 @@ class Settings extends Connection
         return $result->fetch_assoc();
     }
 
+    public function get_reward_points_factor(){
+        $result = $this->select($this->table, "rewards_point_factor");
+        $row = $result->fetch_assoc();
+        return $row['rewards_point_factor'];
+    }
+
     public function version()
     {
         $repo = __DIR__ . "../../";

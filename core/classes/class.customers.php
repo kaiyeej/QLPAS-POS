@@ -136,6 +136,36 @@ class Customers extends Connection
         }
     }
 
+    public function assign_suki_card(){
+        $suki_card_number = $this->inputs['suki_card_number'];
+        $customer_id = $this->inputs['customer_id'];
+        if(strlen($suki_card_number) == 12 && is_numeric($suki_card_number) == 1){
+
+            $fetch = $this->select($this->table, "customer_id", "suki_card_number = '$suki_card_number'");
+            $row = $fetch->fetch_assoc();
+
+            if($row['customer_id'] > 0){
+                return -2;
+            }else{
+                $form = array(
+                    'suki_card_number' => $suki_card_number,
+                    'date_last_modified' => $this->getCurrentDate()
+                );
+    
+                return $this->update($this->table, $form, "$this->pk = '$customer_id'");
+            }
+        }else{
+            return -1;
+        }
+    }
+
+    public function get_suki_card_number(){
+        $customer_id = $this->inputs['customer_id'];
+        $fetch = $this->select($this->table, "suki_card_number", "customer_id = '$customer_id'");
+        $row = $fetch->fetch_assoc();
+        return $row['suki_card_number'];
+    }
+
     public static function search($words,&$rows)
     {
         $self = new self;
