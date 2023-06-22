@@ -61,10 +61,10 @@ class StatementOfAccounts extends Connection
                 $trans = "Sales";
                 $data = $Sales->rows($row['reference_number']);
                 $debit = ($Sales->total($data['sales_id']));
-                $credit = 0;
-                $balance += $debit;
+                $credit = $data['sales_type'] == "C" ? ($Sales->total($data['sales_id'])) : 0;
+                $balance += ($debit-$credit);
                 $date = $data['sales_date'];
-                $ref_number = $row['reference_number'];
+                $ref_number = $data['sales_type'] == "C" ? "<i style='font-size: 11px;color: #4CAF50;'>CA #</i> ".$row['reference_number'] : "<i style='font-size: 11px;color: #4CAF50;'>CH #</i> " .$row['reference_number'];
             }
 
             $row['date'] = $date;
