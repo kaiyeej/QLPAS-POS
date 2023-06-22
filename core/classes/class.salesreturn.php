@@ -287,4 +287,50 @@ class SalesReturn extends Connection
             }
         }
     }
+
+    public function schema()
+    {
+        $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
+        $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', '', 'ON UPDATE CURRENT_TIMESTAMP');
+
+
+        // TABLE HEADER
+        $tables[] = array(
+            'name'      => $this->table,
+            'primary'   => $this->pk,
+            'fields' => array(
+                $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                $this->metadata($this->name, 'varchar', 30),
+                $this->metadata('sales_id', 'int', 11),
+                $this->metadata('sales_summary_id', 'int', 11),
+                $this->metadata('sales_reference_number', 'varchar', 30, 'NOT NULL'),
+                $this->metadata('return_date', 'date'),
+                $this->metadata('status', 'varchar', 1),
+                $this->metadata('encoded_by', 'int', 11),
+                $this->metadata('remarks', 'varchar', 250),
+                $default['date_added'],
+                $default['date_last_modified']
+            )
+        );
+
+        // TABLE DETAILS
+        $tables[] = array(
+            'name'      => $this->table_detail,
+            'primary'   => $this->pk2,
+            'fields' => array(
+                $this->metadata($this->pk2, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                $this->metadata($this->pk, 'int', 11, 'NOT NULL'),
+                $this->metadata('sales_detail_id', 'int', 11),
+                $this->metadata('product_id', 'int', 11),
+                $this->metadata('discount', 'decimal', '12,3'),
+                $this->metadata('quantity', 'decimal', '12,2'),
+                $this->metadata('quantity_return', 'decimal', '12,2'),
+                $this->metadata('price', 'decimal', '12,2'),
+                $this->metadata('cost', 'decimal', '7,2'),
+                $default['date_added'],
+            )
+        );
+
+        return $this->schemaCreator($tables);
+    }
 }

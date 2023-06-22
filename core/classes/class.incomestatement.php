@@ -11,20 +11,26 @@ class IncomeStatement extends Connection
         $sales = $this->sales_total($start_date,$end_date);
         $purchase = $this->purchase_total($start_date,$end_date);
         $purchase_return = $this->purchase_return_total($start_date,$end_date);
-        $cost_total = $purchase-$purchase_return;
         $other_expense = $this->other_expense($start_date,$end_date);
         $operating_expense = $this->operating_expense($start_date,$end_date);
+        $Inventory = new InventoryReport;
+
+        $start_inv = $Inventory->balance_total($start_date);
+        $cost_total = ($purchase+$start_inv)-$purchase_return;
 
         $income = $sales[2] - ($cost_total+$operating_expense[1]+$other_expense[1]);
 
         $rows = array();
         $row['sales_total'] = number_format($sales[0],2);
+        $row['sales_return_total'] = number_format($sales[3],2); 
         $row['discount_total'] = number_format($sales[1],2);
         $row['revenue_total'] = number_format($sales[2],2);
         $row['purchases_total'] = number_format($purchase,2);
         $row['pr_total'] = number_format($purchase_return,2);
         $row['cost_total'] = number_format($cost_total,2);
         $row['income_total'] = number_format($income,2);
+        $row['start_inv'] = number_format($start_inv,2);
+        // $row['ending_inv'] = number_format($ending_inv,2);
         $row['other_list'] = $other_expense[0];
         $row['other_total'] = number_format($other_expense[1],2);
         $row['operating_list'] = $operating_expense[0];
@@ -42,7 +48,7 @@ class IncomeStatement extends Connection
         
         $total = ($row['total']-$row_return['total'])-$row['dis'];
 
-        return [($row['total']-$row_return['total']),$row['dis'],$total];
+        return [$row['total'],$row['dis'],$total,$row_return['total']];
     }
 
     public function purchase_total($start_date,$end_date){

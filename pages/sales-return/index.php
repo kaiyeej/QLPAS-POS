@@ -233,6 +233,7 @@
     }
 
     $(document).ready(function() {
+        schema();
         getEntries();
         getSelectOption('Customers', 'customer_id', 'customer_name');
         getSelectOption('ProductCategories', 'product_category_id', 'product_category');

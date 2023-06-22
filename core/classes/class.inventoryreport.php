@@ -34,4 +34,11 @@ class InventoryReport extends Connection
         $row = $result->fetch_assoc();
         return (float) $row['qty'];
     }
+
+    public function balance_total($date)
+    {
+        $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity) * cost) AS total", "status = 1 AND date_added <= '$date'");
+        $row = $result->fetch_assoc();
+        return (float) $row['total'];
+    }
 }

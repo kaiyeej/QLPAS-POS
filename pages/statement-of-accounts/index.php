@@ -8,8 +8,8 @@
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Receivable Ledger</h3>
-                    <h6 class="font-weight-normal mb-0">Generate accounts receivable here</h6>
+                    <h3 class="font-weight-bold">Statement of Accounts</h3>
+                    <h6 class="font-weight-normal mb-0">Generate statement of accounts here</h6>
                 </div>
             </div>
 
@@ -69,7 +69,7 @@
                     <center>
                         <h4 class="report-header"><span id="company_name_label"></span></h4>
                         <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                        <h5>Receivable Ledger</h5><br>
+                        <h5>Statement of Accounts</h5><br>
                     </center>
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
