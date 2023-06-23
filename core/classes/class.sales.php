@@ -60,7 +60,9 @@ class Sales extends Connection
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $customer_name = $row['customer_id'] > 0 ? $Customers->name($row['customer_id']) : 'Walk-in';
+            $row['suki_card_number'] = $row['customer_id'] > 0 ? $Customers->get_suki_card_number($row['customer_id']) : '';
             $row['customer'] = $customer_name;
+            
             $row['customer_id'] = $row['customer_id'];
             $total = $this->total($row['sales_id']);
             $row['total'] = number_format($total, 2);
@@ -373,26 +375,34 @@ class Sales extends Connection
     {
 
         $sales_detail_id = $this->inputs['sales_detail_id'];
-
         $product_id = $this->detailsRow($sales_detail_id, 'product_id');
-        $sales_id = $this->detailsRow($sales_detail_id, 'sales_id');
-        $discount_id = $this->dataRow($sales_id, 'discount_id');
 
-        $Products = new Products;
-        $product_price = $Products->productPrice($product_id);
+        // check inventory here ...
+        $Inventory = new InventoryReport();
+        $current_balance = $Inventory->balance($product_id);
+        if ($current_balance - $this->inputs['quantity'] >= 0) {
+            
+            $sales_id = $this->detailsRow($sales_detail_id, 'sales_id');
+            $discount_id = $this->dataRow($sales_id, 'discount_id');
 
-        $Discounts = new Discounts();
-        $row_disc = $discount_id > 0 ? $Discounts->manual($discount_id, $product_id, $this->inputs['quantity'], $product_price) : $Discounts->automatic($product_id, $product_price, $this->inputs['quantity']);
+            $Products = new Products;
+            $product_price = $Products->productPrice($product_id);
+
+            $Discounts = new Discounts();
+            $row_disc = $discount_id > 0 ? $Discounts->manual($discount_id, $product_id, $this->inputs['quantity'], $product_price) : $Discounts->automatic($product_id, $product_price, $this->inputs['quantity']);
 
 
-        $row_disc = $Discounts->automatic($product_id, $product_price, $this->inputs['quantity']);
+            $row_disc = $Discounts->automatic($product_id, $product_price, $this->inputs['quantity']);
 
-        $form = array(
-            'quantity'      => $this->inputs['quantity'],
-            'discount'      => $row_disc['discount_amount'],
-            'discount_id'   => $row_disc['discount_id'],
-        );
-        return $this->update($this->table_detail, $form, " $this->pk2 = '$sales_detail_id'");
+            $form = array(
+                'quantity'      => $this->inputs['quantity'],
+                'discount'      => $row_disc['discount_amount'],
+                'discount_id'   => $row_disc['discount_id'],
+            );
+            return $this->update($this->table_detail, $form, " $this->pk2 = '$sales_detail_id'");
+        }else{
+            return -3; // insufficient qty
+        }
     }
 
     public function addSalesPOS()
@@ -542,13 +552,13 @@ class Sales extends Connection
         $primary_id = $this->getID($param);
         
         // suki card calculation
-        $Customers->inputs['customer_id'] = $this->inputs['customer_id'];
-        $suki_card_number = $Customers->get_suki_card_number();
+        $suki_card_number = $Customers->get_suki_card_number($this->inputs['customer_id']);
         if($suki_card_number != null){
             $reward_points = $RedeemedPoints->get_reward_points($primary_id);
+            $remarks = "Suki Card #:" . $suki_card_number;
         }else{
             $reward_points = 0;
-            $suki_card_number = "walk-in";
+            $remarks = "walk-in";
         }
         
 
@@ -580,7 +590,7 @@ class Sales extends Connection
             'withdrawal_status' => $this->inputs['for_pickup'],
             'encoded_by' => $this->inputs['encoded_by'],
             'reward_points' => $reward_points,
-            'remarks' => $suki_card_number
+            'remarks' => $remarks
         );
         $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 

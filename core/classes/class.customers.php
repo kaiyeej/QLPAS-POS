@@ -159,9 +159,8 @@ class Customers extends Connection
         }
     }
 
-    public function get_suki_card_number(){
-        $customer_id = $this->inputs['customer_id'];
-        $fetch = $this->select($this->table, "suki_card_number", "customer_id = '$customer_id'");
+    public function get_suki_card_number($customer_id){
+        $fetch = $this->select($this->table, "suki_card_number", "$this->pk = '$customer_id'");
         $row = $fetch->fetch_assoc();
         return $row['suki_card_number'];
     }

@@ -68,7 +68,7 @@ class RedeemedPoints extends Connection {
         $sales_row = $fetch_total_sales->fetch_assoc();
         $reward_points_factor = $Settings->get_reward_points_factor();
 
-        $reward_points = $reward_points_factor > 0 ? floor($sales_row['total']/$reward_points_factor) : 0;
+        $reward_points = $reward_points_factor > 0 ? $sales_row['total']/$reward_points_factor : 0;
 
         return $reward_points;
         
