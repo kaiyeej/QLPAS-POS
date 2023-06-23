@@ -107,7 +107,7 @@
                                     <td style="text-align:right;"><span id="pr_total_label" class="label-item"></span></td>
                                 </tr>
                                 <tr style="font-weight:bold;">
-                                    <td style="text-align:right;">Subtotal</td>
+                                    <td style="text-align:right;">Ending Inventory</td>
                                     <td style="text-align:right;"><span id="cost_total_label" class="label-item"></span></td>
                                 </tr>
                             </tbody>
