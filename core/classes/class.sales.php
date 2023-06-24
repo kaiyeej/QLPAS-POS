@@ -1002,8 +1002,14 @@ class Sales extends Connection
         $id = $_POST['id'];
         $result = $this->select($this->table, "*", "$this->pk='$id'");
         $row = $result->fetch_assoc();
+        $c_row = $Customers->view($row['customer_id']);
         $row['sales_date_mod'] = date("F j, Y", strtotime($row['sales_date']));
-        $row['customer_name'] = $Customers->name($row['customer_id']);
+        $row['customer_name'] = $c_row['customer_name'];
+        $row['customer_address'] = $c_row['customer_address'];
+        $row['terms'] = $row['terms'];
+        $total = $this->total($row['sales_id']);
+        $row['total'] = number_format($total, 2);
+        $row['due_date'] = date('F j, Y', strtotime($row['sales_date']. ' + '.$row['terms'].' days'));
         $rows[] = $row;
         return $rows;
     }
@@ -1084,6 +1090,14 @@ class Sales extends Connection
         }
 
         return $rows;
+    }
+
+    public function update_terms()
+    {
+        $form = array(
+            'terms'   => $this->inputs['terms']
+        );
+        return $this->updateIfNotExist($this->table, $form);
     }
 
     public function top_products()

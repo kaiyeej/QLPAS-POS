@@ -57,7 +57,7 @@ class Users extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : '';
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
-            $row['category'] = ($row['user_category'] == "A" ? "Admin" : ($row['user_category'] == "S" ? "Staff" : "Cashier"));
+            $row['category'] = ($row['user_category'] == "A" ? "Admin" : ($row['user_category'] == "S" ? "Staff" : ($row['user_category'] == "W" ? "Warehouse Personnel" : "Cashier")));    
             $rows[] = $row;
         }
         return $rows;
@@ -82,8 +82,13 @@ class Users extends Connection
     {
         $self = new self;
         $result = $self->select($self->table, 'user_fullname', "$self->pk  = '$primary_id'");
-        $row = $result->fetch_assoc();
-        return $row['user_fullname'];
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+            return $row['user_fullname'];
+        }else{
+            return null;
+        }
+        
     }
 
     public function dataRow($primary_id, $field)

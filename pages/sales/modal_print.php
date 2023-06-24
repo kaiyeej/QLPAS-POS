@@ -9,15 +9,15 @@
                  <div class="col-12" id="print_canvas">
                      <center>
                         <strong>
-                            <h4 class="report-header"><span id="company_name_label"></span></h4>
-                            <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                            <h4 class="report-header"><span class="company_name_label"></span></h4>
+                            <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
                             <h5>Sales Receipt</h5>
                          </strong>
                     </center>
-                     <strong>Customer Name: </strong><span id="customer_name_span"></span><br>
-                     <strong>Reference Number: </strong><span id="reference_number_span"></span><br>
-                     <strong>Date: </strong><span id="sales_date_span"></span><br>
-                     <strong>Remarks: </strong><span id="remarks_span"></span>
+                     <strong>Customer Name: </strong><span class="customer_name_span"></span><br>
+                     <strong>Reference Number: </strong><span class="reference_number_span"></span><br>
+                     <strong>Date: </strong><span class="sales_date_span"></span><br>
+                     <strong>Remarks: </strong><span class="remarks_span"></span>
                      <div class="table-responsive">
                          <table class="table table-bordered mb-0" id="tbl_print_details">
                              <thead>
@@ -51,9 +51,6 @@
         $("#tb_id").html("");
         $("#modalPrint").modal('show');
 
-        $("#company_name_label").html(company_profile.company_name);
-        $("#company_address_label").html(company_profile.company_address);
-
         $.ajax({
             type: 'POST',
             url: "controllers/sql.php?c=" + route_settings.class_name + "&q=getHeader",
@@ -64,10 +61,10 @@
                 console.log(data);
                 var json = JSON.parse(data);
 
-                $("#customer_name_span").html(json.data[0].customer_name);
-                $("#reference_number_span").html(json.data[0].reference_number);
-                $("#sales_date_span").html(json.data[0].sales_date_mod);
-                $("#remarks_span").html(json.data[0].remarks);
+                $(".customer_name_span").html(json.data[0].customer_name);
+                $(".reference_number_span").html(json.data[0].reference_number);
+                $(".sales_date_span").html(json.data[0].sales_date_mod);
+                $(".remarks_span").html(json.data[0].remarks);
 
                 getPrintDetails(json.data[0].sales_id);
             }

@@ -65,9 +65,9 @@ class Customers extends Connection
         return $rows;
     }
 
-    public function view()
+    public function view($primary_id = null)
     {
-        $primary_id = $this->inputs['id'];
+        $primary_id = $primary_id == "" ? $this->inputs['id'] : $primary_id;
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         return $result->fetch_assoc();
     }
@@ -161,8 +161,13 @@ class Customers extends Connection
 
     public function get_suki_card_number($customer_id){
         $fetch = $this->select($this->table, "suki_card_number", "$this->pk = '$customer_id'");
-        $row = $fetch->fetch_assoc();
-        return $row['suki_card_number'];
+        
+        if($fetch->num_rows > 0){
+            $row = $fetch->fetch_assoc();
+            return $row['suki_card_number'];
+        }else{
+            return null;
+        }
     }
 
     public static function search($words,&$rows)

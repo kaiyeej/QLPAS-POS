@@ -1,3 +1,15 @@
+<style>
+    @media print {
+        center{
+            text-align: center;
+        }
+        
+        .div_footer{
+            position: absolute;
+            bottom: 0;
+        }
+    }
+</style>
 <div class="content-wrapper">
     <div class="row">
         <div class="col-md-12 grid-margin">
@@ -73,6 +85,8 @@
 <?php include 'modal_sales.php' ?>
 <?php include 'modal_stock_withdrawal.php' ?>
 <?php include 'modal_print.php' ?>
+<?php include 'modal_charge_slip.php' ?>
+<?php include 'modal_terms.php' ?>
 <script type="text/javascript">
     function getEntries() {
         var start_date = $("#start_date").val();
@@ -102,7 +116,8 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.sales_id + ")'><span class='ti ti-list'></span></button><button onclick='printRecord("+ row.sales_id +")' class='btn btn-secondary btn-circle btn-sm'><span class='ti ti-printer'></span></button></center>";
+                        var charge_slip = row.sales_type == "C" ? "style='display:none;'" : "";
+                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.sales_id + ")'><span class='ti ti-list'></span></button><button onclick='printRecord(" + row.sales_id + ")' class='btn btn-secondary btn-circle btn-sm'><span class='ti ti-printer'></span></button><button onclick='chargeSlip(" + row.sales_id + ")' " + charge_slip + " class='btn btn-warning btn-circle btn-sm'><span class='ti ti-receipt'></span></button></center>";
                     }
                 },
                 {
@@ -348,6 +363,34 @@
         $("#price").val(optionSelected);
     }
 
+    function chargeSlip(id) {
+        $("#modalChargeSlip").modal("show");
+        $.ajax({
+            type: 'POST',
+            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=getHeader",
+            data: {
+                id: id
+            },
+            success: function(data) {
+                console.log(data);
+                var json = JSON.parse(data);
+
+                $(".customer_name_span").html(json.data[0].customer_name);
+                $(".reference_number_span").html(json.data[0].reference_number);
+                $(".sales_date_span").html(json.data[0].sales_date_mod);
+                $(".remarks_span").html(json.data[0].remarks);
+                $(".customer_address_span").html(json.data[0].customer_address);
+                $(".total_dr").html(json.data[0].total);
+                $(".terms_span").html(json.data[0].terms);
+                $(".due_date_span").html(json.data[0].due_date);
+                $("#hidden_id_terms").val(id);
+                $("#terms").val(json.data[0].terms);
+
+                cs_details(json.data[0].sales_id);
+            }
+        });
+    }
+
     for_pick_up = 0;
 
     $(document).ready(function() {
@@ -355,5 +398,9 @@
         getSelectOption('Customers', 'customer_id', 'customer_name');
         getSelectOption('Products', 'product_id', 'product_name', "", ['product_price']);
         getSelectOption('Discounts', 'discount_id', 'discount_name', "discount_type = 'M'", [], '0', 'No Discount');
+
+
+        $(".company_name_label").html(company_profile.company_name);
+        $(".company_address_label").html(company_profile.company_address);
     });
 </script>
