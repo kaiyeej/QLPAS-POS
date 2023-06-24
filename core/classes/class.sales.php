@@ -543,6 +543,7 @@ class Sales extends Connection
         $CustomerPayment = new CustomerPayment;
         $RedeemedPoints = new RedeemedPoints;
         $Customers = new Customers;
+        $RedeemedPoints = new RedeemedPoints;
         $reference_number = $this->inputs['reference_number'];
         $customer_payment_amount = $this->inputs['customer_payment_amount'];
         $sales_type = $this->inputs['sales_type'];
@@ -606,6 +607,9 @@ class Sales extends Connection
                 $ClaimSlip->add();
             }
 
+            // finish all redeemed points
+            $RedeemedPoints->inputs['sales_id'] = $primary_id;
+            $RedeemedPoints->finish();
             // finish all related customer payment
             return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
         } else {
@@ -683,6 +687,12 @@ class Sales extends Connection
         $fetch_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details as d", "sum((d.quantity_return*d.price)-d.discount) as total_sr", "s.sales_return_id=d.sales_return_id AND s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' ");
         $sales_return_row = $fetch_sales_return->fetch_assoc();
         $sales_rows['total_sales_return'] = $sales_return_row['total_sr'] * 1;
+
+        // redeemed points
+        // customer payment
+        $fetch_redeemed_points = $this->select("tbl_redeemed_points", "sum(redeem_points) as total_points", "status='F' and sales_summary_id=0 and encoded_by='$user_id' ");
+        $redeemed_points_row = $fetch_redeemed_points->fetch_assoc();
+        $sales_rows['total_redeemed_points'] = $redeemed_points_row['total_points'] * 1;
         
         return $sales_rows;
     }

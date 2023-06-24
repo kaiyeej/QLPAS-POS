@@ -88,7 +88,15 @@ class RedeemedPoints extends Connection {
         $redeemed_points = $fetch_total_redeemed_points->fetch_assoc();
         $available_points = ($total_points['total']*1) - ($redeemed_points['total']*1);
         return $available_points;
+    }
 
+    public function update_review_sales_summary()
+    {
+        $encoded_by = $this->inputs['encoded_by'];
+        $form = array(
+            'sales_summary_id' => $this->inputs['sales_summary_id']
+        );
+        return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
     }
 }
 

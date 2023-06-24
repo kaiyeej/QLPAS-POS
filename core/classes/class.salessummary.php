@@ -88,15 +88,19 @@ class SalesSummary extends Connection
             $Sales = new Sales();
             $CustomerPayment = new CustomerPayment;
             $SalesReturn = new SalesReturn;
+            $RedeemedPoints = new RedeemedPoints;
             $Sales->inputs['sales_summary_id'] = $primary_id;
             $Sales->inputs['encoded_by'] = $this->inputs['encoded_by'];
             $CustomerPayment->inputs['sales_summary_id'] = $primary_id;
             $CustomerPayment->inputs['encoded_by'] = $this->inputs['encoded_by'];
             $SalesReturn->inputs['sales_summary_id'] = $primary_id;
             $SalesReturn->inputs['encoded_by'] = $this->inputs['encoded_by'];
+            $RedeemedPoints->inputs['sales_summary_id'] = $primary_id;
+            $RedeemedPoints->inputs['encoded_by'] = $this->inputs['encoded_by'];
 
             $CustomerPayment->update_review_sales_summary();
             $SalesReturn->update_review_sales_summary();
+            $RedeemedPoints->update_review_sales_summary();
 
             // delete saved sales return
             $this->delete("tbl_sales_return", "status = 'S' AND encoded_by=" . $this->inputs['encoded_by'] ." ");
