@@ -555,7 +555,7 @@ class Sales extends Connection
         $suki_card_number = $Customers->get_suki_card_number($this->inputs['customer_id']);
         if($suki_card_number != null){
             $reward_points = $RedeemedPoints->get_reward_points($primary_id);
-            $remarks = "Suki Card #:" . $suki_card_number;
+            $remarks = $suki_card_number;
         }else{
             $reward_points = 0;
             $remarks = "walk-in";

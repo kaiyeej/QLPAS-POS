@@ -312,36 +312,70 @@ class CustomerPayment extends Connection
     public function addPaymentPOS()
     {
 
-        $amount = $this->inputs['amount'] * 1;
-        $totalPayable = $this->inputs['total_payment_amount'] * 1;
-        $amount_paid = $this->getTotalPaymentPOS() * 1;
-
-        if (($amount + $amount_paid) <= $totalPayable) {
+        if($this->inputs['payment_option_id'] > 0){
+            $amount = $this->inputs['amount'] * 1;
+            $totalPayable = $this->inputs['total_payment_amount'] * 1;
+            $amount_paid = $this->getTotalPaymentPOS() * 1;
+    
+            if (($amount + $amount_paid) <= $totalPayable) {
+                $Sales = new Sales;
+                $this->inputs['payment_date'] = $this->getCurrentDate();
+                $this->inputs['remarks'] = $this->inputs['other_payment_reference'];
+                $this->inputs['payment_type'] = "O";
+                $this->inputs['check_date'] = "";
+                $this->inputs['check_number'] = "";
+                $this->inputs['check_bank'] = "";
+    
+                $primary_id = $this->add();
+                $this->inputs[$this->pk] = $primary_id;
+                $sales_num = $this->inputs['sales_num'];
+                $param = "reference_number = '$sales_num'";
+                $this->inputs[$this->fk_det] = $Sales->getID($param);
+                // return $this->add_detail();
+    
+                $form = array(
+                    $this->pk => $this->inputs[$this->pk],
+                    $this->fk_det => $this->inputs[$this->fk_det],
+                    'amount' => $this->inputs['amount'],
+                    'type' => 'DR'
+                );
+    
+                return $this->insert($this->table_detail, $form);
+            } else {
+                return -1;
+            }
+        }else{
+            // this is for suki card redeem points
+            $RedeemedPoints = new RedeemedPoints;
             $Sales = new Sales;
-            $this->inputs['payment_date'] = $this->getCurrentDate();
-            $this->inputs['remarks'] = $this->inputs['other_payment_reference'];
-            $this->inputs['payment_type'] = "O";
-            $this->inputs['check_date'] = "";
-            $this->inputs['check_number'] = "";
-            $this->inputs['check_bank'] = "";
+            $Customers = new Customers;
 
-            $primary_id = $this->add();
-            $this->inputs[$this->pk] = $primary_id;
-            $sales_num = $this->inputs['sales_num'];
-            $param = "reference_number = '$sales_num'";
-            $this->inputs[$this->fk_det] = $Sales->getID($param);
-            // return $this->add_detail();
+            $suki_card_number = $Customers->get_suki_card_number($this->inputs['customer_id']);
+            $RedeemedPoints->inputs['customer_id'] = $this->inputs['customer_id'];
+            $available_points = $RedeemedPoints->get_available_reward_points();
 
-            $form = array(
-                $this->pk => $this->inputs[$this->pk],
-                $this->fk_det => $this->inputs[$this->fk_det],
-                'amount' => $this->inputs['amount'],
-                'type' => 'DR'
-            );
+            $payment_reference_number = $this->inputs['other_payment_reference'];
 
-            return $this->insert($this->table_detail, $form);
-        } else {
-            return -1;
+            if($available_points >= $this->inputs['amount']){
+                if($suki_card_number == $payment_reference_number){
+                    $RedeemedPoints->inputs['reference_number'] = $RedeemedPoints->generate();
+    
+                    $sales_num = $this->inputs['sales_num'];
+                    $param = "reference_number = '$sales_num'";
+                    $RedeemedPoints->inputs['sales_id'] = $Sales->getID($param);
+                    $RedeemedPoints->inputs['customer_id'] = $this->inputs['customer_id'];
+                    $RedeemedPoints->inputs['redeem_points'] = $this->inputs['amount'];
+                    $RedeemedPoints->inputs['suki_card_number'] = $this->inputs['other_payment_reference'];
+                    $RedeemedPoints->inputs['encoded_by'] = $this->inputs['encoded_by'];
+                    
+    
+                    return $RedeemedPoints->add();   
+                }else{
+                    return -3; // invalid suki card number
+                }
+            }else{
+                return -2;
+            }
         }
     }
 
@@ -353,7 +387,11 @@ class CustomerPayment extends Connection
         $sales_id = $Sales->getID($param);
         $result = $this->select($this->table_detail, 'sum(amount)', "ref_id='$sales_id' and type='DR' ");
         $row = $result->fetch_array();
-        return $row[0];
+
+        // total redeemed points
+        $fetch_redeemed_points = $this->select("tbl_redeemed_points", "sum(redeem_points)", "sales_id='$sales_id' ");
+        $redeemed_points = $fetch_redeemed_points->fetch_array();
+        return $row[0] + $redeemed_points[0];
     }
 
     public function getPaymentByRef($ref_id, $type = 'DR')
@@ -396,6 +434,9 @@ class CustomerPayment extends Connection
             }
 
             $ids = implode(',', $rows);
+
+            // delete redeemed points
+            $this->delete("tbl_redeemed_points", "sales_id='$sales_id'");
 
             if (sizeof($rows) > 0) {
                 return $result = $this->delete($this->table,  "cp_id IN($ids)");

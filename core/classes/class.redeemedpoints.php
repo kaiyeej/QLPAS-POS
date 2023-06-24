@@ -15,11 +15,11 @@ class RedeemedPoints extends Connection {
             'sales_id'      => $this->inputs['sales_id'],
             'customer_id'  => $this->inputs['customer_id'],
             'redeem_points'  => $this->inputs['redeem_points'],
-            'sales_summary_id'  => $this->inputs['sales_summary_id'],
             'encoded_by'  => $this->inputs['encoded_by'],
+            'suki_card_number' => $this->inputs['suki_card_number'],
             'status'        => 'S'
         );
-        return $this->insertIfNotExist($this->table, $form, '', 'Y');
+        return $this->insertIfNotExist($this->table, $form);
     }
 
     public function finish()
@@ -71,7 +71,24 @@ class RedeemedPoints extends Connection {
         $reward_points = $reward_points_factor > 0 ? $sales_row['total']/$reward_points_factor : 0;
 
         return $reward_points;
+    }
+
+    public function get_available_reward_points(){
+        $Customers = new Customers;
+        $customer_id = $this->inputs['customer_id'];
+        $suki_card_number = $Customers->get_suki_card_number($customer_id);
+
+        //return $total_points['total'] - $redeemed_points['total'];
         
+        // total points
+        $fetch_total_points = $this->select("tbl_sales", "sum(reward_points) as total", "remarks='$suki_card_number' and remarks != '' ");
+        $total_points = $fetch_total_points->fetch_assoc();
+        // total redeemed points
+        $fetch_total_redeemed_points = $this->select($this->table, "sum(redeem_points) as total", "suki_card_number='$suki_card_number' and suki_card_number != '' ");
+        $redeemed_points = $fetch_total_redeemed_points->fetch_assoc();
+        $available_points = ($total_points['total']*1) - ($redeemed_points['total']*1);
+        return $available_points;
+
     }
 }
 
