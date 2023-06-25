@@ -9,7 +9,7 @@
                     <input type="hidden" id="hidden_id_terms" name="input[sales_id]">
                     <div class="form-group row">
                         <div class="col">
-                            <label><strong>Terms</strong></label>
+                            <label><strong>Terms (days)</strong></label>
                             <div>
                             <input type="number" min="1" class="form-control input-item" name="input[terms]" id="terms" required>
                             </div>

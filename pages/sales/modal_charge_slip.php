@@ -46,7 +46,7 @@
                          <div class="col-md-6">
                              <strong>REFERENCE #: </strong><span class="reference_number_span"></span><br>
                              <strong>INVOICE DATE: </strong><span class="sales_date_span"></span><br>
-                             <strong>TERMS: </strong><span class="terms_span"></span><br>
+                             <strong>TERMS (days): </strong><span class="terms_span"></span><br>
                              <strong>DUE DATE: </strong><span class="due_date_span"></span><br>
                          </div>
                      </div>
