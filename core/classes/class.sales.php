@@ -739,6 +739,7 @@ class Sales extends Connection
         }, $r_id, $r_qty, $p_id);
 
         $StockWithdrawal->finish($withdrawal_id);
+        return $withdrawal_id;
     }
 
     public function sales_date($primary_id)

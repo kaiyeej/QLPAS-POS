@@ -259,13 +259,19 @@ class StockWithdrawal extends Connection
     public function addStockWithdrawalPOS()
     {
         $Sales = new Sales();
+        $ClaimSlip = new ClaimSlip;
         $reference_number = $this->inputs['reference_number'];
         $param = "reference_number='$reference_number'";
         $Sales->inputs['sales_id'] = $Sales->getID($param);
+        
         $Sales->inputs['r_qty'] = $this->inputs['r_qty'];
         $Sales->inputs['r_id'] = $this->inputs['r_id'];
         $Sales->inputs['p_id'] = $this->inputs['p_id'];
-        return $Sales->released();
+        $withdrawal_id = $Sales->released();
+
+        $ClaimSlip->inputs['withdrawal_id'] = $withdrawal_id;
+        $ClaimSlip->inputs['claim_slip_id'] = $this->inputs['claim_slip_id'];
+        return $ClaimSlip->update_claim_slip();
     }
 
     public function getID($param)

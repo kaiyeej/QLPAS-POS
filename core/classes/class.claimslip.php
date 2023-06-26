@@ -68,6 +68,16 @@ class ClaimSlip extends Connection
         return $rows;
     }
 
+    public function update_claim_slip(){
+        $form = array(
+            'withdrawal_id'   => $this->inputs['withdrawal_id'],
+            'status' => 'F'
+        );
+        $primary_id = $this->inputs[$this->pk];
+        $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        return $result;
+    }
+
     public function get_claimslip()
     {
         $sales_id = $this->inputs['sales_id'];
