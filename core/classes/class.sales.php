@@ -1047,6 +1047,14 @@ class Sales extends Connection
         return $row[0];
     }
 
+    
+    public function sales_qty($id)
+    {
+        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum(quantity) as qty", "h.sales_id = d.sales_id AND h.sales_id='$id'");
+        $row = $fetchData->fetch_assoc();
+
+        return $row['qty'];
+    }
 
     public function total_charge_sales_summary($id)
     {

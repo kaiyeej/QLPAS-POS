@@ -81,10 +81,10 @@ class SalesReturn extends Connection
         return $rows;
     }
 
-    public function view()
+    public function view($primary_id = null)
     {
         $Sales = new Sales;
-        $primary_id = $this->inputs['id'];
+        $primary_id = $primary_id == "" ? $this->inputs['id'] : $primary_id;
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         $row['sales_reference_number'] = $Sales->name($row['sales_id']);
@@ -113,11 +113,24 @@ class SalesReturn extends Connection
     {
         $primary_id = $this->inputs['id'];
         $Products = new Products();
+        $Sales = new Sales();
         $result = $this->select($this->table_detail, " * ", "$this->pk = '$primary_id'");
+        $sr_total = 0;
         while ($row = $result->fetch_array()) {
             $Products->prodAVG($row['product_id'], $row['quantity_return'], $row['cost']);
+            $sr_total += $row['quantity_return'];
         }
 
+        $sRow = $this->view($primary_id);
+        $sales_qty = $Sales->sales_qty($sRow['sales_id']);
+        $qty = $sales_qty-$sr_total;
+        if($qty <= 0){
+            $form_ = array(
+                'status' => 'R',
+            );
+            $this->update("tbl_sales", $form_, "sales_id = '$sRow[sales_id]'");    
+        }
+        
         $form = array(
             'status' => 'F',
         );
