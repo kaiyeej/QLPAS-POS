@@ -124,12 +124,13 @@ class Users extends Connection
         $response = [];
         $username = $this->clean($this->inputs['username']);
         $password = md5($this->clean($this->inputs['password']));
-        $result = $this->select($this->table, '*', "username = '$username' AND password = '$password' AND user_category='C'");
+        $result = $this->select($this->table, '*', "username = '$username' AND password = '$password' AND (user_category='C' or user_category='W')");
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
 
             $response['login'] = 'Yes';
             $response['user_id'] = $row['user_id'];
+            $response['user_category'] = $row['user_category'];
             $response['user_fullname'] = $row['user_fullname'];
             //$_SESSION['user']['id'] = $row['user_id'];
         } else {
