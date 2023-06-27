@@ -91,8 +91,12 @@ class ClaimSlip extends Connection
 
     public function runner()
     {
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', 0);
+
+        $response['slips'] = [];
         $Sales = new Sales;
-        $result = $this->select("tbl_sales", "sales_id", "withdrawal_status = '1'");
+        $result = $this->select("tbl_sales", "sales_id", "for_pick_up = '1'");
         while ($row = $result->fetch_assoc()) {
 
             $ClaimSlip = new ClaimSlip;
@@ -100,11 +104,28 @@ class ClaimSlip extends Connection
             $sales_id = $row['sales_id'];
             $total_amount = $Sales->total($sales_id);
 
-            $ClaimSlip->inputs['reference_number'] = $reference_number;
-            $ClaimSlip->inputs['sales_id'] = $sales_id;
-            $ClaimSlip->inputs['total_amount'] = $total_amount;
-            $ClaimSlip->add();
+            if ($this->status_checker($sales_id) == 'S') {
+                $ClaimSlip->inputs['reference_number'] = $reference_number;
+                $ClaimSlip->inputs['sales_id'] = $sales_id;
+                $ClaimSlip->inputs['total_amount'] = $total_amount;
+                $ClaimSlip->add();
+
+                array_push($response['slips'], $ClaimSlip->inputs);
+            }
         }
+        return $response;
+    }
+
+    public function status_checker($sales_id)
+    {
+        $StockWithdrawal = new StockWithdrawal;
+        $result2 = $this->select("tbl_sales_details", 'sales_detail_id', "sales_id = '$sales_id'");
+        $remain_qty = 0;
+        while ($row2 = $result2->fetch_assoc()) {
+            $remain_qty += $StockWithdrawal->remaining_qty($row2['sales_detail_id']);
+        }
+
+        return $remain_qty > 0 ? "S" : "F";
     }
 
     public function finish_checker()
