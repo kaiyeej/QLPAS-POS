@@ -937,6 +937,9 @@ class Sales extends Connection
                     $this->metadata('sales_type', 'varchar', 1, 'NOT NULL', '', '', "'C=Cash;H=Charge'"),
                     $this->metadata('discount_id', 'int', 11, 'NOT NULL', '0', '', "'Manual Discounts'"),
                     $this->metadata('remarks', 'varchar', 255),
+                    $this->metadata('terms', 'int', 3),
+                    $this->metadata('reward_points', 'decimal', "6,2"),
+                    $this->metadata('sales_summary_id', 'int', 11),
                     $this->metadata('sales_date', 'date'),
                     $this->metadata('paid_status', 'varchar', 1, 'NOT NULL', '0', '', "'1 = Paid; 0 = Unpaid'"),
                     $this->metadata('withdrawal_status', 'int', 1, '', '0', '', "'0 = Fully served ; 1 = Pending'"),
@@ -1029,6 +1032,7 @@ class Sales extends Connection
         $row['sales_date_mod'] = date("F j, Y", strtotime($row['sales_date']));
         $row['customer_name'] = $c_row['customer_name'];
         $row['customer_address'] = $c_row['customer_address'];
+        $row['customer_tin'] = $c_row['customer_tin'];
         $row['terms'] = $row['terms'];
         $total = $this->total($row['sales_id']);
         $row['total'] = number_format($total, 2);

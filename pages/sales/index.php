@@ -383,6 +383,7 @@
                 $(".total_dr").html(json.data[0].total);
                 $(".terms_span").html(json.data[0].terms);
                 $(".due_date_span").html(json.data[0].due_date);
+                $(".customer_tin_span").html(json.data[0].customer_tin);
                 $("#hidden_id_terms").val(id);
                 $("#terms").val(json.data[0].terms);
 
