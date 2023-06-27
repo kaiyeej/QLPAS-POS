@@ -29,6 +29,48 @@ class ClaimSlip extends Connection
         return $this->update($this->table, $form, "sales_id = '$sales_id'");
     }
 
+    public function finish_stock_releasal()
+    {
+        $primary_id = $this->inputs[$this->pk];
+        $encoded_by = $this->inputs['encoded_by'];
+        $form = array(
+            'status' => 'F',
+            'checked_by' => $encoded_by
+        );
+        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+    }
+
+    public function cancel_stock_releasal()
+    {
+        $primary_id = $this->inputs[$this->pk];
+        $encoded_by = $this->inputs['encoded_by'];
+        $access_code = $this->inputs['access_code'];
+
+        $Settings = new Settings();
+        $setting_row = $Settings->view();
+        if ($setting_row['module_cancel'] == $access_code) {
+            $fetch = $this->select($this->table, "withdrawal_id", "$this->pk = '$primary_id'");
+            $withdrawal_id = $fetch->fetch_array();
+
+            $form = array(
+                'status' => 'S',
+                'checked_by' => 0,
+                'withdrawal_id' => 0
+            );
+            $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+            
+            if($result == 1){
+                // delete stock withdrawal
+                return $this->delete("tbl_stock_withdrawal", "withdrawal_id='$withdrawal_id[0]'");
+            }else{
+                return 0;
+            }
+        }else{
+            return -2;
+        }
+        
+    }
+
     public function generate()
     {
         $fetch = $this->select($this->table, "max(claim_slip_id) + 1 as max_id");

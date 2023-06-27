@@ -284,6 +284,26 @@ class StockWithdrawal extends Connection
         return $response;
     }
 
+    public function show_detail_pos()
+    {
+        $Products = new Products();
+        $Sales = new Sales();
+        
+        $claim_slip_id = $this->inputs['claim_slip_id'];
+        $fetch = $this->select("tbl_claim_slips", "withdrawal_id", "claim_slip_id='$claim_slip_id'");
+        $withdrawal_id = $fetch->fetch_array();
+        
+        $rows = array();
+        $result = $this->select($this->table_detail, '*', "withdrawal_id = '$withdrawal_id[0]'");
+        while ($row = $result->fetch_assoc()) {
+            $row['product'] = Products::name($row['product_id']);
+            $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
+            $row['remaining_qty'] = $this->remaining_qty($row['sales_detail_id']);
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     public function getID($param)
     {
         $fetch = $this->select($this->table, $this->pk, $param);
