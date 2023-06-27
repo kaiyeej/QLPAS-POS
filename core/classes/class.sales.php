@@ -62,7 +62,7 @@ class Sales extends Connection
             $customer_name = $row['customer_id'] > 0 ? $Customers->name($row['customer_id']) : 'Walk-in';
             $row['suki_card_number'] = $row['customer_id'] > 0 ? $Customers->get_suki_card_number($row['customer_id']) : '';
             $row['customer'] = $customer_name;
-            
+
             $row['customer_id'] = $row['customer_id'];
             $total = $this->total($row['sales_id']);
             $row['total'] = number_format($total, 2);
@@ -73,7 +73,6 @@ class Sales extends Connection
             $rows[] = $row;
         }
         return $rows;
-        
     }
 
     public function view()
@@ -381,7 +380,7 @@ class Sales extends Connection
         $Inventory = new InventoryReport();
         $current_balance = $Inventory->balance($product_id);
         if ($current_balance - $this->inputs['quantity'] >= 0) {
-            
+
             $sales_id = $this->detailsRow($sales_detail_id, 'sales_id');
             $discount_id = $this->dataRow($sales_id, 'discount_id');
 
@@ -400,7 +399,7 @@ class Sales extends Connection
                 'discount_id'   => $row_disc['discount_id'],
             );
             return $this->update($this->table_detail, $form, " $this->pk2 = '$sales_detail_id'");
-        }else{
+        } else {
             return -3; // insufficient qty
         }
     }
@@ -551,17 +550,17 @@ class Sales extends Connection
         $param = "reference_number='$reference_number'";
 
         $primary_id = $this->getID($param);
-        
+
         // suki card calculation
         $suki_card_number = $Customers->get_suki_card_number($this->inputs['customer_id']);
-        if($suki_card_number != null){
+        if ($suki_card_number != null) {
             $reward_points = $RedeemedPoints->get_reward_points($primary_id);
             $remarks = $suki_card_number;
-        }else{
+        } else {
             $reward_points = 0;
             $remarks = "walk-in";
         }
-        
+
 
         // add customer payment if charge
         if ($sales_type == "H" && $customer_payment_amount > 0) {
@@ -693,7 +692,7 @@ class Sales extends Connection
         $fetch_redeemed_points = $this->select("tbl_redeemed_points", "sum(redeem_points) as total_points", "status='F' and sales_summary_id=0 and encoded_by='$user_id' ");
         $redeemed_points_row = $fetch_redeemed_points->fetch_assoc();
         $sales_rows['total_redeemed_points'] = $redeemed_points_row['total_points'] * 1;
-        
+
         return $sales_rows;
     }
 
@@ -759,13 +758,13 @@ class Sales extends Connection
             $paid_total += $row['total'];
         }
 
-        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d","sum(d.amount)","memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
+        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d", "sum(d.amount)", "memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
         $total_cm = $get_credit_memo->fetch_array();
 
-        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d","sum(d.amount)","h.memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
+        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "h.memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
         $total_dm = $get_debit_memo->fetch_array();
 
-        return ($dr_total+$total_dm[0]) - ($paid_total+$total_cm[0]);
+        return ($dr_total + $total_dm[0]) - ($paid_total + $total_cm[0]);
     }
 
     public function totalSalesDays($days)
@@ -845,23 +844,18 @@ class Sales extends Connection
             $response['total_amt'] = number_format($total_amt, 2);
             $response['duplicate_copy'] = $settings_data['duplicate_order_slip'];
         } else if ($print_type == 'claim') {
-            $ClaimSlip = new ClaimSlip();
-            $ClaimSlip->inputs['sales_id'] = $sales_id;
-            $claim_slip_id = $ClaimSlip->get_claimslip();
 
             $StockWithdrawal = new StockWithdrawal();
-            $this->inputs['param'] = "sales_id = '$sales_id'";
-            $details = $this->show_detail();
-            $items = [];
-            foreach ($details as $row) {
-                $remaining_qty = (float) $StockWithdrawal->remaining_qty($row['sales_detail_id']);
-                if ($remaining_qty > 0) {
-                    $items[] = [
-                        'remaining_qty' => $remaining_qty,
-                        'product' => substr(strtoupper($row['product']), 0, 30)
-                    ];
-                }
-            }
+            $withdrawal_id = $StockWithdrawal->getID("sales_id = '$sales_id' ORDER BY date_added DESC LIMIT 1");
+
+            $StockWithdrawal->inputs['param'] = "withdrawal_id = '$withdrawal_id'";
+            $items = $StockWithdrawal->show_detail();
+
+            $ClaimSlip = new ClaimSlip();
+            $ClaimSlip->inputs['sales_id'] = $sales_id;
+            $ClaimSlip->inputs['withdrawal_id'] = $withdrawal_id;
+            $claim_slip_id = $ClaimSlip->get_claimslip();
+
             $response['claim_slip_no'] = $claim_slip_id;
             $response['items'] = $items;
             $response['duplicate_copy'] = $settings_data['duplicate_claim_slip'];
@@ -1020,7 +1014,7 @@ class Sales extends Connection
         $row['terms'] = $row['terms'];
         $total = $this->total($row['sales_id']);
         $row['total'] = number_format($total, 2);
-        $row['due_date'] = date('F j, Y', strtotime($row['sales_date']. ' + '.$row['terms'].' days'));
+        $row['due_date'] = date('F j, Y', strtotime($row['sales_date'] . ' + ' . $row['terms'] . ' days'));
         $rows[] = $row;
         return $rows;
     }
@@ -1048,7 +1042,7 @@ class Sales extends Connection
         return $row[0];
     }
 
-    
+
     public function sales_qty($id)
     {
         $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum(quantity) as qty", "h.sales_id = d.sales_id AND h.sales_id='$id'");

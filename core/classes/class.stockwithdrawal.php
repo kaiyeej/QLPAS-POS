@@ -151,9 +151,10 @@ class StockWithdrawal extends Connection
             return -1;
         } else {
 
-            $ClaimSlip = new ClaimSlip;
-            $ClaimSlip->inputs['sales_id'] = $sales_id;
-            $ClaimSlip->finish();
+            // $ClaimSlip = new ClaimSlip;
+            // $ClaimSlip->inputs['sales_id'] = $sales_id;
+            // $ClaimSlip->inputs['withdrawal_id'] = $primary_id;
+            // $ClaimSlip->finish();
 
             if ($total <= 0) {
                 $form_ = array(
@@ -263,7 +264,7 @@ class StockWithdrawal extends Connection
         $reference_number = $this->inputs['reference_number'];
         $param = "reference_number='$reference_number'";
         $Sales->inputs['sales_id'] = $Sales->getID($param);
-        
+
         $Sales->inputs['r_qty'] = $this->inputs['r_qty'];
         $Sales->inputs['r_id'] = $this->inputs['r_id'];
         $Sales->inputs['p_id'] = $this->inputs['p_id'];
@@ -271,7 +272,16 @@ class StockWithdrawal extends Connection
 
         $ClaimSlip->inputs['withdrawal_id'] = $withdrawal_id;
         $ClaimSlip->inputs['claim_slip_id'] = $this->inputs['claim_slip_id'];
-        return $ClaimSlip->update_claim_slip();
+        $ClaimSlip->update_claim_slip();
+
+        $Settings = new Settings();
+        $settings_data = $Settings->view();
+
+        $response = [
+            'has_warehouse_checker' => (int) $settings_data['has_warehouse_checker'],
+        ];
+
+        return $response;
     }
 
     public function getID($param)

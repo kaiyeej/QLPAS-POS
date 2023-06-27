@@ -38,6 +38,7 @@ class Settings extends Connection
             'duplicate_order_slip'      => 0,
             'duplicate_withdrawal_slip' => 0,
             'duplicate_claim_slip'      => 0,
+            'has_warehouse_checker'     => 0,
         );
         $loop = $this->inputs['allows'];
         if (count($loop) > 0) {
@@ -61,7 +62,8 @@ class Settings extends Connection
         return $result->fetch_assoc();
     }
 
-    public function get_reward_points_factor(){
+    public function get_reward_points_factor()
+    {
         $result = $this->select($this->table, "rewards_point_factor");
         $row = $result->fetch_assoc();
         return $row['rewards_point_factor'];
@@ -178,6 +180,7 @@ class Settings extends Connection
                     $this->metadata('duplicate_claim_slip', 'int', 1),
                     $this->metadata('duplicate_payment_slip', 'int', 1),
                     $this->metadata('rewards_point_factor', 'decimal', '12,2'),
+                    $this->metadata('has_warehouse_checker', 'int', 1),
                     $default['date_added'],
                     $default['date_last_modified']
                 )

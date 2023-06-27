@@ -13,6 +13,7 @@ class ClaimSlip extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'sales_id'      => $this->inputs['sales_id'],
+            'withdrawal_id' => 0,
             'total_amount'  => $this->inputs['total_amount'],
             'status'        => 'S'
         );
@@ -68,7 +69,8 @@ class ClaimSlip extends Connection
         return $rows;
     }
 
-    public function update_claim_slip(){
+    public function update_claim_slip()
+    {
         $form = array(
             'withdrawal_id'   => $this->inputs['withdrawal_id'],
             'status' => 'F'
@@ -81,7 +83,8 @@ class ClaimSlip extends Connection
     public function get_claimslip()
     {
         $sales_id = $this->inputs['sales_id'];
-        $result = $this->select($this->table, $this->name, "sales_id = '$sales_id' AND status = 'S'");
+        $withdrawal_id = $this->inputs['withdrawal_id'];
+        $result = $this->select($this->table, $this->name, "sales_id = '$sales_id' AND withdrawal_id = '$withdrawal_id'");
         $row = $result->fetch_assoc();
         return $row[$this->name];
     }

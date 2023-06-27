@@ -8,10 +8,14 @@
     <br>
     <div class="col-12 col-xl-12 card shadow mb-4">
         <ul id="tabs" class="nav nav-tabs">
-            <li class="nav-item"><a href="" data-target="#company-profile" data-toggle="tab" class="nav-link small text-uppercase active">Company Profile</a></li>
-            <li class="nav-item"><a href="" data-target="#access-codes" data-toggle="tab" class="nav-link small text-uppercase">Access Codes</a></li>
-            <li class="nav-item"><a href="" data-target="#backup" data-toggle="tab" class="nav-link small text-uppercase">Backup Database</a></li>
-            <li class="nav-item" style="display:none;"><a href="" data-target="#version-update" data-toggle="tab" class="nav-link small text-uppercase">Version Update</a></li>
+            <li class="nav-item"><a href="" data-target="#company-profile" data-toggle="tab"
+                    class="nav-link small text-uppercase active">Company Profile</a></li>
+            <li class="nav-item"><a href="" data-target="#access-codes" data-toggle="tab"
+                    class="nav-link small text-uppercase">Access Codes</a></li>
+            <li class="nav-item"><a href="" data-target="#backup" data-toggle="tab"
+                    class="nav-link small text-uppercase">Backup Database</a></li>
+            <li class="nav-item" style="display:none;"><a href="" data-target="#version-update" data-toggle="tab"
+                    class="nav-link small text-uppercase">Version Update</a></li>
         </ul>
         <br>
         <div id="tabsContent" class="tab-content">
@@ -26,19 +30,23 @@
                             </p>
                             <div class="form-group">
                                 <label for="company_name">Company Name</label>
-                                <textarea name="input[company_name]" class="form-control input-item" id="company_name"></textarea>
+                                <textarea name="input[company_name]" class="form-control input-item"
+                                    id="company_name"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="company_address">Company Address</label>
-                                <textarea name="input[company_address]" class="form-control input-item" id="company_address"></textarea>
+                                <textarea name="input[company_address]" class="form-control input-item"
+                                    id="company_address"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="print_header">Customize Header Text (POS Print)</label>
-                                <textarea name="input[print_header]" class="form-control input-item" id="print_header"></textarea>
+                                <textarea name="input[print_header]" class="form-control input-item"
+                                    id="print_header"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="print_footer">Customize Footer Text (POS Print)</label>
-                                <textarea name="input[print_footer]" class="form-control input-item" id="print_footer"></textarea>
+                                <textarea name="input[print_footer]" class="form-control input-item"
+                                    id="print_footer"></textarea>
                             </div>
                         </div>
                         <div class="col-6">
@@ -46,8 +54,28 @@
                                 Set your rewards points value.
                             </p>
                             <div class="form-group">
-                                <label for="print_header">Amount for every one point e.g., <mark class="bg-success text-white">P 1000 = +1 point</mark></label>
-                                <input type="number" name="input[rewards_point_factor]" class="form-control input-item" id="rewards_point_factor" required>
+                                <label for="print_header">Amount for every one point e.g., <mark
+                                        class="bg-success text-white">P 1000 = +1 point</mark></label>
+                                <input type="number" name="input[rewards_point_factor]" class="form-control input-item"
+                                    id="rewards_point_factor" required>
+                            </div>
+                            <hr>
+                            <p class="card-description">
+                                Set Warehouse Checking.
+                            </p>
+                            <div class="list-wrapper px-3" style="height: auto;overflow: hidden;">
+                                <ul class="d-flex flex-column" id="report_column">
+                                    <li>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="checkbox check-items" name="input[allows][]"
+                                                    id="has_warehouse_checker" value="has_warehouse_checker"
+                                                    type="checkbox">Enable Warehouse Personnel Checking<i
+                                                    class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                             <hr>
                             <p class="card-description">
@@ -58,28 +86,40 @@
                                     <li>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_order_slip" value="duplicate_order_slip" type="checkbox">Allow Cashier's Copy in Order Slip<i class="input-helper"></i>
+                                                <input class="checkbox check-items" name="input[allows][]"
+                                                    id="duplicate_order_slip" value="duplicate_order_slip"
+                                                    type="checkbox">Allow Cashier's Copy in Order Slip<i
+                                                    class="input-helper"></i>
                                             </label>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_withdrawal_slip" value="duplicate_withdrawal_slip" type="checkbox">Allow Cashier's Copy in Withdrawal Slip<i class="input-helper"></i>
+                                                <input class="checkbox check-items" name="input[allows][]"
+                                                    id="duplicate_withdrawal_slip" value="duplicate_withdrawal_slip"
+                                                    type="checkbox">Allow Cashier's Copy in Withdrawal Slip<i
+                                                    class="input-helper"></i>
                                             </label>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_claim_slip" value="duplicate_claim_slip" type="checkbox">Allow Cashier's Copy in Claim Slip<i class="input-helper"></i>
+                                                <input class="checkbox check-items" name="input[allows][]"
+                                                    id="duplicate_claim_slip" value="duplicate_claim_slip"
+                                                    type="checkbox">Allow Cashier's Copy in Claim Slip<i
+                                                    class="input-helper"></i>
                                             </label>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input class="checkbox check-items" name="input[allows][]" id="duplicate_payment_slip" value="duplicate_payment_slip" type="checkbox">Allow Cashier's Copy in Payment Slip<i class="input-helper"></i>
+                                                <input class="checkbox check-items" name="input[allows][]"
+                                                    id="duplicate_payment_slip" value="duplicate_payment_slip"
+                                                    type="checkbox">Allow Cashier's Copy in Payment Slip<i
+                                                    class="input-helper"></i>
                                             </label>
                                         </div>
                                     </li>
@@ -104,30 +144,38 @@
                             <input type="hidden" id="hidden_id">
                             <div class="form-group">
                                 <label for="module_discount">Discount</label>
-                                <input name="input[module_discount]" type="password" class="form-control input-item" id="module_discount" placeholder="Discount Module">
+                                <input name="input[module_discount]" type="password" class="form-control input-item"
+                                    id="module_discount" placeholder="Discount Module">
                             </div>
                             <div class="form-group">
                                 <label for="module_cancel">Cancel</label>
-                                <input name="input[module_cancel]" type="password" class="form-control input-item" id="module_cancel" placeholder="Cancelling Module">
+                                <input name="input[module_cancel]" type="password" class="form-control input-item"
+                                    id="module_cancel" placeholder="Cancelling Module">
                             </div>
                             <div class="form-group">
                                 <label for="module_delete">Delete</label>
-                                <input name="input[module_delete]" type="password" class="form-control input-item" id="module_delete" placeholder="Delete Module">
+                                <input name="input[module_delete]" type="password" class="form-control input-item"
+                                    id="module_delete" placeholder="Delete Module">
                             </div>
                             <button type="submit" class="btn btn-primary mr-2" id="btn_submit">Submit</button>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="module_add_customer">Add Customer</label>
-                                <input name="input[module_add_customer]" type="password" class="form-control input-item" id="module_add_customer" placeholder="Add Customer Module">
+                                <input name="input[module_add_customer]" type="password" class="form-control input-item"
+                                    id="module_add_customer" placeholder="Add Customer Module">
                             </div>
                             <div class="form-group">
                                 <label for="module_change_payment_type">Change Payment Type</label>
-                                <input name="input[module_change_payment_type]" type="password" class="form-control input-item" id="module_change_payment_type" placeholder="Cancelling Module">
+                                <input name="input[module_change_payment_type]" type="password"
+                                    class="form-control input-item" id="module_change_payment_type"
+                                    placeholder="Cancelling Module">
                             </div>
                             <div class="form-group">
                                 <label for="module_remove_online_payment">Remove Online Payment</label>
-                                <input name="input[module_remove_online_payment]" type="password" class="form-control input-item" id="module_remove_online_payment" placeholder="Delete Module">
+                                <input name="input[module_remove_online_payment]" type="password"
+                                    class="form-control input-item" id="module_remove_online_payment"
+                                    placeholder="Delete Module">
                             </div>
                         </div>
                     </div>
@@ -142,7 +190,8 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="button" class="btn btn-primary mr-2" id="btn_backup" onclick="backupDatabase()">Backup Database</button>
+                        <button type="button" class="btn btn-primary mr-2" id="btn_backup"
+                            onclick="backupDatabase()">Backup Database</button>
                     </div>
                 </div>
             </div>
@@ -155,7 +204,8 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <button type="button" class="btn btn-primary mr-2" id="btn_pull" onclick="pullVersionControl()">Fetch latest version update</button>
+                        <button type="button" class="btn btn-primary mr-2" id="btn_pull"
+                            onclick="pullVersionControl()">Fetch latest version update</button>
                         <p id="output_pull"></p>
                     </div>
                 </div>
