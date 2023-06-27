@@ -288,6 +288,7 @@ class StockWithdrawal extends Connection
     {
         $Products = new Products();
         $Sales = new Sales();
+        $Inv = new InventoryReport();
         
         $claim_slip_id = $this->inputs['claim_slip_id'];
         $fetch = $this->select("tbl_claim_slips", "withdrawal_id", "claim_slip_id='$claim_slip_id'");
@@ -299,6 +300,7 @@ class StockWithdrawal extends Connection
             $row['product'] = Products::name($row['product_id']);
             $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
             $row['remaining_qty'] = $this->remaining_qty($row['sales_detail_id']);
+            $row['current_qty'] = $Inv->balance($row['product_id']) + $row['qty'];
             $rows[] = $row;
         }
         return $rows;

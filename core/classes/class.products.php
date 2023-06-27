@@ -158,7 +158,7 @@ class Products extends Connection
             $row['count'] = $count++;
             $row['product_category'] = $ProductCategories->name($row['product_category_id']);
 
-            $row['current_qty'] = "";//$Inv->balance($row['product_id']);
+            $row['current_qty'] = $Inv->balance($row['product_id']);
             $rows[] = $row;
         }
         return $rows;
