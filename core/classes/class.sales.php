@@ -1148,4 +1148,5 @@ class Sales extends Connection
 
         return $rows;
     }
+
 }

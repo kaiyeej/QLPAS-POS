@@ -75,11 +75,11 @@
                                 </tr>
                                 <tr>
                                     <td style="padding-left: 100px;">Sales Discount</td>
-                                    <td style="text-align:right;"><span id="discount_total_label" class="label-item"></span></td>
+                                    <td style="text-align:right;">(-) <span id="discount_total_label" class="label-item"></span></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-left: 100px;">Sales Return</td>
-                                    <td style="text-align:right;"><span id="sales_return_total_label" class="label-item"></span></td>
+                                    <td style="text-align:right;">(-) <span id="sales_return_total_label" class="label-item"></span></td>
                                 </tr>
                                 <tr style="font-weight:bold;">
                                     <td style="text-align:right;">Subtotal</td>
@@ -107,7 +107,7 @@
                                     <td style="text-align:right;"><span id="pr_total_label" class="label-item"></span></td>
                                 </tr>
                                 <tr style="font-weight:bold;">
-                                    <td style="text-align:right;">Ending Inventory</td>
+                                    <td>Ending Inventory</td>
                                     <td style="text-align:right;"><span id="cost_total_label" class="label-item"></span></td>
                                 </tr>
                             </tbody>
@@ -136,11 +136,18 @@
                                 <td style="text-align:right;">Subtotal</td>
                                 <td style="text-align:right;"><span id="other_total_label" class="label-item"></span></td>
                             </tr>
+                            
+                            
+                            <tr style="font-weight:bold;">
+                                <td>Cost of Good Sold</td>
+                                <td style="text-align:right;font-size:15px;"><span id="cogs_total_label" class="label-item"></span></td>
+                            </tr>
 
                             <tr style="font-weight:bold;">
                                 <td style="text-align:right;font-style: italic;font-size:15px;">Net Income</td>
                                 <td style="text-align:right;font-size:15px;"><span id="income_total_label" class="label-item"></span></td>
                             </tr>
+                            
                             </tbody>
                             <tfoot>
                             </tfoot>
