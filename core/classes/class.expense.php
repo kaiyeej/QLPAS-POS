@@ -12,7 +12,7 @@ class Expense extends Connection
     public $module = 'EXP-';
     public $module_name = "Expense";
     public $inputs = [];
-    public $searchable = ['reference_number','remarks'];
+    public $searchable = ['reference_number', 'remarks'];
     public $uri = "expense";
     public function add()
     {
@@ -43,7 +43,7 @@ class Expense extends Connection
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
-            $row['total'] = number_format($this->total($row['expense_id']),2);
+            $row['total'] = number_format($this->total($row['expense_id']), 2);
             $rows[] = $row;
         }
         return $rows;
@@ -131,7 +131,7 @@ class Expense extends Connection
 
     public function totalExpensesDays($days)
     {
-       $fetchData = $this->select('tbl_expense_details as d, tbl_expense as h', "sum(amount) as total", "h.expense_id = d.expense_id AND h.expense_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
+        $fetchData = $this->select('tbl_expense_details as d, tbl_expense as h', "sum(amount) as total", "h.expense_id = d.expense_id AND h.expense_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
         $row = $fetchData->fetch_assoc();
 
         return $row['total'] == 0 ? 0 : $row['total'];
@@ -139,27 +139,113 @@ class Expense extends Connection
 
     public function total($primary_id)
     {
-       $fetchData = $this->select('tbl_expense_details as d, tbl_expense as h', "sum(amount) as total", "h.expense_id = d.expense_id AND h.expense_id='$primary_id'");
+        $fetchData = $this->select('tbl_expense_details as d, tbl_expense as h', "sum(amount) as total", "h.expense_id = d.expense_id AND h.expense_id='$primary_id'");
         $row = $fetchData->fetch_assoc();
 
         return $row['total'];
     }
 
-    public static function search($words,&$rows)
+    public function graph()
+    {
+        $backgroundColors = [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+        ];
+
+        $borderColors = [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ];
+        $ExpenseCategories = new ExpenseCategories();
+        $ExpenseCategories->inputs['param'] = "expense_category_id > 0 ORDER BY expense_category ASC";
+        $loop_categories = $ExpenseCategories->show();
+
+        $labels = [];
+        foreach ($loop_categories as $row) {
+            $labels[] = $row['expense_category'];
+        }
+        $current_year = date('Y');
+        $last_5years = $current_year - 4;
+
+        $datasets = [];
+        $counter = 0;
+        for ($i = $last_5years; $i <= $current_year; $i++) {
+            $data = [];
+            $backgroundColor = [];
+            $borderColor = [];
+            foreach ($loop_categories as $row) {
+
+                $result = $this->select(
+                    "tbl_expense_details AS d,tbl_expense AS h",
+                    "SUM(amount) AS amount",
+                    "h.expense_id = d.expense_id AND h.status = 'F' AND YEAR(h.expense_date) = '$i' AND expense_category_id = '$row[expense_category_id]'"
+                );
+
+                if ($result->num_rows > 0) {
+                    $rowE = $result->fetch_assoc();
+                    $amount = $rowE['amount'] * 1;
+                } else {
+                    $amount = 0;
+                }
+                $data[] = $amount;
+                $backgroundColor[] = $backgroundColors[$counter];
+                $borderColor[] = $borderColors[$counter];
+            }
+
+            $list = array(
+                'label' => "Year $i",
+                'data' => array_sum($data) > 0 ? $data : [],
+                'borderWidth' => 1,
+                'backgroundColor' => $backgroundColor,
+                'borderColor' => $borderColor,
+                'fill' => true
+            );
+
+            $datasets[] = $list;
+            $counter++;
+        }
+
+        // $result = $this->select(
+        //     "tbl_expense_details AS d,tbl_expense AS h",
+        //     "SUM(amount) AS amount,expense_category_id",
+        //     "h.expense_id = d.expense_id AND h.status = 'F' AND YEAR(h.expense_date) = '$current_year' GROUP BY expense_category_id"
+        // );
+
+        // $data = [];
+
+        // while ($row = $result->fetch_assoc()) {
+        //     $data[] = (float) $row['amount'];
+        // }
+
+        return [
+            'datasets' => $datasets,
+            'labels' => $labels
+        ];
+    }
+
+    public static function search($words, &$rows)
     {
         $self = new self;
-        if(count($self->searchable) > 0 ){
-            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+        if (count($self->searchable) > 0) {
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable) . " LIKE '%$words%'";
             $result = $self->select($self->table, '*', $where);
             while ($row = $result->fetch_assoc()) {
                 $names = [];
-                foreach($self->searchable as $f){
+                foreach ($self->searchable as $f) {
                     $names[] = $row[$f];
                 }
                 $rows[] = array(
                     'name' => implode(" ", $names),
                     'module' => $self->module_name,
-                    'slug' => $self->uri."?id=".$row[$self->pk]
+                    'slug' => $self->uri . "?id=" . $row[$self->pk]
                 );
             }
         }

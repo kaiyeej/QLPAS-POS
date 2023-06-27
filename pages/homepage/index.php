@@ -6,7 +6,9 @@ $Users = new Users();
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Welcome <?= strtoupper($Users->name($_SESSION['user']['id'])); ?></h3>
+                    <h3 class="font-weight-bold">Welcome
+                        <?= strtoupper($Users->name($_SESSION['user']['id'])); ?>
+                    </h3>
                 </div>
                 <div class="col-12 col-xl-4">
                 </div>
@@ -14,20 +16,7 @@ $Users = new Users();
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 grid-margin stretch-card">
-            <div class="card tale-bg">
-                <div class="card-people mt-auto">
-                    <img src="images/dashboard/people.svg" alt="people">
-                    <div class="weather-info">
-                        <div class="d-flex">
-                            <div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 grid-margin transparent">
+        <div class="col-md-12 grid-margin transparent">
             <div class="row">
                 <div class="col-md-6 mb-4 stretch-card transparent">
                     <div class="card card-tale">
@@ -36,7 +25,9 @@ $Users = new Users();
                             $Sales = new Sales();
                             ?>
                             <p class="mb-4">Total Sales</p>
-                            <p class="fs-30 mb-2"><?= number_format($Sales->totalSalesDays(30), 2); ?></p>
+                            <p class="fs-30 mb-2">
+                                <?= number_format($Sales->totalSalesDays(30), 2); ?>
+                            </p>
                             <p>(30 days)</p>
                         </div>
                     </div>
@@ -48,7 +39,9 @@ $Users = new Users();
                     <div class="card card-light-danger">
                         <div class="card-body">
                             <p class="mb-4">Total Expenses</p>
-                            <p class="fs-30 mb-2"><?= number_format($Expense->totalExpensesDays(30), 2); ?></p>
+                            <p class="fs-30 mb-2">
+                                <?= number_format($Expense->totalExpensesDays(30), 2); ?>
+                            </p>
                             <p>(30 days)</p>
                         </div>
                     </div>
@@ -62,7 +55,9 @@ $Users = new Users();
                         ?>
                         <div class="card-body">
                             <p class="mb-4">Total Purchases</p>
-                            <p class="fs-30 mb-2"><?= number_format($PurchaseOrder->totalPurchaseDays(30), 2); ?></p>
+                            <p class="fs-30 mb-2">
+                                <?= number_format($PurchaseOrder->totalPurchaseDays(30), 2); ?>
+                            </p>
                             <p>(30 days)</p>
                         </div>
                     </div>
@@ -74,10 +69,27 @@ $Users = new Users();
                         ?>
                         <div class="card-body">
                             <p class="mb-4">Number of Customers</p>
-                            <p class="fs-30 mb-2"><?= $Customers->totalCustomers(); ?></p>
+                            <p class="fs-30 mb-2">
+                                <?= $Customers->totalCustomers(); ?>
+                            </p>
                             <p>(Total number)</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <p class="card-title">Expense Report</p>
+                    </div>
+                    <p class="font-weight-500">
+                        <?= date("Y") - 4; ?> -
+                        <?= date("Y"); ?> Annual Expenses
+                    </p>
+                    <div id="pieChart-legend" class="chartjs-legend mt-4 mb-2"></div>
+                    <canvas id="pieChart"></canvas>
                 </div>
             </div>
         </div>
@@ -90,7 +102,9 @@ $Users = new Users();
                     <div class="d-flex justify-content-between">
                         <p class="card-title">Sales Report</p>
                     </div>
-                    <p class="font-weight-500"><?= date("Y"); ?> Monthly Sales Grap</p>
+                    <p class="font-weight-500">
+                        <?= date("Y"); ?> Monthly Sales Graph
+                    </p>
                     <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
                     <canvas id="sales-chart"></canvas>
                 </div>
@@ -140,6 +154,35 @@ $Users = new Users();
     </div>
 </div>
 <script>
+    if ($("#pieChart").length) {
+        $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=Expense&q=graph",
+            success: function(data) {
+                var res = JSON.parse(data);
+                var pie_data = res.data;
+                var areaData = {
+                    labels: pie_data.labels,
+                    datasets: pie_data.datasets
+                };
+
+                var areaOptions = {
+                    plugins: {
+                        filler: {
+                            propagate: true
+                        }
+                    }
+                }
+
+                var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
+                var pieChart = new Chart(pieChartCanvas, {
+                    type: 'line',
+                    data: areaData,
+                    options: areaOptions
+                });
+            }
+        });
+    }
     if ($("#sales-chart").length) {
         //$.getJSON("controllers/sql.php?c=Sales&q=graph", function(data) {
         $.ajax({
@@ -248,7 +291,7 @@ $Users = new Users();
     }
 
     function getEntries() {
-       $("#dt_entries").DataTable().destroy();
+        $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
             "searching": false,
@@ -260,16 +303,15 @@ $Users = new Users();
                 "dataSrc": "data",
                 "type": "POST"
             },
-            "columns": [
-                {
-                    "data": "product"
-                },
-                {
-                    "data": "qty"
-                },
-                {
-                    "data": "total"
-                }
+            "columns": [{
+                "data": "product"
+            },
+            {
+                "data": "qty"
+            },
+            {
+                "data": "total"
+            }
             ]
         });
     }
