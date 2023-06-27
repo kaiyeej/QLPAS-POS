@@ -784,7 +784,16 @@ class Sales extends Connection
         $print_type = $this->inputs['print_type'];
 
         $reference_number = $this->inputs['reference_number'];
-        $sales_id = $print_type == 'payment' ? $reference_number : $this->getID("reference_number = '$reference_number'");
+        if ($print_type == 'payment') {
+            $sales_id = $reference_number;
+        } else if ($print_type == 'checked-releasal') {
+            $ClaimSlip = new ClaimSlip;
+            $claim_slip_id = $reference_number;
+            $sales_id = $ClaimSlip->get_row($claim_slip_id, 'sales_id');
+            $withdrawal_id = $ClaimSlip->get_row($claim_slip_id, 'withdrawal_id');
+        } else {
+            $sales_id = $this->getID("reference_number = '$reference_number'");
+        }
 
         $this->inputs['id'] = $sales_id;
         $header_data = $this->view();
@@ -870,6 +879,15 @@ class Sales extends Connection
             $response['payment_date'] = $payment_data['payment_date'];
             $response['payment_amount'] = (float) $payment_amount;
             $response['duplicate_copy'] = $settings_data['duplicate_payment_slip'];
+        } else if ($print_type == 'checked-releasal') {
+            $StockWithdrawal = new StockWithdrawal();
+            $StockWithdrawal->inputs['param'] = "withdrawal_id = '$withdrawal_id'";
+            $items = $StockWithdrawal->show_detail();
+
+            $response['reference_number'] = $StockWithdrawal->name($withdrawal_id);
+            $response['items'] = $items;
+            $response['withdrawal_date'] = date("Y-m-d H:i:s");
+            $response['duplicate_copy'] = $settings_data['duplicate_withdrawal_slip'];
         } else {
 
             $StockWithdrawal = new StockWithdrawal();

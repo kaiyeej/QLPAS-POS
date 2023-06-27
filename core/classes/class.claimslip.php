@@ -61,17 +61,16 @@ class ClaimSlip extends Connection
                 'withdrawal_id' => 0
             );
             $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
-            
-            if($result == 1){
+
+            if ($result == 1) {
                 // delete stock withdrawal
                 return $this->delete("tbl_stock_withdrawal", "withdrawal_id='$withdrawal_id[0]'");
-            }else{
+            } else {
                 return 0;
             }
-        }else{
+        } else {
             return -2;
         }
-        
     }
 
     public function generate()
@@ -132,6 +131,13 @@ class ClaimSlip extends Connection
         $result = $this->select($this->table, $this->name, "sales_id = '$sales_id' AND withdrawal_id = '$withdrawal_id'");
         $row = $result->fetch_assoc();
         return $row[$this->name];
+    }
+
+    public function get_row($primary_id, $field)
+    {
+        $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row[$field];
     }
 
     public function runner()
