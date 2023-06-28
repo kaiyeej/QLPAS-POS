@@ -11,6 +11,8 @@ class ProductPrice extends Connection
     public $fk_det = 'product_id';
 
     public $module_name = "Price Notice";
+
+    public $inputs;
     public function add()
     {
         $effective_date = date('Y-m-d', strtotime($this->inputs['effective_date']));
@@ -28,10 +30,17 @@ class ProductPrice extends Connection
 
     public function edit()
     {
+        $effective_date = date('Y-m-d', strtotime($this->inputs['effective_date']));
         $form = array(
-            $this->name => $this->clean($this->inputs[$this->name])
+            $this->name => $this->clean($this->inputs[$this->name]),
+            'effective_date' => $effective_date,
+            'remarks' => $this->clean($this->inputs['remarks'])
         );
-        $result = $this->updateIfNotExist($this->table, $form);
+
+        $result = $this->updateIfNotExist($this->table, $form, "effective_date = '$effective_date' AND ");
+        if ($result == 2)
+            return 'conflict';
+
         Logs::storeCrud($this->module_name, 'u', $result, $this->inputs[$this->name]);
         return $result;
     }

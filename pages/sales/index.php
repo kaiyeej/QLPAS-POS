@@ -1,10 +1,10 @@
 <style>
     @media print {
-        center{
+        center {
             text-align: center;
         }
-        
-        .div_footer{
+
+        .div_footer {
             position: absolute;
             bottom: 0;
         }
@@ -91,7 +91,7 @@
     function getEntries() {
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var param = "(sales_date >= '" + start_date + "' AND sales_date <= '" + end_date + "')";
+        var param = "AND (sales_date >= '" + start_date + "' AND sales_date <= '" + end_date + "')";
 
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
@@ -100,7 +100,7 @@
                 [3, 'desc']
             ],
             "ajax": {
-                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
+                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show_data",
                 "dataSrc": "data",
                 "type": "POST",
                 "data": {

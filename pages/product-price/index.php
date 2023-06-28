@@ -116,6 +116,41 @@
                 "render": $.fn.dataTable.render.number(',', '.', 2, ''),
                 "className": 'dt-body-right'
             }],
+
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function(i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                        i : 0;
+                };
+
+                // Total over all pages
+                total = api
+                    .column(3)
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total over this page
+                pageTotal = api
+                    .column(3, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(3).footer()).html(
+                    "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(total).toFixed(2))
+                );
+            },
             "columns": [{
                     "mRender": function(data, type, row) {
                         return "<input type='checkbox' value=" + row.price_detail_id + " class='dt_id_2' style='position: initial; opacity:1;'>";

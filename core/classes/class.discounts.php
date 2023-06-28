@@ -6,32 +6,36 @@ class Discounts extends Connection
     public $name = 'discount_name';
     public $status = 'status';
 
-
     private $table_detail = 'tbl_discount_details';
     public $pk2 = 'discount_detail_id';
+
+    public $inputs;
 
     public function add()
     {
         $discount_start = $this->inputs['discount_start'];
         $discount_end = $this->inputs['discount_end'];
 
-        $result = $this->select($this->table, $this->pk, "('$discount_start' BETWEEN discount_start AND discount_end OR '$discount_end' BETWEEN discount_start AND discount_end)");
-        if ($result->num_rows > 0) {
+        if ($discount_start > $discount_end)
             return 'conflict';
-        } else {
-            $form = array(
-                $this->name         => $this->clean($this->inputs[$this->name]),
-                'description'       => $this->inputs['description'],
-                'coverage_type'     => $this->inputs['coverage_type'],
-                'is_percentage'     => $this->inputs['is_percentage'],
-                'discount_percent'  => $this->inputs['discount_percent'],
-                'discount_amount'   => $this->inputs['discount_amount'],
-                'discount_type'     => $this->inputs['discount_type'],
-                'discount_start'    => $this->inputs['discount_start'],
-                'discount_end'      => $this->inputs['discount_end']
-            );
-            return $this->insertIfNotExist($this->table, $form, '', 'Y');
-        }
+
+        $result = $this->select($this->table, $this->pk, "('$discount_start' BETWEEN discount_start AND discount_end OR '$discount_end' BETWEEN discount_start AND discount_end)");
+
+        if ($result->num_rows > 0)
+            return 'conflict';
+
+        $form = array(
+            $this->name         => $this->clean($this->inputs[$this->name]),
+            'description'       => $this->inputs['description'],
+            'coverage_type'     => $this->inputs['coverage_type'],
+            'is_percentage'     => $this->inputs['is_percentage'],
+            'discount_percent'  => $this->inputs['discount_percent'],
+            'discount_amount'   => $this->inputs['discount_amount'],
+            'discount_type'     => $this->inputs['discount_type'],
+            'discount_start'    => $this->inputs['discount_start'],
+            'discount_end'      => $this->inputs['discount_end']
+        );
+        return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
 
     public function edit()
@@ -40,23 +44,26 @@ class Discounts extends Connection
         $discount_end = $this->inputs['discount_end'];
         $primary_id = $this->inputs['discount_id'];
 
-        $result = $this->select($this->table, $this->pk, "('$discount_start' BETWEEN discount_start AND discount_end OR '$discount_end' BETWEEN discount_start AND discount_end) AND discount_id !='$primary_id'");
-        if ($result->num_rows > 0) {
+        if ($discount_start > $discount_end)
             return 'conflict';
-        } else {
-            $form = array(
-                $this->name         => $this->clean($this->inputs[$this->name]),
-                'description'       => $this->inputs['description'],
-                'coverage_type'     => $this->inputs['coverage_type'],
-                'is_percentage'     => $this->inputs['is_percentage'],
-                'discount_percent'  => $this->inputs['discount_percent'],
-                'discount_amount'   => $this->inputs['discount_amount'],
-                'discount_type'     => $this->inputs['discount_type'],
-                'discount_start'    => $this->inputs['discount_start'],
-                'discount_end'      => $this->inputs['discount_end']
-            );
-            return $this->updateIfNotExist($this->table, $form);
-        }
+
+        $result = $this->select($this->table, $this->pk, "('$discount_start' BETWEEN discount_start AND discount_end OR '$discount_end' BETWEEN discount_start AND discount_end) AND discount_id !='$primary_id'");
+
+        if ($result->num_rows > 0)
+            return 'conflict';
+
+        $form = array(
+            $this->name         => $this->clean($this->inputs[$this->name]),
+            'description'       => $this->inputs['description'],
+            'coverage_type'     => $this->inputs['coverage_type'],
+            'is_percentage'     => $this->inputs['is_percentage'],
+            'discount_percent'  => $this->inputs['discount_percent'],
+            'discount_amount'   => $this->inputs['discount_amount'],
+            'discount_type'     => $this->inputs['discount_type'],
+            'discount_start'    => $this->inputs['discount_start'],
+            'discount_end'      => $this->inputs['discount_end']
+        );
+        return $this->updateIfNotExist($this->table, $form);
     }
 
     public function show()

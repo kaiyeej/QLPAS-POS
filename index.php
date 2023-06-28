@@ -71,10 +71,11 @@ include 'core/config.php';
     }
 
     .table-bordered {
-     border: 0px !important;
+      border: 0px !important;
     }
+
     table.dataTable thead .sorting_asc:after {
-     content: none;
+      content: none;
     }
   </style>
 </head>
@@ -114,12 +115,12 @@ include 'core/config.php';
     <script type="text/javascript">
       var modal_detail_status = 0;
       $(document).ready(function() {
-          $(".select2").select2();
+        $(".select2").select2();
 
-          $(".select2").css({
-            "width": "100%"
-          });
-          checkPriceNotice();
+        $(".select2").css({
+          "width": "100%"
+        });
+        checkPriceNotice();
 
 
       });
@@ -205,7 +206,7 @@ include 'core/config.php';
             confirmButtonText: "Yes, sign me out!",
             cancelButtonText: "No, stay me in!",
             closeOnConfirm: false,
-            closeOnCancel: false
+            closeOnCancel: true
           },
           function(isConfirm) {
             if (isConfirm) {
@@ -220,10 +221,6 @@ include 'core/config.php';
                   errorLogger('Error:', textStatus, errorThrown);
                 }
               });
-
-
-            } else {
-              swal("Cancelled", "Entries are safe :)", "error");
             }
           });
       }
@@ -264,17 +261,17 @@ include 'core/config.php';
           $("#sales_reference_number").prop("readonly", false);
         }
 
-        
-          var now = new Date();
-          var month = (now.getMonth() + 1);               
-          var day = now.getDate();
-          if (month < 10) 
-              month = "0" + month;
-          if (day < 10) 
-              day = "0" + day;
-          var today = now.getFullYear() + '-' + month + '-' + day;
-          $(".modal-body input[type='date']").val(today);
-        
+
+        var now = new Date();
+        var month = (now.getMonth() + 1);
+        var day = now.getDate();
+        if (month < 10)
+          month = "0" + month;
+        if (day < 10)
+          day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        $(".modal-body input[type='date']").val(today);
+
 
         $("#modalLabel").html("<span class='fa fa-pen'></span> Add Entry");
         $("#modalEntry").modal('show');
@@ -293,7 +290,6 @@ include 'core/config.php';
           url: "controllers/sql.php?c=" + route_settings.class_name + "&q=" + q,
           data: $("#frm_submit").serialize(),
           success: function(data) {
-            getEntries();
             var json = JSON.parse(data);
             if (route_settings.has_detail == 1) {
               if (json.data > 0) {
@@ -319,6 +315,7 @@ include 'core/config.php';
                 failed_query(json);
               }
             }
+            getEntries();
             $("#btn_submit").prop('disabled', false);
             $("#btn_submit").html("<span class='fa fa-check-circle'></span> Submit");
           },
@@ -360,13 +357,13 @@ include 'core/config.php';
               } else {
                 $("#for_pick_up").prop("checked", false);
               }
-            }else if(route_settings.class_name == "Users"){
+            } else if (route_settings.class_name == "Users") {
               if (json['user_category'] == "A") {
                 $("#div_category").hide();
-                $("#user_category").prop("required",false);
+                $("#user_category").prop("required", false);
               } else {
                 $("#div_category").show();
-                $("#user_category").prop("required",true);
+                $("#user_category").prop("required", true);
               }
             }
             $("#modalLabel").html("<span class='fa fa-pen'></span> Update Entry");
@@ -532,10 +529,10 @@ include 'core/config.php';
                 $("#for_pick_up").prop("checked", false);
                 for_pick_up = 0;
               }
-            }else if(route_settings.class_name == "Deposit"){
-                depositType(json['deposit_type']);
+            } else if (route_settings.class_name == "Deposit") {
+              depositType(json['deposit_type']);
             }
-            
+
             $('.label-item').map(function() {
               const id_name = this.id;
               const new_id = id_name.replace('_label', '');
@@ -607,7 +604,7 @@ include 'core/config.php';
               entry_already_exists();
             } else if (json.data == 3) {
               amount_is_greater();
-            }else if(json.data == -3){
+            } else if (json.data == -3) {
               quantity_is_greater();
             } else if (json.data == 'PC-SAME-ITEM') {
               swal("Cannot proceed!", "Original product and converted should be different.", "warning");
@@ -740,10 +737,10 @@ include 'core/config.php';
       function getSelectOption(class_name, primary_id, label, param = '', attributes = [], pre_value = '', pre_label = 'Please Select', sub_option = '') {
 
         var fnc = (class_name == "SupplierPayment" || class_name == "CustomerPayment" || class_name == "Deposit" ? "show_ref" : "show");
-        
+
         $.ajax({
           type: "POST",
-          url: "controllers/sql.php?c=" + class_name + "&q="+fnc+"",
+          url: "controllers/sql.php?c=" + class_name + "&q=" + fnc + "",
           data: {
             input: {
               param: param
@@ -810,7 +807,7 @@ include 'core/config.php';
         var originalContents = document.body.innerHTML;
         document.body.innerHTML = printContents;
         window.print();
-        
+
         document.body.innerHTML = originalContents;
 
         location.reload();
@@ -880,32 +877,32 @@ include 'core/config.php';
 
       $("#frm_search").submit(function(e) {
         e.preventDefault();
-        $(".content-wrapper").html('<div class="row">'+
-            '<div class="col-md-12 grid-margin">'+
-                '<div class="row">'+
-                    '<div class="col-12 col-xl-8 mb-4 mb-xl-0">'+
-                        '<h3 class="font-weight-bold">Search results for : <u>'+$("#navbar-search-input").val()+'</u></h3>'+
-                    '</div>'+
-                    '<div class="col-12 col-xl-4">'+
-                    '</div>'+
-                '</div>'+
-            '</div>'+
-        '</div>'+
-          '<div class="row" style="margin-bottom: 10px;">'+
-          '<div class="col-md-12 card" style="margin-top:3px;border-bottom: 0px solid #aaa;">'+
-            '<div class="card-body">'+
-               '<table id="search_table" class="table table-bordered table-hover" style="margin-top:2px;">'+
-                '<thead>'+
-                 '<tr>'+
-                  '<th style="border: 0px; padding: 0px;"></th>'+
-                 '</tr>'+
-                '</thead>'+
-                '<tbody id="search_result">'+
-                '</tbody>'+
-               '</table>'+
-            '</div>'+
-          '</div>'+
-         '</div>');
+        $(".content-wrapper").html('<div class="row">' +
+          '<div class="col-md-12 grid-margin">' +
+          '<div class="row">' +
+          '<div class="col-12 col-xl-8 mb-4 mb-xl-0">' +
+          '<h3 class="font-weight-bold">Search results for : <u>' + $("#navbar-search-input").val() + '</u></h3>' +
+          '</div>' +
+          '<div class="col-12 col-xl-4">' +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '<div class="row" style="margin-bottom: 10px;">' +
+          '<div class="col-md-12 card" style="margin-top:3px;border-bottom: 0px solid #aaa;">' +
+          '<div class="card-body">' +
+          '<table id="search_table" class="table table-bordered table-hover" style="margin-top:2px;">' +
+          '<thead>' +
+          '<tr>' +
+          '<th style="border: 0px; padding: 0px;"></th>' +
+          '</tr>' +
+          '</thead>' +
+          '<tbody id="search_result">' +
+          '</tbody>' +
+          '</table>' +
+          '</div>' +
+          '</div>' +
+          '</div>');
         var search_result = '';
         $("#search_result").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading data . . .</h3></center><br>");
         $.ajax({
@@ -914,40 +911,40 @@ include 'core/config.php';
           data: $("#frm_search").serialize(),
           success: function(data) {
             var res = JSON.parse(data);
-            if(res.data.length > 0){
+            if (res.data.length > 0) {
 
               for (var i = 0; i < res.data.length; i++) {
                 const items = res.data[i];
-                search_result += '<tr style="background: transparent !important; color: #505050;">'+
-               '<td style="border-top: 1px solid #ddd; font-size: 12px;text-align:left;width: 100%;">'+
-               '<div class="row">'+
-                '<div class="col-9" style="margin-top: 10px;">'+
-                   '<b><a href="#" style="font-size: 14px; color: #2e2e2e;">'+items.name+'</a></b>'+
-                 '<span style="display:block"><p><span style="color: #1b69b6;"> '+items.module+' </span>'+
-                '</div>'+
-                '<div class="col-3" style="margin-top: 10px; vertical-align: baseline; display: inline-block;">'+
-                '<div class="btn-group pull-right">'+
-                  '<a href="'+items.slug+'&search='+$("#navbar-search-input").val()+'" class="btn btn-primary btn-sm btn-icon-split">'+
-                      '<span class="icon text-white-50">'+
-                          '<i class="fas fa-plus"></i>'+
-                      '</span>'+
-                      '<span class="text">View</span>'+
-                  '</a>'+
-                  '</div>'+
-                '</div>'+
-                '</div>'+
-               '</td>'+
-              '</tr>';
+                search_result += '<tr style="background: transparent !important; color: #505050;">' +
+                  '<td style="border-top: 1px solid #ddd; font-size: 12px;text-align:left;width: 100%;">' +
+                  '<div class="row">' +
+                  '<div class="col-9" style="margin-top: 10px;">' +
+                  '<b><a href="#" style="font-size: 14px; color: #2e2e2e;">' + items.name + '</a></b>' +
+                  '<span style="display:block"><p><span style="color: #1b69b6;"> ' + items.module + ' </span>' +
+                  '</div>' +
+                  '<div class="col-3" style="margin-top: 10px; vertical-align: baseline; display: inline-block;">' +
+                  '<div class="btn-group pull-right">' +
+                  '<a href="' + items.slug + '&search=' + $("#navbar-search-input").val() + '" class="btn btn-primary btn-sm btn-icon-split">' +
+                  '<span class="icon text-white-50">' +
+                  '<i class="fas fa-plus"></i>' +
+                  '</span>' +
+                  '<span class="text">View</span>' +
+                  '</a>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</td>' +
+                  '</tr>';
               }
             }
             $("#search_result").html(search_result);
             $('#search_table').dataTable({
-            "paging": true,
-            "bFilter":false,
-            "bLengthChange":false,
-            "bSort" : false,
-            "ordering": false
-           });
+              "paging": true,
+              "bFilter": false,
+              "bLengthChange": false,
+              "bSort": false,
+              "ordering": false
+            });
           },
           error: function(jqXHR, textStatus, errorThrown) {
             errorLogger('Error:', textStatus, errorThrown);
@@ -955,8 +952,7 @@ include 'core/config.php';
         });
       });
 
-      function errorLogger(jqXHR, textStatus, errorThrown)
-      {
+      function errorLogger(jqXHR, textStatus, errorThrown) {
         console.log('Error:', textStatus, errorThrown);
       }
     </script>

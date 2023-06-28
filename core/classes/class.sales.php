@@ -51,6 +51,19 @@ class Sales extends Connection
         return $this->updateIfNotExist($this->table, $form);
     }
 
+    public function show_data()
+    {
+        $param = "s.encoded_by = u.user_id AND s.customer_id = c.customer_id ";
+        $param .= isset($this->inputs['param']) ? $this->inputs['param'] : '';
+        $rows = array();
+        $result = $this->select('tbl_sales AS s,tbl_users AS u,tbl_customers AS c', 's.*,u.user_fullname AS encoded_name,c.customer_name AS customer,c.suki_card_number', $param);
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+
     public function show()
     {
         $Customers = new Customers;
@@ -1152,5 +1165,4 @@ class Sales extends Connection
 
         return $rows;
     }
-
 }
