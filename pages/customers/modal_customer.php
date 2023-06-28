@@ -25,6 +25,14 @@
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <label><strong>TIN</strong></label>
+                            <div>
+                            <input type="text" class="form-control input-item" name="input[customer_tin]" autocomplete="off" id="customer_tin" placeholder="Customer TIN" maxlength=30 required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Contact #</strong></label>
                             <div>
                             <input type="text" class="form-control input-item" name="input[customer_contact_number]" autocomplete="off" id="customer_contact_number" placeholder="Contact No." maxlength=15 required>

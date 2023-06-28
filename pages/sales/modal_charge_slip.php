@@ -41,7 +41,7 @@
                          <div class="col-md-6">
                              <strong>CHARGE TO: </strong><span class="customer_name_span"></span><br>
                              <strong>ADDRESS: </strong><span class="customer_address_span"></span><br>
-                             <strong>TIN: </strong><span class="customer_address_span"></span><br>
+                             <strong>TIN: </strong><span class="customer_tin_span"></span><br>
                          </div>
                          <div class="col-md-6">
                              <strong>REFERENCE #: </strong><span class="reference_number_span"></span><br>

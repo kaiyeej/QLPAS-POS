@@ -98,9 +98,8 @@ class RedeemedPoints extends Connection {
         );
         return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
     }
-}
 
-/*
+    /*
 
 CREATE TABLE `tbl_redeemed_points` (
   `redeem_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -117,5 +116,40 @@ CREATE TABLE `tbl_redeemed_points` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 */
+
+    public function schema()
+    {
+        if (DEVELOPMENT) {
+            $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
+            $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP', 'ON UPDATE CURRENT_TIMESTAMP');
+            $default['encoded_by'] = $this->metadata('encoded_by', 'int', 11);
+
+
+            // TABLE HEADER
+            $tables[] = array(
+                'name'      => $this->table,
+                'primary'   => $this->pk,
+                'fields' => array(
+                    $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                    $this->metadata($this->name, 'varchar', 75),
+                    $this->metadata('customer_id', 'int', 11),
+                    $this->metadata('sales_id', 'int', 11),
+                    $this->metadata('redeem_points', 'decimal', "9,2"),
+                    $this->metadata('sales_summary_id', 'int', 11),
+                    $this->metadata('status', 'varchar', 1, 'NOT NULL', "'S'", '', "'S = Saved; F = Finish'"),
+                    $default['encoded_by'],
+                    $default['date_added'],
+                    $default['date_last_modified']
+                )
+            );
+
+            return $this->schemaCreator($tables);
+        }
+    }
+}
+
+
+
+
 
 ?>

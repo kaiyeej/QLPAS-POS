@@ -23,6 +23,7 @@ class Customers extends Connection
                 'customer_name' => $this->inputs['customer_name'],
                 'customer_address' => $this->inputs['customer_address'],
                 'customer_contact_number' => $this->inputs['customer_contact_number'],
+                'customer_tin' => $this->inputs['customer_tin'],
                 'remarks' => $this->inputs['remarks']
             );
             $result = $this->insert($this->table, $form);
@@ -44,6 +45,7 @@ class Customers extends Connection
                 'customer_name' => $this->inputs['customer_name'],
                 'customer_address' => $this->inputs['customer_address'],
                 'customer_contact_number' => $this->inputs['customer_contact_number'],
+                'customer_tin' => $this->inputs['customer_tin'],
                 'remarks' => $this->inputs['remarks'],
                 'date_last_modified' => $this->getCurrentDate()
             );

@@ -18,10 +18,11 @@ class IncomeStatement extends Connection
         $start_inv = $Inventory->balance_total($start_date);
         $cost_total = ($purchase+$start_inv)-$purchase_return;
 
-        $income = $sales[2] - ($cost_total+$operating_expense[1]+$other_expense[1]);
+        $income = $sales[2] - ($cost_total+$operating_expense[1]+$other_expense[1]+$sales[4]);
 
         $rows = array();
         $row['sales_total'] = number_format($sales[0],2);
+        $row['cogs_total'] = number_format($sales[4],2);
         $row['sales_return_total'] = number_format($sales[3],2); 
         $row['discount_total'] = number_format($sales[1],2);
         $row['revenue_total'] = number_format($sales[2],2);
@@ -40,15 +41,16 @@ class IncomeStatement extends Connection
     }
 
     public function sales_total($start_date,$end_date){
-        $result = $this->select("tbl_sales as h, tbl_sales_details as d","sum(d.quantity*d.price) as total, sum(d.discount) as dis","(h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F' AND h.sales_id=d.sales_id");
+        $result = $this->select("tbl_sales as h, tbl_sales_details as d","sum(d.quantity*d.price) as total, sum(d.quantity*d.cost) as cogs, sum(d.discount) as dis","(h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F' AND h.sales_id=d.sales_id");
         $row = $result->fetch_array();
 
-        $result_return = $this->select("tbl_sales_return as h, tbl_sales_return_details as d","sum(d.price*d.quantity_return) as total","(h.return_date >= '$start_date' AND h.return_date <= '$end_date') AND h.status='F' AND h.sales_return_id=d.sales_return_id");
+        $result_return = $this->select("tbl_sales_return as h, tbl_sales_return_details as d","sum(d.price*d.quantity_return) as total, sum(d.cost*d.quantity_return) as cogs","(h.return_date >= '$start_date' AND h.return_date <= '$end_date') AND h.status='F' AND h.sales_return_id=d.sales_return_id");
         $row_return = $result_return->fetch_array();
         
         $total = ($row['total']-$row_return['total'])-$row['dis'];
+        $cogs_total = $row['cogs']-$row_return['cogs'];
 
-        return [$row['total'],$row['dis'],$total,$row_return['total']];
+        return [$row['total'],$row['dis'],$total,$row_return['total'],$cogs_total];
     }
 
     public function purchase_total($start_date,$end_date){
