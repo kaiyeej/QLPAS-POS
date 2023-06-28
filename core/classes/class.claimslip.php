@@ -88,6 +88,14 @@ class ClaimSlip extends Connection
         $Sales = new Sales;
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
+
+        if($param == "status='F' and checked_by=0 ORDER BY date_added DESC"){
+            // change this for next update
+            $user = "warehouse";
+        }else{
+            $user = "cashier";
+        }
+
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
 
@@ -101,8 +109,8 @@ class ClaimSlip extends Connection
             $total = $row['total_amount'];
             $row['total'] = number_format($total, 2);
             $row['total_nonformat'] = $total;
-            $row['reference_number'] = $row['reference_number'];
-            $row['sales_num'] = $sales_row['reference_number'];
+            // $row['reference_number'] = $row['reference_number'];
+            $row['reference_number'] = $user == "warehouse" ? $row['reference_number'] : $sales_row['reference_number'];
             $row['sales_type'] = $sales_row['sales_type'];
             $row['claim_sales_type'] = $sales_row['sales_type'] == "C" ? "Cash" : "Charge";
             $row['customer_id'] = $sales_row['customer_id'];
