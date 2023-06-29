@@ -37,7 +37,7 @@
                                     <th>Account #</th>
                                     <th>Account Name</th>
                                     <th>Date Added</th>
-                                    <th>Date Last Updated</th>
+                                    <th>Date Modified</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,7 +51,6 @@
 </div>
 <?php require_once 'modal_bank.php'; ?>
 <script type="text/javascript">
-
     function getEntries() {
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
@@ -59,7 +58,7 @@
             "ajax": {
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
                 "dataSrc": "data",
-                "type":"POST"
+                "type": "POST"
             },
             "columns": [{
                     "mRender": function(data, type, row) {

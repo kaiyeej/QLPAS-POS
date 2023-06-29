@@ -90,6 +90,28 @@ class StockWithdrawal extends Connection
         return $rows;
     }
 
+    public function edit_detail()
+    {
+
+        $product_id = $this->inputs['product_id'];
+        $sw_detail_id = $this->inputs['sw_detail_id'];
+        $sw_remaining_qty = $this->inputs['sw_remaining_qty'];
+        $sw_qty = $this->inputs['sw_qty'];
+
+        // check inventory here ...
+        $Inventory = new InventoryReport();
+        $current_balance = $Inventory->balance($product_id);
+        if (($current_balance + $sw_qty + $sw_remaining_qty) - $this->inputs['quantity'] >= 0) {
+
+            $form = array(
+                'qty'      => $this->inputs['quantity']
+            );
+            return $this->update($this->table_detail, $form, " $this->pk2 = '$sw_detail_id'");
+        } else {
+            return -3; // insufficient qty
+        }
+    }
+
     public function remaining_qty($primary_id)
     {
         $sum_sales = $this->select('tbl_sales_details', "sum(quantity)", "sales_detail_id='$primary_id'");
@@ -297,10 +319,11 @@ class StockWithdrawal extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, '*', "withdrawal_id = '$withdrawal_id[0]'");
         while ($row = $result->fetch_assoc()) {
+            $remaining_qty = $this->remaining_qty($row['sales_detail_id']);
             $row['product'] = Products::name($row['product_id']);
             $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
-            $row['remaining_qty'] = $this->remaining_qty($row['sales_detail_id']);
-            $row['current_qty'] = $Inv->balance($row['product_id']) + $row['qty'];
+            $row['remaining_qty'] = $remaining_qty;
+            $row['current_qty'] = $Inv->balance($row['product_id']) + $row['qty'] + $remaining_qty;
             $rows[] = $row;
         }
         return $rows;

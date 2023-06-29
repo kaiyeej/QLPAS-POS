@@ -33,7 +33,7 @@
                                 <tr>
                                     <th><input type='checkbox' onchange="checkAll(this, 'dt_id')"></th>
                                     <th></th>
-                                    <th>Option Payment</th>
+                                    <th>Payment Option</th>
                                     <th>Date Added</th>
                                     <th>Date Modified</th>
                                 </tr>

@@ -1,7 +1,4 @@
 <?php
-header('Content-Type: text/event-stream');
-header('Cache-Control: no-cache');
-
 class ClaimSlip extends Connection
 {
     private $table = 'tbl_claim_slips';
@@ -40,7 +37,43 @@ class ClaimSlip extends Connection
             'status' => 'F',
             'checked_by' => $encoded_by
         );
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+
+        if($res == 1){
+            // check stock withdrawal
+            $StockWithdrawal = new StockWithdrawal;
+            $Sales = new Sales;
+            $fetch = $this->select($this->table, 'sales_id', "$this->pk = '$primary_id'");
+            $row = $fetch->fetch_assoc();
+
+            $sales_id = $row['sales_id'];
+            $fetch_sales = $this->select("tbl_sales_details", 'sales_detail_id', "sales_id = '$sales_id'");
+
+            $has_remaining_qty = false;
+            while($sales_row = $fetch_sales->fetch_assoc()){
+                $remain_qty = $StockWithdrawal->remaining_qty($sales_row['sales_detail_id']);
+                $remain_qty > 0 ? $has_remaining_qty = true : "";
+            }
+            
+            if($has_remaining_qty == true){
+                // count if exists
+                $fetch_count = $this->select($this->table, "count(claim_slip_id)", "sales_id = '$sales_id' AND withdrawal_id = '0' AND status='S'");
+                $row_count = $fetch_count->fetch_array();
+
+                if($row_count[0] <= 0){
+                    // add new claim slip
+                    $this->inputs['sales_id'] = $sales_id;
+                    $this->inputs['total_amount'] = $Sales->total($sales_id);
+                    $this->inputs[$this->name] = $this->generate();
+                    $this->add();
+                }
+            }else{
+                // delete
+                $this->delete($this->table, "sales_id = '$sales_id' AND withdrawal_id = '0' and status='S'");
+            }
+        }
+
+        return $res;
     }
 
     public function cancel_stock_releasal()
@@ -209,6 +242,8 @@ class ClaimSlip extends Connection
     }
 
     public function count_new_claim_slip(){
+        header('Content-Type: text/event-stream');
+        header('Cache-Control: no-cache');
         $result = $this->select($this->table, "count(claim_slip_id)", "status = 'F' and withdrawal_id > 0 and checked_by = 0");
         $row = $result->fetch_array();
         return $row[0];

@@ -37,7 +37,7 @@
                                     <th>Contact #</th>
                                     <th>Remarks</th>
                                     <th>Date Added</th>
-                                    <th>Date Last Updated</th>
+                                    <th>Date Modified</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,15 +60,15 @@
             "ajax": {
                 "url": "controllers/sql.php?c=" + ClassName + "&q=show",
                 "dataSrc": "data",
-                "type":"POST"
+                "type": "POST"
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        if(row.customer_id == 0){
+                        if (row.customer_id == 0) {
                             return "";
-                        }else{
+                        } else {
                             return "<input type='checkbox' value=" + row.customer_id + " class='dt_id' style='position: initial; opacity:1;'>";
-                        
+
                         }
                     }
                 },
