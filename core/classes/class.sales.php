@@ -686,7 +686,7 @@ class Sales extends Connection
         $user_id = $this->inputs['user_id'];
 
         // charge sales
-        $fetch_charge_sales = $this->select("tbl_sales as s, tbl_sales_details as d", "sum((d.quantity*d.price)-d.discount) as total_charge_sales", "s.sales_id=d.sales_id AND s.sales_type='C' and s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' ");
+        $fetch_charge_sales = $this->select("tbl_sales as s, tbl_sales_details as d", "sum((d.quantity*d.price)-d.discount) as total_charge_sales", "s.sales_id=d.sales_id AND s.sales_type='H' and s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' ");
         $sales_row = $fetch_charge_sales->fetch_assoc();
         $sales_rows['total_charge_sales'] = $sales_row['total_charge_sales'];
 
@@ -701,7 +701,6 @@ class Sales extends Connection
         $sales_rows['total_sales_return'] = $sales_return_row['total_sr'] * 1;
 
         // redeemed points
-        // customer payment
         $fetch_redeemed_points = $this->select("tbl_redeemed_points", "sum(redeem_points) as total_points", "status='F' and sales_summary_id=0 and encoded_by='$user_id' ");
         $redeemed_points_row = $fetch_redeemed_points->fetch_assoc();
         $sales_rows['total_redeemed_points'] = $redeemed_points_row['total_points'] * 1;
