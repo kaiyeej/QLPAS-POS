@@ -1,4 +1,7 @@
 <?php
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+
 class ClaimSlip extends Connection
 {
     private $table = 'tbl_claim_slips';
@@ -242,14 +245,13 @@ class ClaimSlip extends Connection
     }
 
     public function count_new_claim_slip(){
-        header('Content-Type: text/event-stream');
-        header('Cache-Control: no-cache');
         $result = $this->select($this->table, "count(claim_slip_id)", "status = 'F' and withdrawal_id > 0 and checked_by = 0");
         $row = $result->fetch_array();
         return $row[0];
     }
 
     public function get_new_claim_slip(){
+
         $count = $this->count_new_claim_slip();
         echo "data: " . $count . "\n\n";
         flush();
