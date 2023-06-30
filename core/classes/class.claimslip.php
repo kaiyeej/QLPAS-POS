@@ -79,6 +79,9 @@ class ClaimSlip extends Connection
                     $this->insert('tbl_stock_withdrawal_details', $form_details);
                 }
             }
+
+            // delete
+            $this->delete($this->table, "sales_id = '$sales_id' AND withdrawal_id = '0' and status='S'");
             
             if($has_remaining_qty == true){
                 // add new claim slip
@@ -96,9 +99,6 @@ class ClaimSlip extends Connection
 
                 return 2; // fully served
             }
-
-            // delete
-            $this->delete($this->table, "sales_id = '$sales_id' AND withdrawal_id = '0' and status='S'");
         }else{
             return 0; // error
         }
