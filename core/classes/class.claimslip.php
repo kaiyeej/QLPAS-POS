@@ -16,9 +16,9 @@ class ClaimSlip extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'sales_id'      => $this->inputs['sales_id'],
-            'withdrawal_id' => 0,
+            'withdrawal_id' => isset($this->inputs['withdrawal_id']) ? $this->inputs['withdrawal_id'] :  0,
             'total_amount'  => $this->inputs['total_amount'],
-            'status'        => 'S'
+            'status'        => isset($this->inputs['status']) ? $this->inputs['status'] :  'S'
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -50,30 +50,51 @@ class ClaimSlip extends Connection
             $row = $fetch->fetch_assoc();
 
             $sales_id = $row['sales_id'];
-            $fetch_sales = $this->select("tbl_sales_details", 'sales_detail_id', "sales_id = '$sales_id'");
+            $fetch_sales_details = $this->select("tbl_sales_details", '*', "sales_id = '$sales_id'");
+
+            // add withdrawal entry
+            $form = array(
+                'reference_number' => $StockWithdrawal->generate(),
+                'sales_id' => $sales_id,
+                'withdrawal_date' => date("Y-m-d"), //$this->sales_date($sales_id),
+                'status' => 'F',
+                'encoded_by' => $encoded_by
+            );
+    
+            $withdrawal_id = $this->insert('tbl_stock_withdrawal', $form, 'Y');
 
             $has_remaining_qty = false;
-            while($sales_row = $fetch_sales->fetch_assoc()){
-                $remain_qty = $StockWithdrawal->remaining_qty($sales_row['sales_detail_id']);
-                $remain_qty > 0 ? $has_remaining_qty = true : "";
+            while($sales_details_row = $fetch_sales_details->fetch_assoc()){
+                $remain_qty = $StockWithdrawal->remaining_qty($sales_details_row['sales_detail_id']);
+                if($remain_qty > 0){
+                    $has_remaining_qty = true;
+                    // add details
+                    $form_details = array(
+                        'withdrawal_id' => $withdrawal_id,
+                        'product_id' => $sales_details_row['product_id'],
+                        'qty' => $remain_qty,
+                        'sales_detail_id' => $sales_details_row['sales_detail_id'],
+                        'status' => 'F'
+                    );
+                    $this->insert('tbl_stock_withdrawal_details', $form_details);
+                }
             }
             
             if($has_remaining_qty == true){
-                // count if exists
-                $fetch_count = $this->select($this->table, "count(claim_slip_id)", "sales_id = '$sales_id' AND withdrawal_id = '0' AND status='S'");
-                $row_count = $fetch_count->fetch_array();
-
-                if($row_count[0] <= 0){
-                    // add new claim slip
-                    $this->inputs['sales_id'] = $sales_id;
-                    $this->inputs['total_amount'] = $Sales->total($sales_id);
-                    $this->inputs[$this->name] = $this->generate();
-                    $this->add();
-                }
+                // add new claim slip
+                $this->inputs['sales_id'] = $sales_id;
+                $this->inputs['total_amount'] = $Sales->total($sales_id);
+                $this->inputs[$this->name] = $this->generate();
+                $this->inputs['withdrawal_id'] = $withdrawal_id;
+                $this->inputs['status'] = 'F';
+                $this->add();
             }else{
-                // delete
-                $this->delete($this->table, "sales_id = '$sales_id' AND withdrawal_id = '0' and status='S'");
+                $this->delete("tbl_stock_withdrawal", "withdrawal_id = '$withdrawal_id'");
+                $this->delete($this->table, "sales_id = '$sales_id' AND checked_by = 0");
             }
+
+            // delete
+            $this->delete($this->table, "sales_id = '$sales_id' AND withdrawal_id = '0' and status='S'");
         }
 
         return $res;
