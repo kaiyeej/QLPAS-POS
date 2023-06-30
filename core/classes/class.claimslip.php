@@ -88,16 +88,20 @@ class ClaimSlip extends Connection
                 $this->inputs['withdrawal_id'] = $withdrawal_id;
                 $this->inputs['status'] = 'F';
                 $this->add();
+
+                return 1; // finished with new claim slip
             }else{
                 $this->delete("tbl_stock_withdrawal", "withdrawal_id = '$withdrawal_id'");
                 $this->delete($this->table, "sales_id = '$sales_id' AND checked_by = 0");
+
+                return 2; // fully served
             }
 
             // delete
             $this->delete($this->table, "sales_id = '$sales_id' AND withdrawal_id = '0' and status='S'");
+        }else{
+            return 0; // error
         }
-
-        return $res;
     }
 
     public function cancel_stock_releasal()
