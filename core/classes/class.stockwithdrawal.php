@@ -183,6 +183,7 @@ class StockWithdrawal extends Connection
                     'withdrawal_status' => 0,
                 );
                 $this->update("tbl_sales", $form_, "sales_id = '$sales_id'");
+
             } else {
                 $ClaimSlip2 = new ClaimSlip;
                 $Sales = new Sales;
@@ -191,6 +192,9 @@ class StockWithdrawal extends Connection
                 $ClaimSlip2->inputs['total_amount'] = $Sales->total($sales_id);
                 $ClaimSlip2->add();
             }
+
+            // update checked by if no warehouse personnel
+            
 
             $form = array(
                 'status' => 'F',
@@ -283,6 +287,9 @@ class StockWithdrawal extends Connection
     {
         $Sales = new Sales();
         $ClaimSlip = new ClaimSlip;
+        $Settings = new Settings();
+        $settings_data = $Settings->view();
+
         $reference_number = $this->inputs['reference_number'];
         $param = "reference_number='$reference_number'";
         $Sales->inputs['sales_id'] = $Sales->getID($param);
@@ -295,10 +302,8 @@ class StockWithdrawal extends Connection
 
         $ClaimSlip->inputs['withdrawal_id'] = $withdrawal_id;
         $ClaimSlip->inputs['claim_slip_id'] = $this->inputs['claim_slip_id'];
+        $ClaimSlip->inputs['checked_by'] = $settings_data['has_warehouse_checker'] == 1 ? 0 : $this->inputs['encoded_by'];
         $ClaimSlip->update_claim_slip();
-
-        $Settings = new Settings();
-        $settings_data = $Settings->view();
 
         $response = [
             'has_warehouse_checker' => (int) $settings_data['has_warehouse_checker'],
