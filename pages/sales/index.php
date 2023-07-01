@@ -375,6 +375,8 @@
                 console.log(data);
                 var json = JSON.parse(data);
 
+                $("#cs_details").html("");
+
                 $(".customer_name_span").html(json.data[0].customer_name);
                 $(".reference_number_span").html(json.data[0].reference_number);
                 $(".sales_date_span").html(json.data[0].sales_date_mod);

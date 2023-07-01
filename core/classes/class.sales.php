@@ -1059,7 +1059,7 @@ class Sales extends Connection
         $rows = array();
         $result = $this->select($this->table_detail, "*", "$this->pk='$id'");
         while ($row = $result->fetch_assoc()) {
-            $amount = ($row['price'] - $row['discount']) * $row['quantity'];
+            $amount = ($row['price'] * $row['quantity']) - $row['discount'];
             $row['product_name'] = $Products->name($row['product_id']);
             $row['price'] = number_format($row['price'], 2);
             $row['amount'] = number_format($amount, 2);
