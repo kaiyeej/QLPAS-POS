@@ -11,7 +11,7 @@
             <li class="nav-item"><a href="" data-target="#company-profile" data-toggle="tab" class="nav-link small text-uppercase active">Company Profile</a></li>
             <li class="nav-item"><a href="" data-target="#access-codes" data-toggle="tab" class="nav-link small text-uppercase">Access Codes</a></li>
             <li class="nav-item"><a href="" data-target="#backup" data-toggle="tab" class="nav-link small text-uppercase">Backup Database</a></li>
-            <li class="nav-item" style="display:none;"><a href="" data-target="#version-update" data-toggle="tab" class="nav-link small text-uppercase">Version Update</a></li>
+            <li class="nav-item"><a href="" data-target="#version-update" data-toggle="tab" class="nav-link small text-uppercase">Version Update</a></li>
         </ul>
         <br>
         <div id="tabsContent" class="tab-content">
