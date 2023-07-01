@@ -193,9 +193,6 @@ class StockWithdrawal extends Connection
                 $ClaimSlip2->add();
             }
 
-            // update checked by if no warehouse personnel
-            
-
             $form = array(
                 'status' => 'F',
             );

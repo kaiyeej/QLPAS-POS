@@ -89,11 +89,28 @@ class StockReleasal extends Connection
         $result = $this->select("tbl_products","*",$prod_param);
         while ($row = $result->fetch_assoc()) {
             //$result = $this->select("tbl_sales as sh, tbl_sales_details as sd, tbl_stock_withdrawal as wh, tbl_stock_withdrawal_details as wd", "sum(sd.quantity) as dr_qty", "sd.product_id='$prow[product_id]' AND sh.sales_id=sd.sales_id AND sh.status='F' AND wh.sales_id=sh.sales_id AND wh.withdrawal_id=wd.withdrawal_id AND wd.product_id='$prow[product_id]' AND wh.status='F'");
+            
+            /*
+            prev version
+
             $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d","*","d.product_id='$row[product_id]' AND h.sales_id=d.sales_id AND h.status='F' AND h.withdrawal_status='1'");
             $for_withdrawal = 0;
             while($sRow = $fetchSAles->fetch_array()){
+                // get all qty
                 $remaining_qty = $StockWithdrawal->remaining_qty($sRow['sales_detail_id']);
                 $for_withdrawal += $remaining_qty;
+            }
+
+            */
+
+            $for_withdrawal = 0;
+            $fetch_claim_slips = $this->select("tbl_claim_slips", "*", "checked_by=0 and status='F'");
+            while($cs_row = $fetch_claim_slips->fetch_array()){
+                // withdrawal_id
+                // sales_id
+                $fetch_stock_withdrawal = $this->select("tbl_stock_withdrawal_details", "sum(qty)", "withdrawal_id='$cs_row[withdrawal_id]' and product_id='$row[product_id]'");
+                $sw_qty = $fetch_stock_withdrawal->fetch_array();
+                $for_withdrawal += $sw_qty[0];
             }
 
             

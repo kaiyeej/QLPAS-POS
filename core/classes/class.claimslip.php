@@ -92,10 +92,16 @@ class ClaimSlip extends Connection
                 $this->inputs['status'] = 'F';
                 $this->add();
 
+                // update sales withdrawal status
+                $form_ = array(
+                    'withdrawal_status' => 1,
+                );
+                $this->update("tbl_sales", $form_, "sales_id = '$sales_id'");
+
                 return 1; // finished with new claim slip
             }else{
                 $this->delete("tbl_stock_withdrawal", "withdrawal_id = '$withdrawal_id'");
-                $this->delete($this->table, "sales_id = '$sales_id' AND status='S' AND checked_by = 0");
+                //$this->delete($this->table, "sales_id = '$sales_id' AND status='S' AND checked_by = 0");
 
                 // update sales withdrawal status
                 $form_ = array(
