@@ -327,6 +327,7 @@ class StockWithdrawal extends Connection
             $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
             $row['remaining_qty'] = $remaining_qty;
             $row['current_qty'] = $Inv->balance($row['product_id']) + $row['qty'] + $remaining_qty;
+            $row['qty'] = number_format($row['qty']);
             $rows[] = $row;
         }
         return $rows;
