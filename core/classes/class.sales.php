@@ -420,6 +420,8 @@ class Sales extends Connection
     public function addSalesPOS()
     {
 
+        $response = [];
+
         if ($this->inputs['product_id'] == "" || $this->inputs['product_id'] <= 0) {
             $Products = new Products;
             $this->inputs['product_id'] = $Products->productID($this->inputs['product_barcode']);
@@ -440,6 +442,15 @@ class Sales extends Connection
 
                 if ($sales_id == -2) {
                     $sales_id = $this->getID($param);
+                }
+
+                // checker for sales num
+                if($reference_number == ""){
+                    $reference_number = sprintf("%'.06d", $sales_id);
+                    $form = array(
+                        'reference_number' => $reference_number
+                    );
+                    $this->update($this->table, $form, "$this->pk = '$sales_id'");
                 }
 
                 $this->inputs[$this->pk] = $sales_id;
@@ -478,13 +489,22 @@ class Sales extends Connection
                         $this->edit_detail();
                     }
                 }
-
-                return 1;
+                
+                $response['response_code'] = 1;
+                $response['response_sales_num'] = $reference_number;
+                return $response;
+                //return 1;
             } else {
-                return -3; //insufficient qty
+                $response['response_code'] = -3;
+                $response['response_sales_num'] = "";
+                return $response;
+                //return -3; //insufficient qty
             }
         } else {
-            return "Cannot find item. Please try again.";
+            $response['response_code'] = 0;
+            $response['response_sales_num'] = "";
+            return $response;
+            //return "Cannot find item. Please try again.";
         }
     }
 
