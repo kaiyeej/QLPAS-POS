@@ -1,6 +1,6 @@
 <?php
 
-define('APP_FOLDER', 'QLPAS-POS');
+define('APP_FOLDER', 'pos');
 define('BASE_URL', 'http://localhost/' . APP_FOLDER . '/');
 define("BASE_PATH", __DIR__ . "/../");
 define('DEVELOPMENT', true);
