@@ -36,7 +36,8 @@ class Customers extends Connection
     {
         $primary_id = $this->inputs[$this->pk];
         $customer_name = $this->clean($this->inputs['customer_name']);
-        $is_exist = $this->select($this->table, $this->pk, "customer_name = '$customer_name' AND $this->pk != '$primary_id'");
+        $suki_card_number = $this->inputs['suki_card_number'];
+        $is_exist = $this->select($this->table, $this->pk, "(customer_name = '$customer_name' or suki_card_number='$suki_card_number') AND $this->pk != '$primary_id'");
         if ($is_exist->num_rows > 0) {
             Logs::storeCrud($this->module_name, 'u', 2, $customer_name);
             return 2;
@@ -47,6 +48,7 @@ class Customers extends Connection
                 'customer_contact_number' => $this->inputs['customer_contact_number'],
                 'customer_tin' => $this->inputs['customer_tin'],
                 'remarks' => $this->inputs['remarks'],
+                'suki_card_number' => $this->inputs['suki_card_number'],
                 'date_last_modified' => $this->getCurrentDate()
             );
             $old_name = $this->name($primary_id);

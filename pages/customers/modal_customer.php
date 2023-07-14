@@ -41,6 +41,14 @@
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <label><strong>Suki Card #</strong></label>
+                            <div>
+                            <input type="text" class="form-control input-item" name="input[suki_card_number]" autocomplete="off" id="suki_card_number" placeholder="Suki card number" maxlength=12 required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Remarks</strong></label>
                             <div>
                             <textarea class="form-control input-item" name="input[remarks]" id="remarks" placeholder="Remarks" autocomplete="off" maxlength="255"></textarea>

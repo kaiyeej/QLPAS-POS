@@ -35,6 +35,7 @@
                                     <th>Customer Name</th>
                                     <th>Address</th>
                                     <th>Contact #</th>
+                                    <th>Suki Card #</th>
                                     <th>Remarks</th>
                                     <th>Date Added</th>
                                     <th>Date Modified</th>
@@ -85,6 +86,9 @@
                 },
                 {
                     "data": "customer_contact_number"
+                },
+                {
+                    "data": "suki_card_number"
                 },
                 {
                     "data": "remarks"
