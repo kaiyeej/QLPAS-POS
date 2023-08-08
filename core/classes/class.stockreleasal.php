@@ -8,11 +8,13 @@ class StockReleasal extends Connection
     {
         $customer_id = $this->inputs['customer_id'];
         $product_id = $this->inputs['product_id'];
+        $start_date = $this->inputs['start_date'];
+        $end_date = $this->inputs['end_date'];
 
         if ($customer_id == "-1") {
             $cust_param = "";
         } else {
-            $cust_param = "customer_id='$customer_id'";
+            $cust_param = "AND c.customer_id='$customer_id'";
         }
 
         if ($product_id == "-1") {
@@ -27,34 +29,18 @@ class StockReleasal extends Connection
 
         $data = "";
         $counter = 0;
-        $fetch_customer = $this->select("tbl_customers","*","$cust_param");
+        $fetch_customer = $this->select("tbl_customers as c, tbl_sales as s","c.customer_id, c.customer_name, s.sales_id","c.customer_id=s.customer_id AND (s.sales_date >= '$start_date' AND s.sales_date <= '$end_date') AND s.status='F' $cust_param");
         while ($cRow = $fetch_customer->fetch_array()) {
 
-            $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND h.withdrawal_status='1' $prod_param GROUP BY d.sales_detail_id");
+            $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') $prod_param GROUP BY d.sales_detail_id");
 
             if ($result->num_rows > 0) {
                 $counter += 1;
-                $data .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;">Customer: '.$Customer->name($cRow["customer_id"]).'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
+                $data .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;">Customer: '.$cRow["customer_name"].'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
                 $Sales = new Sales;
                 while ($row = $result->fetch_assoc()) {
                     $remaining_qty = $StockWithdrawal->remaining_qty($row['sales_detail_id']);
-                    // $paid_status = $row['paid_status'] == 1 ? "<label class='badge badge-success'>Paid</label>" : "<label class='badge badge-warning'>Unpaid</label>";
-                    // $bal = $row['paid_status'] != 1 ? "₱ " . number_format($Sales->dr_balance($row['sales_id']), 2) : "0.00" ;
-
-                    // if($row['paid_status'] == 1){
-                    //     $paid_status = "<label class='badge badge-success'>Paid</label>";
-                    //     $bal = "0.00";
-                    // }else{
-                    //     $r_bal = $Sales->dr_balance($row['sales_id']);
-                    //     if($r_bal > 0){
-                    //         $bal = "₱ " . number_format($r_bal,2);
-                    //         $paid_status = "<label class='badge badge-warning'>Unpaid</label>";
-                    //     }else{
-                    //         $bal = "₱ " . number_format($r_bal,2);
-                    //         $paid_status = "<label class='badge badge-success'>Paid</label>";
-                    //     }
-                        
-                    // }
+                    
 
                     if ($remaining_qty > 0) {
                         $data .= "<tr>";

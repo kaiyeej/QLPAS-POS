@@ -24,6 +24,18 @@
                                     <form id='frm_generate'>
                                         <div class="form-group row">
                                             <div class="col">
+                                                <label><strong>Start Date</strong></label>
+                                                <div>
+                                                    <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="start_date" name="input[start_date]">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <label><strong>End Date</strong></label>
+                                                <div>
+                                                    <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="end_date" name="input[end_date]">
+                                                </div>
+                                            </div>
+                                            <div class="col">
                                                 <label><strong>Customer</strong></label>
                                                 <div>
                                                     <select class="form-control form-control-sm select2" id="customer_id" name="input[customer_id]">
@@ -210,6 +222,8 @@
         function getReport() {
             var customer_id = $("#customer_id").val();
             var product_id = $("#product_id").val();
+            var start_date = $("#start_date").val();
+            var end_date = $("#end_date").val();
 
             $("#dt_entries").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
 
@@ -219,11 +233,13 @@
                 data: {
                     input: {
                         customer_id: customer_id,
-                        product_id: product_id
+                        product_id: product_id,
+                        start_date:start_date,
+                        end_date:end_date
                     }
                 },
                 success: function(data) {
-                    $("#dt_entries").html(data);
+                    $("#dt_entries").html(data.replace('{"data":null}', ''));
                 }
             });
         }
@@ -242,55 +258,55 @@
                     }
                 },
                 success: function(data) {
-                    $("#dt_entries_item").html(data);
+                    $("#dt_entries_item").html(data.replace('{"data":null}', ''));
                 }
             });
         }
 
-        function getReportItem() {
-            var product_id = $("#product_id").val();
+        // function getReportItem() {
+        //     var product_id = $("#product_id").val();
 
-            $("#dt_entries_item").DataTable().destroy();
-            $("#dt_entries_item").DataTable({
-                "processing": true,
-                "searching": false,
-                "paging": false,
-                "ordering": false,
-                "info": false,
-                "ajax": {
-                    "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
-                    "dataSrc": "data",
-                    "method": "POST",
-                    "data": {
-                        input: {
-                            product_id: product_id
-                        }
-                    },
-                },
-                "footerCallback": function(row, data, start, end, display) {
-                    var api = this.api();
+        //     $("#dt_entries_item").DataTable().destroy();
+        //     $("#dt_entries_item").DataTable({
+        //         "processing": true,
+        //         "searching": false,
+        //         "paging": false,
+        //         "ordering": false,
+        //         "info": false,
+        //         "ajax": {
+        //             "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
+        //             "dataSrc": "data",
+        //             "method": "POST",
+        //             "data": {
+        //                 input: {
+        //                     product_id: product_id
+        //                 }
+        //             },
+        //         },
+        //         "footerCallback": function(row, data, start, end, display) {
+        //             var api = this.api();
 
 
-                },
-                "columns": [{
-                        "data": "item"
-                    },
-                    {
-                        "data": "on_hand",
-                        className: "text-right"
-                    },
-                    {
-                        "data": "for_withdrawal",
-                        className: "text-right"
-                    },
-                    {
-                        "data": "available",
-                        className: "text-right"
-                    },
-                ]
+        //         },
+        //         "columns": [{
+        //                 "data": "item"
+        //             },
+        //             {
+        //                 "data": "on_hand",
+        //                 className: "text-right"
+        //             },
+        //             {
+        //                 "data": "for_withdrawal",
+        //                 className: "text-right"
+        //             },
+        //             {
+        //                 "data": "available",
+        //                 className: "text-right"
+        //             },
+        //         ]
 
-            });
-        }
+        //     });
+        // }
 
         $(document).ready(function() {
             $(".company_name_label").html(company_profile.company_name);
