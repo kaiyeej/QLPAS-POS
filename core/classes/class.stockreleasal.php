@@ -25,38 +25,81 @@ class StockReleasal extends Connection
 
         $Products = new Products();
         $StockWithdrawal = new StockWithdrawal();
-        $Customer = new Customers();
 
         $data = "";
         $counter = 0;
-        $fetch_customer = $this->select("tbl_customers as c, tbl_sales as s","c.customer_id, c.customer_name, s.sales_id","c.customer_id=s.customer_id AND (s.sales_date >= '$start_date' AND s.sales_date <= '$end_date') AND s.status='F' $cust_param");
-        while ($cRow = $fetch_customer->fetch_array()) {
+        $data_ = "";
+        // $fetch_customer = $this->select("tbl_customers as c, tbl_sales as s","c.customer_id, c.customer_name","c.customer_id=s.customer_id AND s.withdrawal_status=1 AND (s.sales_date >= '$start_date' AND s.sales_date <= '$end_date') AND s.status='F' $cust_param GROUP BY c.customer_id");
+        // while ($cRow = $fetch_customer->fetch_array()) {
+        //     $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.withdrawal_status=1 AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') $prod_param GROUP BY d.sales_detail_id");
 
-            $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') $prod_param GROUP BY d.sales_detail_id");
+        //     if ($result->num_rows > 0) {
+        //         $counter += 1;
+        //         $data_ .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;">Customer: '.$cRow["customer_name"].'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
+        //         $tbl_counter = 0;
+        //         while ($row = $result->fetch_assoc()) {
+        //             $remaining_qty = $StockWithdrawal->remaining_qty($row['sales_detail_id']);
+        //             if ($remaining_qty > 0) {
+        //                 $data_ .= "<tr>";
+        //                 $data_ .= "<td>" . date('M d,Y', strtotime($row['sales_date'])) . "</td>";
+        //                 $data_ .= "<td>" . $row['reference_number'] . "</td>";
+        //                 // $data .= "<td>" . $paid_status . "</td>";
+        //                 // $data .= "<td>" . $bal ."</td>";
+        //                 $data_ .= "<td>" . $Products->name($row['product_id']) . "</td>";
+        //                 $data_ .= "<td style='text-align: right;'>" . number_format($row['total_qty'], 2) . "</td>";
+        //                 $data_ .= "<td style='text-align: right;'>" . number_format($remaining_qty, 2) . "</td>";
+        //                 $data_ .= "</tr>";
+        //                 $tbl_counter += 1;
+        //             }else{
+        //                 $tbl_counter += 0;
+        //             }
+        //         }
+
+        //         $data_ .= $tbl_counter."</tbody></table>";
+
+        //         if($tbl_counter > 0){
+        //             $data .= $data_;
+        //         }else{
+        //             $data .= "";
+        //         }
+        //     }
+        // }
+
+
+
+        
+            $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.withdrawal_status=1 AND h.status='F' GROUP BY d.sales_detail_id");
 
             if ($result->num_rows > 0) {
                 $counter += 1;
-                $data .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;">Customer: '.$cRow["customer_name"].'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
-                $Sales = new Sales;
+                $data_ .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;"></th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
+                $tbl_counter = 0;
                 while ($row = $result->fetch_assoc()) {
                     $remaining_qty = $StockWithdrawal->remaining_qty($row['sales_detail_id']);
-                    
-
                     if ($remaining_qty > 0) {
-                        $data .= "<tr>";
-                        $data .= "<td>" . date('M d,Y', strtotime($row['sales_date'])) . "</td>";
-                        $data .= "<td>" . $row['reference_number'] . "</td>";
+                        $data_ .= "<tr>";
+                        $data_ .= "<td>" . date('M d,Y', strtotime($row['sales_date'])) . "</td>";
+                        $data_ .= "<td>" . $row['reference_number'] . "</td>";
                         // $data .= "<td>" . $paid_status . "</td>";
                         // $data .= "<td>" . $bal ."</td>";
-                        $data .= "<td>" . $Products->name($row['product_id']) . "</td>";
-                        $data .= "<td style='text-align: right;'>" . number_format($row['total_qty'], 2) . "</td>";
-                        $data .= "<td style='text-align: right;'>" . number_format($remaining_qty, 2) . "</td>";
-                        $data .= "</tr>";
+                        $data_ .= "<td>" . $Products->name($row['product_id']) . "</td>";
+                        $data_ .= "<td style='text-align: right;'>" . number_format($row['total_qty'], 2) . "</td>";
+                        $data_ .= "<td style='text-align: right;'>" . number_format($remaining_qty, 2) . "</td>";
+                        $data_ .= "</tr>";
+                        $tbl_counter += 1;
+                    }else{
+                        $tbl_counter += 0;
                     }
                 }
-                $data .= "</tbody></table>";
+
+                $data_ .= $tbl_counter."</tbody></table>";
+
+                if($tbl_counter > 0){
+                    $data .= $data_;
+                }else{
+                    $data .= "";
+                }
             }
-        }
         
         echo $counter > 0 ? $data : "<hr><center style='color: #757575;'><h3>No details found.</h3></center><hr>";
     }
