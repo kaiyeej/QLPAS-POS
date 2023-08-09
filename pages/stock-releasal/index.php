@@ -99,6 +99,18 @@
                                     <form id='frm_generate_item'>
                                         <div class="form-group row">
                                             <div class="col">
+                                                <label><strong>Start Date</strong></label>
+                                                <div>
+                                                    <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="i_start_date" name="input[start_date]">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <label><strong>End Date</strong></label>
+                                                <div>
+                                                    <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="i_end_date" name="input[end_date]">
+                                                </div>
+                                            </div>
+                                            <div class="col">
                                                 <label><strong>Product</strong></label>
                                                 <div>
                                                     <select class="form-control form-control-sm select2" id="product_id_2" name="input[product_id_2]">
@@ -234,8 +246,8 @@
                     input: {
                         customer_id: customer_id,
                         product_id: product_id,
-                        start_date:start_date,
-                        end_date:end_date
+                        start_date: start_date,
+                        end_date: end_date
                     }
                 },
                 success: function(data) {
@@ -264,9 +276,9 @@
         // }
 
         function getReportItem() {
-            var product_id = $("#product_id").val();
-            var start_date = $("#start_date").val();
-            var end_date = $("#end_date").val();
+            var product_id = $("#product_id_2").val();
+            var start_date = $("#i_start_date").val();
+            var end_date = $("#i_end_date").val();
 
             $("#dt_entries_item").DataTable().destroy();
             $("#dt_entries_item").DataTable({
@@ -282,8 +294,8 @@
                     "data": {
                         input: {
                             product_id: product_id,
-                            start_date:start_date,
-                            end_date:end_date
+                            start_date: start_date,
+                            end_date: end_date
                         }
                     },
                 },
@@ -315,8 +327,8 @@
         $(document).ready(function() {
             $(".company_name_label").html(company_profile.company_name);
             $(".company_address_label").html(company_profile.company_address);
-            getSelectOption('Products', 'product_id', 'product_name', '', [], -1, 'All');
+            getSelectOption('Products', 'product_id', 'product_name', '', [], -1, 'All', 1);
             getSelectOption('Products', 'product_id_2', 'product_name', '', [], -1, 'All', 1);
-            getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All');
+            getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All', 1);
         });
     </script>
