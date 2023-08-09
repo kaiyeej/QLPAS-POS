@@ -29,73 +29,50 @@ class StockReleasal extends Connection
         $data = "";
         $counter = 0;
         $data_ = "";
-        // $fetch_customer = $this->select("tbl_customers as c, tbl_sales as s","c.customer_id, c.customer_name","c.customer_id=s.customer_id AND s.withdrawal_status=1 AND (s.sales_date >= '$start_date' AND s.sales_date <= '$end_date') AND s.status='F' $cust_param GROUP BY c.customer_id");
-        // while ($cRow = $fetch_customer->fetch_array()) {
-        //     $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.withdrawal_status=1 AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') $prod_param GROUP BY d.sales_detail_id");
+        $fetch_customer = $this->select("tbl_customers as c, tbl_sales as s","c.customer_id, c.customer_name","c.customer_id=s.customer_id AND s.withdrawal_status=1 AND (s.sales_date >= '$start_date' AND s.sales_date <= '$end_date') AND s.status='F' $cust_param GROUP BY c.customer_id");
+        while ($cRow = $fetch_customer->fetch_array()) {
+            $result = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.withdrawal_status=1 AND h.status='F' AND h.customer_id='$cRow[customer_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') $prod_param GROUP BY d.sales_detail_id");
 
-        //     if ($result->num_rows > 0) {
-        //         $counter += 1;
-        //         $data_ .= '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;">Customer: '.$cRow["customer_name"].'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
-        //         $tbl_counter = 0;
-        //         while ($row = $result->fetch_assoc()) {
-        //             $remaining_qty = $StockWithdrawal->remaining_qty($row['sales_detail_id']);
-        //             if ($remaining_qty > 0) {
-        //                 $data_ .= "<tr>";
-        //                 $data_ .= "<td>" . date('M d,Y', strtotime($row['sales_date'])) . "</td>";
-        //                 $data_ .= "<td>" . $row['reference_number'] . "</td>";
-        //                 // $data .= "<td>" . $paid_status . "</td>";
-        //                 // $data .= "<td>" . $bal ."</td>";
-        //                 $data_ .= "<td>" . $Products->name($row['product_id']) . "</td>";
-        //                 $data_ .= "<td style='text-align: right;'>" . number_format($row['total_qty'], 2) . "</td>";
-        //                 $data_ .= "<td style='text-align: right;'>" . number_format($remaining_qty, 2) . "</td>";
-        //                 $data_ .= "</tr>";
-        //                 $tbl_counter += 1;
-        //             }else{
-        //                 $tbl_counter += 0;
-        //             }
-        //         }
-
-        //         $data_ .= $tbl_counter."</tbody></table>";
-
-        //         if($tbl_counter > 0){
-        //             $data .= $data_;
-        //         }else{
-        //             $data .= "";
-        //         }
-        //     }
-        // }
-
-        // echo $counter > 0 ? $data : "<hr><center style='color: #757575;'><h3>No details found.</h3></center><hr>";
-
-            $result = $this->select("tbl_sales", "*", "for_pick_up=1 AND (sales_date >= '$start_date' AND sales_date <= '$end_date') AND status='F'");
             if ($result->num_rows > 0) {
                 $counter += 1;
+                $table_header = '<table class="table" style="margin-bottom: 50px;"><thead><tr><th colspan="7" style="background: #607d8b;color: #fff;">Customer: '.$cRow["customer_name"].'</th></tr><tr><th>DATE</th><th>REFERENCE #</th><th>PRODUCT</th><th style="text-align:right;">TOTAL QTY</th><th style="text-align:right;">REMAINING QTY</th></tr></thead><tbody>';
+                $tbl_counter = 0;
                 while ($row = $result->fetch_assoc()) {
-
-                    //, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.for_pick_up=1 AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F' GROUP BY d.sales_detail_id"
-                    $result2 = $this->select("tbl_sales_details", "sum(quantity) as total_qty", "sales_id='$row[sales_id]'");
-                    $total_qty = 0;
-                    $m_qty = 0;
-                    while($dRow = $result2->fetch_assoc()){
-                        $total_qty += $dRow['total_qty'];
-                        $m_qty += $StockWithdrawal->remaining_qty($dRow['sales_detail_id']);
-                    }
-
-                    if($row['withdrawal_status'] == 1 AND $m_qty <= 0 ){
-                        echo $row['reference_number']." (".$row['withdrawal_status'].") <br>";
+                    $remaining_qty = $StockWithdrawal->remaining_qty($row['sales_detail_id']);
+                    if ($remaining_qty > 0) {
+                        $data_ .= "<tr>";
+                        $data_ .= "<td>" . date('M d,Y', strtotime($row['sales_date'])) . "</td>";
+                        $data_ .= "<td>" . $row['reference_number'] . "</td>";
+                        // $data .= "<td>" . $paid_status . "</td>";
+                        // $data .= "<td>" . $bal ."</td>";
+                        $data_ .= "<td>" . $Products->name($row['product_id']) . "</td>";
+                        $data_ .= "<td style='text-align: right;'>" . number_format($row['total_qty'], 2) . "</td>";
+                        $data_ .= "<td style='text-align: right;'>" . number_format($remaining_qty, 2) . "</td>";
+                        $data_ .= "</tr>";
+                        $tbl_counter += 1;
                     }else{
-                        echo "-<br>";
+                        $tbl_counter += 0;
                     }
-
-                    // echo $row['reference_number']." (".$row['withdrawal_status'].") ".number_format($dRow['total_qty'], 2)." - ".."<br>";
                 }
 
+                
+
+                if($tbl_counter > 0){
+                    $data .= $table_header.$data_."</tbody></table>";
+                }else{
+                    $data .= "";
+                }
             }
+        }
+
+        echo $counter > 0 ? $data : "<hr><center style='color: #757575;'><h3>No details found.</h3></center><hr>";
     }
 
     public function per_item()
     {
         $product_id = $this->inputs['product_id'];
+        $start_date = $this->inputs['start_date'];
+        $end_date = $this->inputs['end_date'];
 
         if ($product_id == "-1") {
             $prod_param = "";
@@ -106,31 +83,22 @@ class StockReleasal extends Connection
         $Inventory = new InventoryReport();
         $result = $this->select("tbl_products","*",$prod_param);
         while ($row = $result->fetch_assoc()) {
-            //$result = $this->select("tbl_sales as sh, tbl_sales_details as sd, tbl_stock_withdrawal as wh, tbl_stock_withdrawal_details as wd", "sum(sd.quantity) as dr_qty", "sd.product_id='$prow[product_id]' AND sh.sales_id=sd.sales_id AND sh.status='F' AND wh.sales_id=sh.sales_id AND wh.withdrawal_id=wd.withdrawal_id AND wd.product_id='$prow[product_id]' AND wh.status='F'");
             
-            /*
-            prev version
+            // $for_withdrawal = 0;
+            // $fetch_claim_slips = $this->select("tbl_claim_slips", "*", "checked_by=0 and status='F'");
+            // while($cs_row = $fetch_claim_slips->fetch_array()){
+            //     // withdrawal_id
+            //     // sales_id
+            //     $fetch_stock_withdrawal = $this->select("tbl_stock_withdrawal_details", "sum(qty)", "withdrawal_id='$cs_row[withdrawal_id]' and product_id='$row[product_id]'");
+            //     $sw_qty = $fetch_stock_withdrawal->fetch_array();
+            //     $for_withdrawal += $sw_qty[0];
+            // }
 
-            $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d","*","d.product_id='$row[product_id]' AND h.sales_id=d.sales_id AND h.status='F' AND h.withdrawal_status='1'");
+            $fetchCS = $this->select("tbl_sales as h, tbl_sales_details as d", "*, sum(d.quantity) as total_qty", "h.sales_id=d.sales_id AND h.withdrawal_status=1 AND h.status='F' AND d.product_id='$row[product_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') GROUP BY d.sales_detail_id");
             $for_withdrawal = 0;
-            while($sRow = $fetchSAles->fetch_array()){
-                // get all qty
-                $remaining_qty = $StockWithdrawal->remaining_qty($sRow['sales_detail_id']);
-                $for_withdrawal += $remaining_qty;
+            while ($row = $result->fetch_assoc()) {
+                $for_withdrawal += $StockWithdrawal->remaining_qty($row['sales_detail_id']);
             }
-
-            */
-
-            $for_withdrawal = 0;
-            $fetch_claim_slips = $this->select("tbl_claim_slips", "*", "checked_by=0 and status='F'");
-            while($cs_row = $fetch_claim_slips->fetch_array()){
-                // withdrawal_id
-                // sales_id
-                $fetch_stock_withdrawal = $this->select("tbl_stock_withdrawal_details", "sum(qty)", "withdrawal_id='$cs_row[withdrawal_id]' and product_id='$row[product_id]'");
-                $sw_qty = $fetch_stock_withdrawal->fetch_array();
-                $for_withdrawal += $sw_qty[0];
-            }
-
             
             $on_hand = $Inventory->balance($row['product_id']);
 

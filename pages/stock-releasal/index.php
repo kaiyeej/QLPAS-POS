@@ -244,69 +244,73 @@
             });
         }
 
-        function getReportItem() {
-            var product_id = $("#product_id").val();
-
-            $("#dt_entries_item").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
-
-            $.ajax({
-                type: "POST",
-                url: "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
-                data: {
-                    input: {
-                        product_id: product_id
-                    }
-                },
-                success: function(data) {
-                    $("#dt_entries_item").html(data.replace('{"data":null}', ''));
-                }
-            });
-        }
-
         // function getReportItem() {
         //     var product_id = $("#product_id").val();
 
-        //     $("#dt_entries_item").DataTable().destroy();
-        //     $("#dt_entries_item").DataTable({
-        //         "processing": true,
-        //         "searching": false,
-        //         "paging": false,
-        //         "ordering": false,
-        //         "info": false,
-        //         "ajax": {
-        //             "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
-        //             "dataSrc": "data",
-        //             "method": "POST",
-        //             "data": {
-        //                 input: {
-        //                     product_id: product_id
-        //                 }
-        //             },
+        //     $("#dt_entries_item").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
+        //         data: {
+        //             input: {
+        //                 product_id: product_id
+        //             }
         //         },
-        //         "footerCallback": function(row, data, start, end, display) {
-        //             var api = this.api();
-
-
-        //         },
-        //         "columns": [{
-        //                 "data": "item"
-        //             },
-        //             {
-        //                 "data": "on_hand",
-        //                 className: "text-right"
-        //             },
-        //             {
-        //                 "data": "for_withdrawal",
-        //                 className: "text-right"
-        //             },
-        //             {
-        //                 "data": "available",
-        //                 className: "text-right"
-        //             },
-        //         ]
-
+        //         success: function(data) {
+        //             $("#dt_entries_item").html(data.replace('{"data":null}', ''));
+        //         }
         //     });
         // }
+
+        function getReportItem() {
+            var product_id = $("#product_id").val();
+            var start_date = $("#start_date").val();
+            var end_date = $("#end_date").val();
+
+            $("#dt_entries_item").DataTable().destroy();
+            $("#dt_entries_item").DataTable({
+                "processing": true,
+                "searching": false,
+                "paging": false,
+                "ordering": false,
+                "info": false,
+                "ajax": {
+                    "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=per_item",
+                    "dataSrc": "data",
+                    "method": "POST",
+                    "data": {
+                        input: {
+                            product_id: product_id,
+                            start_date:start_date,
+                            end_date:end_date
+                        }
+                    },
+                },
+                "footerCallback": function(row, data, start, end, display) {
+                    var api = this.api();
+
+
+                },
+                "columns": [{
+                        "data": "item"
+                    },
+                    {
+                        "data": "on_hand",
+                        className: "text-right"
+                    },
+                    {
+                        "data": "for_withdrawal",
+                        className: "text-right"
+                    },
+                    {
+                        "data": "available",
+                        className: "text-right"
+                    },
+                ]
+
+            });
+        }
 
         $(document).ready(function() {
             $(".company_name_label").html(company_profile.company_name);
