@@ -16,9 +16,10 @@ class IncomeStatement extends Connection
         $Inventory = new InventoryReport;
 
         $start_inv = $Inventory->balance_total($start_date);
-        $cost_total = ($purchase+$start_inv)-$purchase_return;
+        $cost_total = $purchase-$purchase_return;//($purchase+$start_inv)-$purchase_return;
 
-        $income = $sales[2] - ($cost_total+$operating_expense[1]+$other_expense[1]+$sales[4]);
+        $income = $sales[2] - ($operating_expense[1]+$other_expense[1]+$sales[4]);
+        //$sales[2] - ($cost_total+$operating_expense[1]+$other_expense[1]+$sales[4]);
 
         $rows = array();
         $row['sales_total'] = number_format($sales[0],2);
