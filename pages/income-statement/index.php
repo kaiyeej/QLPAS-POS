@@ -75,7 +75,11 @@
                                 </tr>
                                 <tr>
                                     <td style="padding-left: 100px;">Sales Discount</td>
-                                    <td style="text-align:right;"><span id="discount_total_label" class="label-item"></span></td>
+                                    <td style="text-align:right;">(-) <span id="discount_total_label" class="label-item"></span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-left: 100px;">Sales Return</td>
+                                    <td style="text-align:right;">(-) <span id="sales_return_total_label" class="label-item"></span></td>
                                 </tr>
                                 <tr style="font-weight:bold;">
                                     <td style="text-align:right;">Subtotal</td>
