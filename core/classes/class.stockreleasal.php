@@ -110,7 +110,7 @@ class StockReleasal extends Connection
 
             $row['item'] = $row['product_name'];
             $row['on_hand'] = number_format(($on_hand+$for_withdrawal),2);
-            $row['for_withdrawal'] = number_format($for_withdrawal,2)." - ".$count;
+            $row['for_withdrawal'] = number_format($for_withdrawal,2);
             $row['available'] = number_format(($on_hand),2);
                 
             $rows[] = $row;
