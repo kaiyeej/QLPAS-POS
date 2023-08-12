@@ -106,6 +106,8 @@ class StockReleasal extends Connection
                 ? $StockWithdrawal->remaining_qty($row2['sales_detail_id'])." (". $row2['sales_detail_id'] .") - " : "" ; 
             }
             
+            if($for_withdrawal > 0){
+
             $on_hand = $Inventory->balance($row['product_id']);
 
             $row['item'] = $row['product_name'];
@@ -114,6 +116,8 @@ class StockReleasal extends Connection
             $row['available'] = number_format(($on_hand),2);
                 
             $rows[] = $row;
+            
+        }
         }
 
         return $rows;
