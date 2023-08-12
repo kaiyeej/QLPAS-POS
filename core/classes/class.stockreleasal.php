@@ -43,7 +43,7 @@ class StockReleasal extends Connection
                     if ($remaining_qty > 0) {
                         $data_ .= "<tr>";
                         $data_ .= "<td>" . date('M d,Y', strtotime($row['sales_date'])) . "</td>";
-                        $data_ .= "<td>" . $row['reference_number'] . " - ".$cRow['customer_id']." </td>";
+                        $data_ .= "<td>" . $row['reference_number'] ." </td>";
                         // $data .= "<td>" . $paid_status . "</td>";
                         // $data .= "<td>" . $bal ."</td>";
                         $data_ .= "<td>" . $Products->name($row['product_id']) . "</td>";
