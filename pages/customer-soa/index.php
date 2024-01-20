@@ -1,6 +1,21 @@
 <style>
-    .text-right {
-        text-align: right;
+    @media print {
+        center {
+            text-align: center;
+        }
+
+        .div_footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .left-column,
+        .right-column {
+            display: inline-block;
+            width: 48%; /* Adjust the width as needed */
+            vertical-align: top; /* Align columns to the top */
+        }
     }
 </style>
 <div class="content-wrapper">
@@ -8,8 +23,9 @@
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Receivable Report</h3>
-                    <h6 class="font-weight-normal mb-0">Generate accounts receivable here</h6>
+                    <h3 class="font-weight-bold">Customer Statement of Accounts</h3>
+                    <h6 class="font-weight-normal mb-0">Generate report here</h6>
+                    <br>
                 </div>
             </div>
 
@@ -35,18 +51,6 @@
                                             </span>
                                             <span class="text"> Generate</span>
                                         </button>
-                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries','Receivable-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                            <span class="icon">
-                                                <i class="ti ti-cloud-down"></i>
-                                            </span>
-                                            <span class="text"> Export</span>
-                                        </button>
-                                        <button type="button" onclick="print_report('report_container')" class="btn btn-info btn-sm btn-icon-split">
-                                            <span class="icon">
-                                                <i class="ti ti-printer"></i>
-                                            </span>
-                                            <span class="text"> Print</span>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -66,6 +70,7 @@
                                     <th>#</th>
                                     <th>ACCOUNT</th>
                                     <th style="text-align:right">BALANCE</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,6 +78,7 @@
                             <tfoot>
                                 <tr>
                                     <th colspan="2" style="text-align:right">Total:</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </tfoot>
@@ -83,6 +89,7 @@
         </div>
     </div>
 </div>
+<?php include 'modal_soa.php' ?>
 <script type="text/javascript">
     $("#frm_generate").submit(function(e) {
         e.preventDefault();
@@ -111,7 +118,6 @@
             "footerCallback": function(row, data, start, end, display) {
                 var api = this.api();
 
-                // Remove the formatting to get integer data for summation
                 var intVal = function(i) {
                     return typeof i === 'string' ?
                         i.replace(/[\$,]/g, '') * 1 :
@@ -119,7 +125,6 @@
                         i : 0;
                 };
 
-                // Total over all pages
                 total = api
                     .column(2)
                     .data()
@@ -142,16 +147,55 @@
                     "data": "balance",
                     className: "text-right"
                 },
+                {
+                    "mRender": function(data, type, row) {
+                        return "<center><button onclick=printRecord(" + row.customer_id + ",'"+row.total+"') class='btn btn-lg btn-warning'><span class='ti ti-printer'></span></button></center>";
+                    }
+                },
             ]
+        });
+    }
+    
+
+    function printRecord(id, total) {
+        $("#modalSoaSlip").modal("show");
+
+
+        $.ajax({
+            type: 'POST',
+            url: "controllers/sql.php?c=" + route_settings.class_name + "&q=getSoa",
+            data: {
+                id: id,
+                total:total
+            },
+            success: function(data) {
+                var json = JSON.parse(data);
+
+                $("#cs_details").html("");
+
+                $(".customer_name_span").html(json.data[0].customer_name);
+                $(".today_span").html(json.data[0].today);
+                $(".customer_terms_span").html(json.data[0].terms);
+                $(".customer_address_span").html(json.data[0].customer_address);
+                $(".amount_to_word").html(json.data[0].amount_to_words);
+                $(".total").html(json.data[0].total);
+                $(".terms_span").html(json.data[0].terms);
+                $(".customer_tin_span").html(json.data[0].customer_tin);
+                $("#hidden_id_terms").val(id);
+                $("#terms").val(json.data[0].terms);
+                unpaid_details(json.data[0].customer_id, json.data[0].customer_terms);
+                soa_aging(json.data[0].customer_id);
+            }
         });
     }
 
 
+
     $(document).ready(function() {
         getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All');
-        getReport();
+        // getReport();
 
-        $("#company_name_label").html(company_profile.company_name);
-        $("#company_address_label").html(company_profile.company_address);
+        $(".company_name_label").html(company_profile.company_name);
+        $(".company_address_label").html(company_profile.company_address);
     });
 </script>

@@ -41,6 +41,14 @@
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <label><strong>Terms</strong></label>
+                            <div>
+                            <input type="number" class="form-control input-item" name="input[customer_terms]" autocomplete="off" id="customer_terms" placeholder="Terms" maxlength=6 required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Suki Card #</strong></label>
                             <div>
                             <input type="text" class="form-control input-item" name="input[suki_card_number]" autocomplete="off" id="suki_card_number" placeholder="Suki card number" maxlength=12 required>

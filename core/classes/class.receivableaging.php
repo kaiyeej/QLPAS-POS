@@ -153,5 +153,93 @@ class ReceivableAging extends Connection
         return [$bf,$total];
         
     }
+
+    public function soa_aging()
+    {
+        $customer_id = $this->inputs['customer_id'];
+        
+        $rows = array();
+
+        $result = $this->select("tbl_sales","reference_number","customer_id='$customer_id' AND (status='F' OR status='P') AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR'");
+        
+        $Sales = new Sales;
+        $CustomerPayment = new CustomerPayment;
+        $BeginningBalance = new BeginningBalance;
+        $bf = $this->total();
+        $balance = (float) $bf[0];
+        $count = 1;
+        $total_day1 = 0;
+        $total_day2 = 0;
+        $total_day3 = 0;
+        $total_day4 = 0;
+        while ($row = $result->fetch_assoc()) {
+
+            $trans = substr($row['reference_number'], 0, 2);
+
+            if($trans == "BB"){
+                $trans = "Beginning Balance";
+                $id = $BeginningBalance->pk_by_name($row['reference_number']);
+                $net_amount = $BeginningBalance->total($id);
+                $amount_paid = $CustomerPayment->amount_paid($id, "BB");
+                $balance += $net_amount;
+                $date = $BeginningBalance->get_row($id, 'bb_date');
+                $ref_number = $row['reference_number'];
+            }else{
+                $trans = "Sales";
+                $id = $Sales->pk_by_name($row['reference_number']);
+                $net_amount = ($Sales->total($id));
+                $amount_paid = $CustomerPayment->amount_paid($id, "DR");
+                $balance += $net_amount;
+                $date = $Sales->dataRow($id, 'sales_date');
+                $ref_number = $row['reference_number'];
+            }
+
+            $balance = $net_amount-$amount_paid;
+
+            if($balance > 0){
+                $aging_date = $this->daysDifference($this->getCurrentDate(),$date);
+
+                if($aging_date >= 0 AND $aging_date <= 15){
+                    $days1 = $balance;
+                    $days2 = 0;
+                    $days3 = 0;
+                    $days4 = 0;
+
+                }else if($aging_date >= 16 AND $aging_date <= 30){
+                    $days1 = 0;
+                    $days2 = $balance;
+                    $days3 = 0;
+                    $days4 = 0;
+                }else if($aging_date >= 31 AND $aging_date <= 60){
+                    $days1 = 0;
+                    $days2 = 0;
+                    $days3 = $balance;
+                    $days4 = 0;
+                }else if($aging_date > 61){
+                    $days1 = 0;
+                    $days2 = 0;
+                    $days3 = 0;
+                    $days4 = $balance;
+                }
+
+                $total_day1 += $days1;
+                $total_day2 += $days2;
+                $total_day3 += $days3;
+                $total_day4 += $days4;
+            }
+
+        }
+
+        return array(
+            'total_day1' => number_format($total_day1,2),
+            'total_day2' => number_format($total_day2,2),
+            'total_day3' => number_format($total_day3,2),
+            'total_day4' => number_format($total_day4,2),
+            'rows' => $rows 
+        );
+
+    }
+
+    
     
 }
