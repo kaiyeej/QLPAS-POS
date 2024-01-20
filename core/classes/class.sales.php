@@ -1,4 +1,7 @@
 <?php
+
+ini_set('max_execution_time', -1);
+
 class Sales extends Connection
 {
     private $table = 'tbl_sales';
