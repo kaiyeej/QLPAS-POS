@@ -48,9 +48,12 @@
 
         // REPORTS
         $Menus->sidebar_parent('Reports', 'write', array(
-            array('Bank Ledger', 'bank-ledger'),
-            array('Expense Report', 'expense-report'),
             array('Bank Due Report', 'bankdue-report'),
+            array('Bank Ledger', 'bank-ledger'),
+            array('Customer SOA', 'customer-soa'),
+            array('Expense Report', 'expense-report'),
+            array('Income Statement', 'income-statement'),
+            array('Inventory Report', 'inventory-report'),
             array('Payable Aging', 'payable-aging'),
             array('Payable Ledger', 'payable-ledger'),
             array('Payable Report', 'payable-report'),
@@ -61,9 +64,7 @@
             array('Receivable Report', 'receivable-report'),
             array('Sales Report', 'sales-report'),
             array('Stock Releasal', 'stock-releasal'),
-            array('Inventory Report', 'inventory-report'),
             array('Stock Card', 'stock-card'),
-            array('Income Statement', 'income-statement'),
             array('Statement of Accounts', 'statement-of-accounts'),
         ));
 

@@ -24,7 +24,8 @@ class Customers extends Connection
                 'customer_address' => $this->inputs['customer_address'],
                 'customer_contact_number' => $this->inputs['customer_contact_number'],
                 'customer_tin' => $this->inputs['customer_tin'],
-                'remarks' => $this->inputs['remarks']
+                'remarks' => $this->inputs['remarks'],
+                'customer_terms' => $this->inputs['customer_terms']
             );
             $result = $this->insert($this->table, $form);
             Logs::storeCrud($this->module_name, 'c', $result, $customer_name);
@@ -49,7 +50,8 @@ class Customers extends Connection
                 'customer_tin' => $this->inputs['customer_tin'],
                 'remarks' => $this->inputs['remarks'],
                 'suki_card_number' => $this->inputs['suki_card_number'],
-                'date_last_modified' => $this->getCurrentDate()
+                'date_last_modified' => $this->getCurrentDate(),
+                'customer_terms' => $this->inputs['customer_terms']
             );
             $old_name = $this->name($primary_id);
             $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");

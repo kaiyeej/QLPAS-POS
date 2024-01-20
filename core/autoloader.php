@@ -4,6 +4,7 @@ $pre_class = "classes/class.";
 $classes = array(
     'Connection'            => $pre_class . 'connection.php',
     'Customers'             => $pre_class . 'customers.php',
+    'CustomerSOA'             => $pre_class . 'customersoa.php',
     'CustomerPayment'       => $pre_class . 'customerpayment.php',
     'Discounts'             => $pre_class . 'discounts.php',
     'Expense'               => $pre_class . 'expense.php',

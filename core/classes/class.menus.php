@@ -36,6 +36,7 @@ class Menus extends Connection
             'report' => array(
 
                 array('url' => 'bank-ledger', 'name' => 'Bank Ledger', 'class_name' => 'BankLedger', 'has_detail' => 0),
+                array('url' => 'customer-soa', 'name' => 'Customer SOA', 'class_name' => 'ReceivableReport', 'has_detail' => 0),
                 array('url' => 'expense-report', 'name' => 'Expense Report', 'class_name' => 'ExpenseReport', 'has_detail' => 0),
                 array('url' => 'bankdue-report', 'name' => 'Bank Due Date', 'class_name' => 'BankDueDate', 'has_detail' => 0),
                 array('url' => 'payable-aging', 'name' => 'Aging of AP', 'class_name' => 'PayableAging', 'has_detail' => 0),
