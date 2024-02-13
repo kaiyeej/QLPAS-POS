@@ -201,11 +201,11 @@ class StockTransfer extends Connection
             'fields' => array(
                 $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
                 $this->metadata($this->name, 'varchar', 75),
-                $this->metadata('product_id', 'int', 11),
-                $this->metadata('no_of_batches', 'int', 3, 'NOT NULL'),
+                $this->metadata('source_warehouse_id', 'int', 11),
+                $this->metadata('destination_warehouse_id', 'int', 11),
                 $this->metadata('remarks', 'varchar', 255, 'NOT NULL'),
                 $this->metadata('user_id', 'int', 11, 'NOT NULL'),
-                $this->metadata('job_order_date', 'datetime', 'NOT NULL'),
+                $this->metadata('stock_transfer_date', 'datetime', 'NOT NULL'),
                 $this->metadata('status', 'varchar', 1),
                 $default['date_added'],
                 $default['date_last_modified']

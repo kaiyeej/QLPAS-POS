@@ -56,4 +56,6 @@ $classes = array(
     'StatementOfAccounts'   => $pre_class . 'statementofaccounts.php',
     'RedeemedPoints'        => $pre_class . 'redeemedpoints.php',
     'StockTransfer'         => $pre_class . 'stocktransfer.php',
+    'Branches'              => $pre_class . 'branches.php',
+    'Warehouses'            => $pre_class . 'warehouses.php',
 );
