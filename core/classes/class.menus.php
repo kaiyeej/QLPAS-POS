@@ -32,6 +32,7 @@ class Menus extends Connection
                 array('url' => 'product-conversion', 'name' => 'Product Conversion', 'class_name' => 'ProductConversion', 'has_detail' => 1),
                 array('url' => 'inventory-adjustment', 'name' => 'Inventory Adjustment', 'class_name' => 'InventoryAdjustment', 'has_detail' => 1),
                 array('url' => 'deposit', 'name' => 'Deposit', 'class_name' => 'Deposit', 'has_detail' => 1),
+                array('url' => 'stock-transfer', 'name' => 'Stock Transfer', 'class_name' => 'StockTransfer', 'has_detail' => 1),
             ),
             'report' => array(
 
