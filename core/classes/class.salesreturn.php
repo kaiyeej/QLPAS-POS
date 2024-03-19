@@ -197,6 +197,13 @@ class SalesReturn extends Connection
         return $this->update($this->table, $form, "sales_summary_id=0 AND encoded_by='$encoded_by' and (status='F' or status='C') ");
     }
 
+    public function name($primary_id)
+    {
+        $result = $this->select($this->table, $this->name, "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row[$this->name];
+    }
+
     public function total_return($primary_id)
     {
         $result = $this->select("tbl_sales_return_details as d, tbl_sales_return as p", 'sum(d.quantity_return)', "p.sales_return_id=d.sales_return_id AND p.status='F' AND d.sales_detail_id='$primary_id'");

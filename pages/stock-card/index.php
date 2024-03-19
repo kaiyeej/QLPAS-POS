@@ -80,6 +80,7 @@
                                 <tr>
                                     <th>DATE</th>
                                     <th>TRANSACTION</th>
+                                    <th>REFERENCE #</th>
                                     <th>UNIT COST</th>
                                     <th>QTY IN</th>
                                     <th>QTY OUT</th>
@@ -87,7 +88,7 @@
                                     <th>AMOUNT</th>
                                 </tr>
                                 <tr>
-                                    <th style="text-align:right;" colspan="5">Balance Fowarded</th>
+                                    <th style="text-align:right;" colspan="6">Balance Fowarded</th>
                                     <th><span class="label-item" id="qty_label"></span></th>
                                     <th><span class="label-item" id="amount_label"></span><input type='hidden' class='current_qty' id="bf_qty_label"><input type='hidden' class='current_amount' id="bf_amount_label"></th>
                                 </tr>
@@ -96,7 +97,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="5" style="text-align:right">Current:</th>
+                                    <th colspan="6" style="text-align:right">Current:</th>
                                     <th><span id="span_current_qty"></span></th>
                                     <th><span id="span_current_amount"></span></th>
                                 </tr>
@@ -179,14 +180,18 @@
                 },
             },
             "columnDefs": [{
-                "targets": [2, 3, 4, 5, 6],
+                "targets": [3, 4, 5, 6, 7],
                 "render": $.fn.dataTable.render.number(',', '.', 2, ''),
                 "className": 'dt-body-right'
             }],
             "columns": [{
                     "data": "date"
-                }, {
+                },
+                {
                     "data": "module"
+                },
+                {
+                    "data": "reference_number"
                 },
                 {
                     "data": "cost"

@@ -9,6 +9,14 @@ class StockCard extends Connection
         $start_date = $this->inputs['start_date'];
         $end_date = $this->inputs['end_date'];
         $rows = array();
+        $JobOrder = new JobOrder;
+        $PurchaseOrder = new PurchaseOrder;
+        $BeginningBalance = new BeginningBalance;
+        $Sales = new Sales;
+        $ProductConversion = new ProductConversion;
+        $InventoryAdjustment = new InventoryAdjustment;
+        $SalesReturn = new SalesReturn;
+        $PurchaseReturn = new PurchaseReturn;
 
         $result = $this->select($this->table, "*,IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out", "product_id = '$product_id' AND status = '1' AND date_added BETWEEN '$start_date' AND '$end_date' ORDER BY date_modified ASC");
 
@@ -20,24 +28,33 @@ class StockCard extends Connection
 
             if($row['module'] == "BB"){
                 $module = "Beginning Balance";
+                $reference_number = $BeginningBalance->name($row['header_id']);
             }else if($row['module'] == "PO"){
                 $module = "Purchase Order";
+                $reference_number = $PurchaseOrder->name($row['header_id']);
             }else if($row['module'] == "SLS"){
                 $module = "Sales";
+                $reference_number = $Sales->name($row['header_id']);
             }else if($row['module'] == "JO"){
                 $module = "Job Order";
+                $reference_number = $JobOrder->name($row['header_id']);
             }else if($row['module'] == "PC"){
                 $module = "Product Conversion";
+                $reference_number = $ProductConversion->name($row['header_id']);
             }else if($row['module'] == "IA"){
                 $module = "Inventory Adjustment";
+                $reference_number = $InventoryAdjustment->name($row['header_id']);
             }else if($row['module'] == "SR"){
                 $module = "Sales Return";
+                $reference_number = $SalesReturn->name($row['header_id']);
             }else if($row['module'] == "PR"){
                 $module = "Purchase Return";
+                $reference_number = $PurchaseReturn->name($row['header_id']);
             }
 
             $row['qty_balance'] = number_format($qty_balance,2);
             $row['module'] = $module;
+            $row['reference_number'] = $reference_number;
             $row['amount'] = number_format($qty_balance * $row['cost'],2);
             $row['date'] = date('M d, Y', strtotime($row['date_modified']));
             $rows[] = $row;

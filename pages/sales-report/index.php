@@ -89,7 +89,9 @@
                                         <tr>
                                             <th>ITEM</th>
                                             <th style="text-align:right">QTY</th>
+                                            <th style="text-align:right">DISCOUNT</th>
                                             <th style="text-align:right">AMOUNT</th>
+                                            <th style="text-align:right">NET AMOUNT</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -97,6 +99,8 @@
                                     <tfoot>
                                         <tr>
                                             <th colspan="1" style="text-align:right">Total:</th>
+                                            <th></th>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                         </tr>
@@ -672,8 +676,8 @@
                         minimumFractionDigits: 2
                     })
                 );
-
-                subTotal = api
+                
+                discountTotal = api
                     .column(2, {
                         page: 'current'
                     })
@@ -684,7 +688,40 @@
 
                 // Update footer
                 $(api.column(2).footer()).html(
-                    "&#x20B1; " + subTotal.toLocaleString('en-US', {
+                    "&#x20B1; " + discountTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+
+                
+                amountTotal = api
+                    .column(3, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(3).footer()).html(
+                    "&#x20B1; " + amountTotal.toLocaleString('en-US', {
+                        minimumFractionDigits: 2
+                    })
+                );
+                
+                netTotal = api
+                    .column(4, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(4).footer()).html(
+                    "&#x20B1; " + netTotal.toLocaleString('en-US', {
                         minimumFractionDigits: 2
                     })
                 );
@@ -698,10 +735,17 @@
                     className: "text-right"
                 },
                 {
+                    "data": "discount",
+                    className: "text-right"
+                },
+                {
                     "data": "amount",
                     className: "text-right"
+                },
+                {
+                    "data": "net_amount",
+                    className: "text-right"
                 }
-
             ]
 
         });
