@@ -13,6 +13,7 @@
             array('Price Notice', 'product-price'),
         ));
         $Menus->sidebar('Banks', 'banks', 'wallet');
+        $Menus->sidebar('Branches', 'branches', 'home');
         $Menus->sidebar('Customers', 'customers', 'id-badge');
         $Menus->sidebar('Suppliers', 'suppliers', 'truck');
         $Menus->sidebar('Discounts', 'discounts', 'tag');
@@ -45,6 +46,7 @@
         $Menus->sidebar('Product Conversion', 'product-conversion', 'exchange-vertical');
         $Menus->sidebar('Inventory Adjustment', 'inventory-adjustment', 'split-v');
         $Menus->sidebar('Deposit', 'deposit', 'credit-card');
+        $Menus->sidebar('Stock Trasfer', 'stock-transfer', 'credit-card');
 
         // REPORTS
         $Menus->sidebar_parent('Reports', 'write', array(

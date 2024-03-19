@@ -10,11 +10,13 @@ class Menus extends Connection
                 array('url' => 'products', 'name' => 'Product Entries', 'class_name' => 'Products', 'has_detail' => 0),
                 array('url' => 'product-price', 'name' => 'Product Price Notice', 'class_name' => 'ProductPrice', 'has_detail' => 1),
                 array('url' => 'banks', 'name' => 'Banks', 'class_name' => 'Banks', 'has_detail' => 0),
+                array('url' => 'branches', 'name' => 'Branches', 'class_name' => 'Branches', 'has_detail' => 0),
                 array('url' => 'customers', 'name' => 'Customers', 'class_name' => 'Customers', 'has_detail' => 0),
                 array('url' => 'suppliers', 'name' => 'Suppliers', 'class_name' => 'Suppliers', 'has_detail' => 0),
                 array('url' => 'discounts', 'name' => 'Discounts', 'class_name' => 'Discounts', 'has_detail' => 1),
                 array('url' => 'payment-option', 'name' => 'Payment Option', 'class_name' => 'PaymentOption', 'has_detail' => 0),
                 array('url' => 'formulation', 'name' => 'Formulation', 'class_name' => 'Formulation', 'has_detail' => 1),
+                array('url' => 'warehouse', 'name' => 'Warehouse', 'class_name' => 'Warehouse', 'has_detail' => 0),
             ),
             'transaction' => array(
                 array('url' => 'credit-memo', 'name' => 'Credit Memo', 'class_name' => 'CreditMemo', 'has_detail' => 1),
@@ -32,6 +34,7 @@ class Menus extends Connection
                 array('url' => 'product-conversion', 'name' => 'Product Conversion', 'class_name' => 'ProductConversion', 'has_detail' => 1),
                 array('url' => 'inventory-adjustment', 'name' => 'Inventory Adjustment', 'class_name' => 'InventoryAdjustment', 'has_detail' => 1),
                 array('url' => 'deposit', 'name' => 'Deposit', 'class_name' => 'Deposit', 'has_detail' => 1),
+                array('url' => 'stock-transfer', 'name' => 'Stock Transfer', 'class_name' => 'StockTransfer', 'has_detail' => 1),
             ),
             'report' => array(
 
