@@ -10,7 +10,8 @@ define("USER", "root");
 define("PASSWORD", "");
 define("DBNAME", "jcis_db");
 
+
 // define("HOST", "localhost");
-// define("USER", "u981310152_root_pos");
-// define("PASSWORD", "POSOverride123!");
-// define("DBNAME", "jcis_db");
+// define("USER", "u814036432_jcis_root");
+// define("PASSWORD", "@Jcis123!");
+// define("DBNAME", "u814036432_jcis_db");
