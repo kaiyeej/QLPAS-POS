@@ -13,7 +13,7 @@ class InventoryReport extends Connection
 
         $result = $this->table('tbl_products AS p')
             ->join('tbl_product_transactions AS c', 'p.product_id', '=', 'c.product_id')
-            ->selectRaw('p.product_id', 'p.product_name', 'p.product_cost', "SUM(IF(type='IN',quantity,-quantity)) AS product_qty")
+            ->selectRaw('p.product_id', 'p.product_name', 'p.product_cost', 'p.product_code', "SUM(IF(type='IN',quantity,-quantity)) AS product_qty")
             ->where('product_category_id', $category_eq, $category_col)
             ->where('status', 1)
             ->groupBy('p.product_id')
@@ -22,6 +22,7 @@ class InventoryReport extends Connection
         $count = 1;
         while ($row = $result->fetch_assoc()) {
             $row['count'] = $count++;
+            $row['product_code'] =  $row['product_code'];
             $row['amount'] = $row['product_qty'] * $row['product_cost'];
             $rows[] = $row;
         }

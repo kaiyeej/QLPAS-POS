@@ -58,7 +58,7 @@
                         <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>Product Code</th>
                                     <th>Product</th>
                                     <th>Qty</th>
                                     <th>Cost</th>
@@ -146,7 +146,7 @@
                 );
             },
             "columns": [{
-                    "data": "count"
+                    "data": "product_code"
                 }, {
                     "data": "product_name"
                 },
