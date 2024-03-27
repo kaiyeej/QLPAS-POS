@@ -18,7 +18,7 @@ class StockCard extends Connection
         $SalesReturn = new SalesReturn;
         $PurchaseReturn = new PurchaseReturn;
 
-        $result = $this->select($this->table, "*,IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out", "product_id = '$product_id' AND status = '1' AND date_added BETWEEN '$start_date' AND '$end_date' ORDER BY date_modified ASC");
+        $result = $this->select($this->table, "*,IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out", "product_id = '$product_id' AND status = '1' AND date_added BETWEEN '$start_date' AND '$end_date' AND quantity > 0 ORDER BY date_modified ASC");
 
         $bf = $this->balance_fowarded();
         $qty_balance = $bf['qty'];
