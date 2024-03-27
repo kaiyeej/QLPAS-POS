@@ -26,7 +26,7 @@ class SalesReturn extends Connection
             'sales_id'      => $sales_id,
             'remarks'       => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['jcis_user']['id']
         );
         $sales_return_id = $this->insert($this->table, $form, 'Y');
 
@@ -62,7 +62,7 @@ class SalesReturn extends Connection
         $form = array(
             'remarks'       => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by' => $_SESSION['jcis_user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
     }
@@ -234,6 +234,7 @@ class SalesReturn extends Connection
 
         return $total;
     }
+    
 
     public function show_detail()
     {

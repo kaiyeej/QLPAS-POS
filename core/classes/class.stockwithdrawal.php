@@ -22,7 +22,7 @@ class StockWithdrawal extends Connection
             'sales_id' => $sales_id,
             'remarks' => $this->inputs['remarks'],
             'withdrawal_date' => $this->inputs['withdrawal_date'],
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['jcis_user']['id']
         );
         $withdrawal_id = $this->insertIfNotExist($this->table, $form, "reference_number = '$ref_number'", 'Y');
 
@@ -57,7 +57,7 @@ class StockWithdrawal extends Connection
             'sales_id' => $this->inputs['sales_id'],
             'remarks' => $this->inputs['remarks'],
             'withdrawal_date' => $this->inputs['withdrawal_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by' => $_SESSION['jcis_user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
     }

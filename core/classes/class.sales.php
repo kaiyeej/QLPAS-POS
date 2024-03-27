@@ -33,7 +33,7 @@ class Sales extends Connection
             'withdrawal_status'   => $for_pick_up,
             'paid_status'   => ($this->inputs['sales_type'] == "C" ? 1 : 0),
             'sales_date'    => $this->inputs['sales_date'],
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['jcis_user']['id']
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -49,7 +49,7 @@ class Sales extends Connection
             'withdrawal_status'   => $for_pick_up,
             'paid_status'   => ($this->inputs['sales_type'] == "C" ? 1 : 0),
             'sales_date'    => $this->inputs['sales_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by' => $_SESSION['jcis_user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
     }
@@ -761,7 +761,7 @@ class Sales extends Connection
             'sales_id' => $sales_id,
             'withdrawal_date' => date("Y-m-d"), //$this->sales_date($sales_id),
             'status' => 'S',
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['jcis_user']['id']
         );
 
         $withdrawal_id = $this->insert('tbl_stock_withdrawal', $form, 'Y');

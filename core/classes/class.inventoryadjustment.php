@@ -21,7 +21,7 @@ class InventoryAdjustment extends Connection
             $this->name             => $this->inputs[$this->name],
             'remarks'               => $this->clean($this->inputs['remarks']),
             'adjustment_date'       => $this->inputs['adjustment_date'],
-            'encoded_by'            => $_SESSION['user']['id']
+            'encoded_by'            => $_SESSION['jcis_user']['id']
         );
         return $this->insert($this->table, $form, 'Y');
     }

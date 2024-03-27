@@ -20,7 +20,7 @@ class Expense extends Connection
             $this->name     => $this->clean($this->inputs[$this->name]),
             'remarks'       => $this->inputs['remarks'],
             'expense_date'  => $this->inputs['expense_date'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['jcis_user']['id']
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -30,7 +30,7 @@ class Expense extends Connection
         $form = array(
             'remarks'       => $this->inputs['remarks'],
             'expense_date'  => $this->inputs['expense_date'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['jcis_user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
     }

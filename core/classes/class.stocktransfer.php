@@ -24,7 +24,7 @@ class StockTransfer extends Connection
             'no_of_batches'     => $this->inputs['no_of_batches'],
             'remarks'           => $this->inputs['remarks'],
             'job_order_date'    => $this->inputs['job_order_date'],
-            'encoded_by'        => $_SESSION['user']['id']
+            'encoded_by'        => $_SESSION['jcis_user']['id']
         );
         $lastId = $this->insertIfNotExist($this->table, $form, '', 'Y');
 
@@ -77,7 +77,7 @@ class StockTransfer extends Connection
             'no_of_batches'         => $this->inputs['no_of_batches'],
             'remarks'               => $this->inputs['remarks'],
             'job_order_date'        => $this->inputs['job_order_date'],
-            'encoded_by'            => $_SESSION['user']['id']
+            'encoded_by'            => $_SESSION['jcis_user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
     }

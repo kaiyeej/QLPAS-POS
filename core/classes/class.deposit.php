@@ -23,7 +23,7 @@ class Deposit extends Connection
             'deposit_date'  => $this->inputs['deposit_date'],
             'deposit_type'  => $this->inputs['deposit_type'],
             'bank_id'  => $this->inputs['bank_id'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['jcis_user']['id']
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -34,7 +34,7 @@ class Deposit extends Connection
             'remarks'       => $this->inputs['remarks'],
             'deposit_date'  => $this->inputs['deposit_date'],
             'bank_id'       => $this->inputs['bank_id'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['jcis_user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
     }

@@ -28,7 +28,7 @@ class PurchaseReturn extends Connection
             'po_id'         => $po_id,
             'remarks'    => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by' => $_SESSION['jcis_user']['id']
         );
         $pr_id = $this->insert($this->table, $form,'Y');
 
@@ -49,7 +49,7 @@ class PurchaseReturn extends Connection
         $form = array(
             'remarks'    => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['jcis_user']['id']
         );
         return $this->updateIfNotExist($this->table, $form);
     }

@@ -29,7 +29,7 @@ class BeginningBalance extends Connection
                 'bb_qty'        => $this->inputs['bb_qty'],
                 'bb_amount'     => $this->inputs['bb_amount'],
                 'bb_remarks'    => $this->inputs['bb_remarks'],
-                'encoded_by'    => $_SESSION['user']['id']
+                'encoded_by'    => $_SESSION['jcis_user']['id']
             );
 
             if ($bb_module == "INV") {
@@ -61,7 +61,7 @@ class BeginningBalance extends Connection
                 'bb_qty'        => $this->inputs['bb_qty'],
                 'bb_amount'     => $this->inputs['bb_amount'],
                 'bb_remarks'    => $this->inputs['bb_remarks'],
-                'encoded_by'    => $_SESSION['user']['id']
+                'encoded_by'    => $_SESSION['jcis_user']['id']
             );
             $result = $this->updateIfNotExist($this->table, $form);
             Logs::storeCrud($this->module_name, 'u', $result, $bb_ref_id);

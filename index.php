@@ -81,7 +81,7 @@ include 'core/config.php';
 </head>
 
 <body class="sidebar-dark">
-  <?php if (!isset($_SESSION['user']['id'])) {
+  <?php if (!isset($_SESSION['jcis_user']['id'])) {
     require_once 'pages/authentication/index.php';
   } else {
     // sidebar-icon-only

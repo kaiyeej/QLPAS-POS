@@ -25,7 +25,7 @@ class CustomerPayment extends Connection
             'check_number'  => $this->inputs['check_number'],
             'check_bank'    => $this->inputs['check_bank'],
             'payment_option_id' => $this->inputs['payment_option_id'],
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['jcis_user']['id']
         );
         $result = $this->insertIfNotExist($this->table, $form, '', 'Y');
         Logs::storeCrud($this->module_name, 'c', abs($result), $this->inputs[$this->name]);
@@ -38,7 +38,7 @@ class CustomerPayment extends Connection
             'payment_type'   => $this->inputs['payment_type'],
             'payment_date'    => $this->inputs['payment_date'],
             'remarks'       => $this->inputs['remarks'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by' => $_SESSION['jcis_user']['id']
         );
         $result = $this->updateIfNotExist($this->table, $form);
         Logs::storeCrud($this->module_name, 'u', abs($result), $this->inputs[$this->name]);
