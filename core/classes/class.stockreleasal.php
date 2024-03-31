@@ -97,7 +97,7 @@ class StockReleasal extends Connection
             //     $for_withdrawal += $sw_qty[0];
             // }
 
-            $fetchCS = $this->select("tbl_sales as h, tbl_sales_details as d", "sales_detail_id,customer_id", "h.sales_id=d.sales_id AND h.withdrawal_status=1 AND h.status='F' AND d.product_id='$row[product_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') GROUP BY d.sales_detail_id");
+            $fetchCS = $this->select("tbl_sales as h, tbl_sales_details as d", "sales_detail_id,customer_id", "h.sales_id=d.sales_id AND h.withdrawal_status=1  AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$row[product_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') GROUP BY d.sales_detail_id");
             $for_withdrawal = 0;
             $count = "";
             while ($row2 = $fetchCS->fetch_assoc()) {

@@ -102,7 +102,7 @@
             "processing": true,
             "searching": false,
             "paging": false,
-            "ordering": false,
+            // "ordering": false,
             "info": false,
             "ajax": {
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
