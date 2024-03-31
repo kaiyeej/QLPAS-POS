@@ -123,7 +123,12 @@ class SalesReport extends Connection
         while ($row = $result->fetch_assoc()) {
 
             $row['item'] = Products::name($row['product_id']);
-            $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d, tbl_users as u", "sum((quantity*price)-discount) as amount, sum(quantity) as qty", "d.product_id='$row[product_id]' AND u.user_category='C' AND u.user_id=h.encoded_by $param AND h.sales_id=d.sales_id AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F'");
+            // $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d, tbl_users as u", "sum((quantity*price)-discount) as amount, sum(quantity) as qty", "d.product_id='$row[product_id]' AND u.user_category='C' AND u.user_id=h.encoded_by $param AND h.sales_id=d.sales_id AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F'");
+
+            $fetchSAles = $this->select("tbl_sales as h INNER JOIN tbl_sales_details as d ON h.sales_id = d.sales_id INNER JOIN tbl_users as u ON u.user_id = h.encoded_by","SUM((d.quantity * d.price) - d.discount) as amount, SUM(d.quantity) as qty","d.product_id='$row[product_id]' AND u.user_category='C' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F'");
+
+
+
             $sRow = $fetchSAles->fetch_array();
 
             $row['qty'] = number_format($sRow['qty'], 2);
@@ -160,6 +165,7 @@ class SalesReport extends Connection
             $rows[] = $row;
         }
         return $rows;
+        
     }
 
     public function generate_summary()

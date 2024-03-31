@@ -60,7 +60,9 @@
                                 <tr>
                                     <th>Product Code</th>
                                     <th>Product</th>
-                                    <th>Qty</th>
+                                    <th>In Stock</th>
+                                    <th>For Pick-up</th>
+                                    <th>Available</th>
                                     <th>Cost</th>
                                     <th>Amount</th>
                                 </tr>
@@ -69,7 +71,9 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="4" style="text-align:right">Total:</th>
+                                    <th colspan="2" style="text-align:right">Total:</th>
+                                    <th></th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </tfoot>
@@ -123,16 +127,21 @@
                 };
 
                 // Total over all pages
-                total = api
+                total_qty = api
                     .column(4)
                     .data()
                     .reduce(function(a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
-                // Total over this page
-                pageTotal = api
-                    .column(4, {
+                // Update footer
+                $(api.column(4).footer()).html(
+                     this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total_qty).toFixed(2)))
+                );
+
+                // in stock over all pages
+                stock_qty = api
+                    .column(2, {
                         page: 'current'
                     })
                     .data()
@@ -141,14 +150,37 @@
                     }, 0);
 
                 // Update footer
-                $(api.column(4).footer()).html(
-                    "&#x20B1;" + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total).toFixed(2)))
+                $(api.column(2).footer()).html(
+                    this.fnSettings().fnFormatNumber(parseFloat(parseFloat(stock_qty).toFixed(2)))
+                );
+
+                
+                // in stock over all pages
+                pickup_qty = api
+                    .column(3, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(3).footer()).html(
+                    this.fnSettings().fnFormatNumber(parseFloat(parseFloat(pickup_qty).toFixed(2)))
                 );
             },
             "columns": [{
                     "data": "product_code"
-                }, {
+                },
+                {
                     "data": "product_name"
+                },
+                {
+                    "data": "in_stock"
+                },
+                {
+                    "data": "for_pickup"
                 },
                 {
                     "data": "product_qty"
