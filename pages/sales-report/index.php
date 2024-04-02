@@ -82,6 +82,7 @@
                                 <h4 class="report-header"><span class="company_name_label"></span></h4>
                                 <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
                                 <h5 class="report-header">Daily Sales Report</h5>
+                                <span id="span_daily_date"></span>
                             </center>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dt_entries_daily" width="100%" cellspacing="0">
@@ -626,10 +627,26 @@
         });
     }
 
+    function formatDate(dateString) {
+        var date = new Date(dateString);
+        var options = {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        };
+        return date.toLocaleDateString('en-US', options);
+    }
+
     function getReportDaily() {
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
         var product_category_id = $("#product_category_id").val();
+
+        var formatted_start_date = formatDate(start_date);
+        var formatted_end_date = formatDate(end_date);
+
+        // Set the HTML content
+        $("#span_daily_date").html(formatted_start_date + " - " + formatted_end_date);
 
         $("#dt_entries_daily").DataTable().destroy();
         $("#dt_entries_daily").DataTable({
@@ -676,7 +693,7 @@
                         minimumFractionDigits: 2
                     })
                 );
-                
+
                 discountTotal = api
                     .column(2, {
                         page: 'current'
@@ -693,7 +710,7 @@
                     })
                 );
 
-                
+
                 amountTotal = api
                     .column(3, {
                         page: 'current'
@@ -709,7 +726,7 @@
                         minimumFractionDigits: 2
                     })
                 );
-                
+
                 netTotal = api
                     .column(4, {
                         page: 'current'
@@ -1004,7 +1021,7 @@
                     })
                 );
 
-                total_collected= api
+                total_collected = api
                     .column(6, {
                         page: 'current'
                     })
