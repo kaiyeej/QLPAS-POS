@@ -59,6 +59,30 @@ class Branches extends Connection
         return $rows;
     }
 
+    public function select_branch()
+    {
+        $rows = array();
+        $result = $this->select($this->table);
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        // Get the session branch ID
+        $session_branch_id = isset($_SESSION['branch_id']) ? $_SESSION['branch_id'] : '';
+
+        // Return branch data along with session_branch_id
+        return array('branches' => $rows, 'session_branch_id' => $session_branch_id);
+    }
+
+    public function update_session_branch()
+    {
+        session_start();
+
+        $_SESSION['branch_id'] = $this->inputs['branch_id'];
+        return $_SESSION['branch_id'];
+    }
+
+
     public function view()
     {
         $primary_id = $this->inputs['id'];
@@ -86,21 +110,21 @@ class Branches extends Connection
         return $row['branch_name'] . " - " . $row['bank_account_number'];
     }
 
-    public static function search($words,&$rows)
+    public static function search($words, &$rows)
     {
         $self = new self;
-        if(count($self->searchable) > 0 ){
-            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+        if (count($self->searchable) > 0) {
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable) . " LIKE '%$words%'";
             $result = $self->select($self->table, '*', $where);
             while ($row = $result->fetch_assoc()) {
                 $names = [];
-                foreach($self->searchable as $f){
+                foreach ($self->searchable as $f) {
                     $names[] = $row[$f];
                 }
                 $rows[] = array(
                     'name' => implode(" ", $names),
                     'module' => $self->module_name,
-                    'slug' => $self->uri."?id=".$row[$self->pk]
+                    'slug' => $self->uri . "?id=" . $row[$self->pk]
                 );
             }
         }

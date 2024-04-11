@@ -122,8 +122,61 @@ include 'core/config.php';
         });
         checkPriceNotice();
 
+        getBranchesSession();
 
       });
+
+      function getBranchesSession() {
+        $.ajax({
+          url: "controllers/sql.php?c=Branches&q=select_branch",
+          dataType: 'json',
+          success: function(response) {
+            var data = response.data; 
+            var branches = data.branches; 
+            console.log(data);
+
+            $('#session_branch_id').empty();
+            $('#session_branch_id').append('<option value="">&mdash; Please Select Branch &mdash;</option>');
+
+            $.each(branches, function(index, branch) {
+              $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
+            });
+
+            if (data.session_branch_id) {
+              $('#session_branch_id').val(data.session_branch_id);
+            }
+
+            $('#session_branch_id').select2();
+          },
+          error: function(xhr, status, error) {
+            console.error('Error fetching branches: ' + error);
+          }
+        });
+      }
+
+      $('#session_branch_id').on('change', function() {
+        var selectedBranchId = $(this).val();
+        updateSessionBranch(selectedBranchId);
+      });
+
+      function updateSessionBranch(branch_id) {
+        $.ajax({
+          url: "controllers/sql.php?c=Branches&q=update_session_branch",
+          type: 'POST',
+          data: {
+            input: {
+              branch_id: branch_id
+            }
+          },
+          success: function(response) {
+            if (response.status === 'success') {
+              console.log('Session branch updated successfully.');
+            } else {
+              console.error('Error updating session branch: ' + response.message);
+            }
+          }
+        });
+      }
 
       function checkPriceNotice() {
         $.ajax({
