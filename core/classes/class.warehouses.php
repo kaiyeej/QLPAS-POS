@@ -10,7 +10,7 @@ class Warehouses extends Connection
     public $inputs = [];
 
     public $searchable = ['warehouse_name'];
-    public $uri = "banks";
+    public $uri = "warehouses";
 
     public function add()
     {
@@ -19,11 +19,11 @@ class Warehouses extends Connection
         $is_exist = $this->select($this->table, $this->pk, "warehouse_name = '$warehouse_name' AND branch_id='$branch_id'");
         if ($is_exist->num_rows > 0) {
             Logs::storeCrud($this->module_name, 'c', 2, $warehouse_name);
-            return 2;
+            return -2;
         } else {
             $form = array(
                 'warehouse_name' => $warehouse_name,
-                'branch_id' => $branch_id,
+                'branch_id' => $branch_id
             );
 
             $result = $this->insert($this->table, $form);
@@ -84,6 +84,31 @@ class Warehouses extends Connection
         $result = $this->select($this->table, '*', "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         return $row['warehouse_name'] . " - " . $row['bank_account_number'];
+    }
+
+    public function schema()
+    {
+        if (DEVELOPMENT) {
+            $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');
+            $default['date_last_modified'] = $this->metadata('date_last_modified', 'datetime', '', 'NOT NULL', '', 'ON UPDATE CURRENT_TIMESTAMP');
+            $default['encoded_by'] = $this->metadata('encoded_by', 'int', 11);
+
+
+            // TABLE HEADER
+            $tables[] = array(
+                'name'      => $this->table,
+                'primary'   => $this->pk,
+                'fields' => array(
+                    $this->metadata($this->pk, 'int', 11, 'NOT NULL', '', 'AUTO_INCREMENT'),
+                    $this->metadata($this->name, 'varchar', 75),
+                    $this->metadata('branch_id', 'int'),
+                    $default['date_added'],
+                    $default['date_last_modified']
+                )
+            );
+
+            return $this->schemaCreator($tables);
+        }
     }
 
     public static function search($words, &$rows)

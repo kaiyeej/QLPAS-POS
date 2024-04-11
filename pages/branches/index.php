@@ -85,9 +85,11 @@
         $("#modalEntry2").modal("show");
         $("#hidden_id_2").val(id);
         getEntries2();
+        $("#warehouse_name").val('');
     }
 
     $(document).ready(function() {
         getEntries();
+        schema();
     });
 </script>
