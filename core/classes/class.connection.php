@@ -307,6 +307,10 @@ class Connection
         return DEVELOPMENT ? $x : md5(md5($x));
     }
 
+    public function getBranch(){
+        return $_SESSION['branch_id'];
+    }
+
     function daysDifference($endDate, $beginDate)
     {
 
@@ -317,4 +321,5 @@ class Connection
         $diff = abs($end_date - $start_date);
         return $diff;
     }
+
 }

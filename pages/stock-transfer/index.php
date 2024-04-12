@@ -52,8 +52,8 @@
                                     <th></th>
                                     <th>Date</th>
                                     <th>Reference</th>
-                                    <th>Product</th>
-                                    <th>No. of Batches</th>
+                                    <th>Source Warehouse</th>
+                                    <th>Destination Warehouse</th>
                                     <th>Encoded by</th>
                                     <th>Status</th>
                                     <th>Date Added</th>
@@ -74,7 +74,7 @@
     function getEntries() {
         var  start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var param = "(job_order_date >= '"+start_date+"' AND job_order_date <= '"+end_date+"')";
+        var param = "(stock_transfer_date >= '"+start_date+"' AND stock_transfer_date <= '"+end_date+"')";
 
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
@@ -92,25 +92,25 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return row.status == 'F' ? '' : "<input type='checkbox' value=" + row.job_order_id + " class='dt_id' style='position: initial; opacity:1;'>";
+                        return row.status == 'F' ? '' : "<input type='checkbox' value=" + row.stock_transfer_id + " class='dt_id' style='position: initial; opacity:1;'>";
                     }
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.job_order_id + ")'><span class='ti ti-list'></span></button></center>";
+                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.stock_transfer_id + ")'><span class='ti ti-list'></span></button></center>";
                     }
                 },
                 {
-                    "data": "job_order_date"
+                    "data": "stock_transfer_date"
                 },
                 {
                     "data": "reference_number"
                 },
                 {
-                    "data": "product"
+                    "data": "source_warehouse"
                 },
                 {
-                    "data": "no_of_batches"
+                    "data": "destination_warehouse"
                 },
                 {
                     "data": "encoded_name"
@@ -132,7 +132,7 @@
 
 
     function getEntries2() {
-        var params = "job_order_id = '" + $("#hidden_id_2").val() + "'";
+        var params = "stock_transfer_id = '" + $("#hidden_id_2").val() + "'";
         $("#dt_entries_2").DataTable().destroy();
         $("#dt_entries_2").DataTable({
             "processing": true,
@@ -173,7 +173,8 @@
     $(document).ready(function() {
         schema();
         getEntries();
-        getSelectOption('Products', 'product_id', 'product_name', "is_package = 1");
+        alert(current_branch_id);
+        getSelectOption('Warehouses', 'source_warehouse_id', 'warehouse_name', "branch_id = '"+current_branch_id+"'");
         getSelectOption('Products', 'product_id_2', 'product_name', '', ['product_cost'], '', 'Please Select', 1);
 
     });

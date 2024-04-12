@@ -57,6 +57,7 @@ class Warehouses extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $result = $this->select($this->table, "*", $param);
         while ($row = $result->fetch_assoc()) {
+            $row['source_warehouse_id'] = $row['warehouse_id'];
             $rows[] = $row;
         }
         return $rows;

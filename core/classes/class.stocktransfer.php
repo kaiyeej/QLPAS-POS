@@ -87,9 +87,11 @@ class StockTransfer extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $Users = new Users;
+        $Warehouses = new Warehouses;
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
-            $row['product'] = Products::name($row['product_id']);
+            $row['source_warehouse'] = $Warehouses->name($row['source_warehouse_id']);
+            $row['destination_warehouse_id'] = $Warehouses->name($row['destination_warehouse_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $rows[] = $row;
         }
@@ -152,7 +154,7 @@ class StockTransfer extends Connection
 
     public function generate()
     {
-        return 'JO-' . date('YmdHis');
+        return 'STK-' . date('YmdHis');
     }
 
     public function finish()

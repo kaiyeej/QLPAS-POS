@@ -18,7 +18,7 @@
                         <div class="col">
                             <label><strong>Date</strong></label>
                             <div>
-                                <input type="date" class="form-control form-control-sm input-item" name="input[job_order_date]" id="job_order_date" required>
+                                <input type="date" class="form-control form-control-sm input-item" name="input[stock_transfer_date]" id="stock_transfer_date" required>
                             </div>
                         </div>
                     </div>
@@ -26,14 +26,14 @@
                         <div class="col">
                             <label><strong>Source Warehouse</strong></label>
                             <div>
-                                <select class="form-control form-control-sm input-item select2" name="input[product_id]" id="product_id" required>
+                                <select class="form-control form-control-sm input-item select2" name="input[source_warehouse_id]" id="source_warehouse_id" required>
                                 </select>
                             </div>
                         </div>
                         <div class="col">
                             <label><strong>Destination Warehouse</strong></label>
                             <div>
-                                <select class="form-control form-control-sm input-item select2" name="input[product_id]" id="product_id" required>
+                                <select class="form-control form-control-sm input-item select2" name="input[destination_warehouse_id]" id="destination_warehouse_id" required>
                                 </select>
                             </div>
                         </div>

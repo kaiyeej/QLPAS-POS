@@ -114,6 +114,9 @@ include 'core/config.php';
     </script>
     <script type="text/javascript">
       var modal_detail_status = 0;
+      
+      var current_branch_id = "<?= $_SESSION['branch_id'] ?>";
+      
       $(document).ready(function() {
         $(".select2").select2();
 
@@ -123,7 +126,6 @@ include 'core/config.php';
         checkPriceNotice();
 
         getBranchesSession();
-
       });
 
       function getBranchesSession() {
