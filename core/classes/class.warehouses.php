@@ -55,9 +55,12 @@ class Warehouses extends Connection
     {
         $rows = array();
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $Branches = new Branches;
         $result = $this->select($this->table, "*", $param);
         while ($row = $result->fetch_assoc()) {
             $row['source_warehouse_id'] = $row['warehouse_id'];
+            $row['destination_warehouse_id'] = $row['warehouse_id'];
+            $row['warehouse_name_branch'] = $row['warehouse_name']." (".$Branches->name($row['branch_id']).")";
             $rows[] = $row;
         }
         return $rows;
@@ -82,9 +85,16 @@ class Warehouses extends Connection
 
     public function name($primary_id)
     {
-        $result = $this->select($this->table, '*', "$this->pk = '$primary_id'");
+        $result = $this->select($this->table, 'warehouse_name', "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
-        return $row['warehouse_name'] . " - " . $row['bank_account_number'];
+        return $row['warehouse_name'];
+    }
+
+    public function warehouse_branch_id($primary_id)
+    {
+        $result = $this->select($this->table, 'branch_id', "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row['branch_id'];
     }
 
     public function schema()

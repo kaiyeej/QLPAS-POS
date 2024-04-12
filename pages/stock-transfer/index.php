@@ -26,7 +26,7 @@
                         <div class="col">
                             <label>&nbsp;</label>
                             <div>
-                                
+
                                 <div class="btn-group">
                                     <a href="#" class="btn btn-primary btn-sm" style="padding: 10px;" onclick="getEntries()">
                                         <span class="text"> Generate</span>
@@ -72,21 +72,23 @@
 <?php include 'modal_stock_transfer.php' ?>
 <script type="text/javascript">
     function getEntries() {
-        var  start_date = $("#start_date").val();
+        var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var param = "(stock_transfer_date >= '"+start_date+"' AND stock_transfer_date <= '"+end_date+"')";
+        var param = "(stock_transfer_date >= '" + start_date + "' AND stock_transfer_date <= '" + end_date + "')";
 
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
-            "order": [[ 3, 'desc' ]],
+            "order": [
+                [3, 'desc']
+            ],
             "ajax": {
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
                 "dataSrc": "data",
                 "type": "POST",
                 "data": {
                     input: {
-                        param:param
+                        param: param
                     }
                 }
             },
@@ -164,18 +166,48 @@
         });
     }
 
-    function getProductCost(){
+    function getProductCost() {
         var optionSelected = $("#product_id_2").find('option:selected').attr('product_cost');
         $("#cost").val(parseFloat(optionSelected).toFixed(2));
     }
 
+    // function getDestination(){
+    //     var source_warehouse_id = $("#source_warehouse_id").val();
+    //     $('#destination_warehouse_id').select2().trigger('change');
+    //     getSelectOption('Warehouses', 'destination_warehouse_id', 'warehouse_name_branch', "source_warehouse_id = '"+source_warehouse_id+"'");
+    //     alert(source_warehouse_id);
+    // }
+
+    function getCurrentQty(){
+        var product_id = $("#product_id").val();
+        $.ajax({
+          type: "POST",
+          url: "controllers/sql.php?c=" + route_settings.class_name + "&q=get_qty",
+          data: {
+            input: {
+                product_id:product_id
+            }
+          },
+          success: function(data) {
+            var json = JSON.parse(data);
+            $("#current_qty").val(data);
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            errorLogger('Error:', textStatus, errorThrown);
+          }
+        });
+
+    }
+
+    function getDestination() {
+        var source_warehouse_id = $("#source_warehouse_id").val();
+        getSelectOption('Warehouses', 'destination_warehouse_id', 'warehouse_name_branch', "warehouse_id != "+source_warehouse_id);
+    }
 
     $(document).ready(function() {
         schema();
         getEntries();
-        alert(current_branch_id);
-        getSelectOption('Warehouses', 'source_warehouse_id', 'warehouse_name', "branch_id = '"+current_branch_id+"'");
-        getSelectOption('Products', 'product_id_2', 'product_name', '', ['product_cost'], '', 'Please Select', 1);
-
+        getSelectOption('Warehouses', 'source_warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
+        getSelectOption('Products', 'product_id', 'product_name');
     });
 </script>

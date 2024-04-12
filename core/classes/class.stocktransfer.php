@@ -16,41 +16,21 @@ class StockTransfer extends Connection
 
     public function add()
     {
-
-        $finished_product = $this->inputs['product_id'];
+        $Warehouses = new Warehouses;
+        $branch_id = $this->getBranch();
+        $destination_branch_id = $Warehouses->warehouse_branch_id($this->inputs['destination_warehouse_id']);
         $form = array(
-            $this->name         => $this->clean($this->inputs[$this->name]),
-            'product_id'        => $finished_product,
-            'no_of_batches'     => $this->inputs['no_of_batches'],
-            'remarks'           => $this->inputs['remarks'],
-            'job_order_date'    => $this->inputs['job_order_date'],
-            'encoded_by'        => $_SESSION['user']['id']
+            $this->name                 => $this->clean($this->inputs[$this->name]),
+            'branch_id'                 => $branch_id,
+            'destination_branch_id'     => $destination_branch_id,
+            'source_warehouse_id'       => $this->inputs['source_warehouse_id'],
+            'destination_warehouse_id'  => $this->inputs['destination_warehouse_id'],
+            'remarks'                   => $this->inputs['remarks'],
+            'stock_transfer_date'       => $this->inputs['stock_transfer_date'],
+            'user_id'                   => $_SESSION['user']['id']
         );
-        $lastId = $this->insertIfNotExist($this->table, $form, '', 'Y');
 
-
-        if ($lastId > 0) {
-            $Formulation = new Formulation();
-            $formulation_id = $Formulation->formulation_id($finished_product);
-            $result = $this->select("tbl_formulation_details", " * ", "formulation_id=$formulation_id");
-            if ($result) {
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_array()) {
-                        $Products = new Products;
-                        $product_cost = $Products->productCost($row['product_id']);
-                        $form_ = array(
-                            $this->pk       => $lastId,
-                            $this->fk_det   => $row['product_id'],
-                            'qty'           => $row['qty'] * $this->inputs['no_of_batches'],
-                            'cost'          => $product_cost
-                        );
-
-                        $this->insert($this->table_detail, $form_);
-                    }
-                }
-            }
-        }
-        return $lastId;
+        return$this->insertIfNotExist($this->table, $form, '', 'Y');
     }
 
     public function add_detail()
@@ -91,8 +71,8 @@ class StockTransfer extends Connection
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['source_warehouse'] = $Warehouses->name($row['source_warehouse_id']);
-            $row['destination_warehouse_id'] = $Warehouses->name($row['destination_warehouse_id']);
-            $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $row['destination_warehouse'] = $Warehouses->name($row['destination_warehouse_id']);
+            $row['encoded_name'] = $Users->getUser($row['user_id']);
             $rows[] = $row;
         }
         return $rows;
@@ -102,11 +82,19 @@ class StockTransfer extends Connection
     {
         $primary_id = $this->inputs['id'];
         $Users = new Users;
+        $Warehouses = new Warehouses;
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
-        $row['product'] = Products::name($row['product_id']);
-        $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+        $row['source_warehouse'] = $Warehouses->name($row['source_warehouse_id']);
+        $row['destination_warehouse'] = $Warehouses->name($row['destination_warehouse_id']);
+        $row['encoded_name'] = $Users->getUser($row['user_id']);
         return $row;
+    }
+
+    public function get_qty(){
+        $Inventory = new InventoryReport();
+        $current_balance = $Inventory->balance($this->inputs['product_id']);
+        return $current_balance;
     }
 
     public function show_detail()

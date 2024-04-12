@@ -26,15 +26,14 @@
                         <div class="col">
                             <label><strong>Source Warehouse</strong></label>
                             <div>
-                                <select class="form-control form-control-sm input-item select2" name="input[source_warehouse_id]" id="source_warehouse_id" required>
+                                <select onchange="getDestination()" class="form-control form-control-sm input-item select2" name="input[source_warehouse_id]" id="source_warehouse_id" required>
                                 </select>
                             </div>
                         </div>
                         <div class="col">
                             <label><strong>Destination Warehouse</strong></label>
                             <div>
-                                <select class="form-control form-control-sm input-item select2" name="input[destination_warehouse_id]" id="destination_warehouse_id" required>
-                                </select>
+                                <select class="form-control form-control-sm input-item select2" name="input[destination_warehouse_id]" id="destination_warehouse_id" required></select>
                             </div>
                         </div>
                     </div>
@@ -65,9 +64,9 @@
             <div class="modal-header" style="display:block;">
                 <div class="row" style="font-size: small;">
                     <div class="col-sm-4">
-                        <div><b>Product:</b> <span id="product_label" class="label-item"></span></div>
-                        <div><b>No. of batches:</b> <span id="no_of_batches_label" class="label-item"></span></div>
-                        <div><b>Date:</b> <span id="job_order_date_label" class="label-item"></span></div>
+                        <div><b>Source Warehouse:</b> <span id="source_warehouse_label" class="label-item"></span></div>
+                        <div><b>Destination Warehouse:</b> <span id="destination_warehouse_label" class="label-item"></span></div>
+                        <div><b>Date:</b> <span id="stock_transfer_date_label" class="label-item"></span></div>
                         <div><b>Reference:</b> <span id="reference_number_label" class="label-item"></span></div>
                     </div>
                     <div class="col-sm-8">
@@ -101,21 +100,21 @@
                                 <div class="col">
                                     <label><strong>Product</strong></label>
                                     <div>
-                                        <select class="form-control form-control-sm select2" name="input[product_id]" id="product_id_2" onchange="getProductCost()" required></select>
+                                        <select onchange="getCurrentQty()" class="form-control form-control-sm select2" name="input[product_id]" id="product_id" required></select>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col">
-                                    <label><strong>Qty</strong></label>
+                                    <label><strong>Inventory Qty</strong></label>
                                     <div>
-                                        <input type="number" class="form-control form-control-sm input-item" autocomplete="off" name="input[qty]" id="qty" required>
+                                        <input type="number" class="form-control form-control-sm input-item" readonly autocomplete="off" id="current_qty" required>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <label><strong>Cost</strong></label>
+                                    <label><strong>Qty</strong></label>
                                     <div>
-                                        <input type="number" step="0.01" class="form-control form-control-sm input-item" autocomplete="off" readonly name="input[cost]" id="cost" required>
+                                        <input type="number" class="form-control form-control-sm input-item" autocomplete="off" name="input[qty]" id="qty" required>
                                     </div>
                                 </div>
                             </div>

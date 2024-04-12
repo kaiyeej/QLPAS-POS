@@ -107,7 +107,7 @@ class Branches extends Connection
     {
         $result = $this->select($this->table, '*', "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
-        return $row['branch_name'] . " - " . $row['bank_account_number'];
+        return $row['branch_name'];
     }
 
     public function schema()

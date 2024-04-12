@@ -114,9 +114,9 @@ include 'core/config.php';
     </script>
     <script type="text/javascript">
       var modal_detail_status = 0;
-      
+
       var current_branch_id = "<?= $_SESSION['branch_id'] ?>";
-      
+
       $(document).ready(function() {
         $(".select2").select2();
 
@@ -814,7 +814,6 @@ include 'core/config.php';
             var json = JSON.parse(data);
             $("#" + primary_id).html("<option value='" + pre_value + "'>" + pre_label + "</option>");
 
-
             for (list_index = 0; list_index < json.data.length; list_index++) {
               const list = json.data[list_index];
               var data_attributes = {};
@@ -835,6 +834,7 @@ include 'core/config.php';
           }
         });
       }
+
 
       function getSelectMutiID(class_name, primary_id, label, param = '', attributes = [], id) {
 
