@@ -131,8 +131,8 @@ include 'core/config.php';
           url: "controllers/sql.php?c=Branches&q=select_branch",
           dataType: 'json',
           success: function(response) {
-            var data = response.data; 
-            var branches = data.branches; 
+            var data = response.data;
+            var branches = data.branches;
             console.log(data);
 
             $('#session_branch_id').empty();
@@ -144,11 +144,11 @@ include 'core/config.php';
 
             if (data.session_branch_id) {
               $('#session_branch_id').val(data.session_branch_id);
-              
+
             }
 
             $('#session_branch_id').select2();
-            
+
           },
           error: function(xhr, status, error) {
             console.error('Error fetching branches: ' + error);
@@ -158,7 +158,14 @@ include 'core/config.php';
 
       $('#session_branch_id').on('change', function() {
         var selectedBranchId = $(this).val();
+        var currentSessionBranchId = sessionStorage.getItem('session_branch_id');
+
+        if (selectedBranchId !== currentSessionBranchId) {
+          sessionStorage.setItem('session_branch_id', selectedBranchId);
+          location.reload();
+        }
         updateSessionBranch(selectedBranchId);
+
       });
 
       function updateSessionBranch(branch_id) {
