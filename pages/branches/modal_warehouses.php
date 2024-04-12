@@ -6,12 +6,12 @@
                     <h4 class="modal-title" id="modalLabel"><span class='fa fa-pen'></span> Add Entry</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" id="hidden_id_2" name="input[branch_id]">
+                    <input class="input-item" type="hidden" id="hidden_id_2" name="input[branch_id]">
                     <div class="form-group row">
                         <div class="col">
                             <label><strong>Warehouse Name</strong></label>
                             <div>
-                                <input type="text" class="form-control" name="input[warehouse_name]" id="warehouse_name" autocomplete="off" placeholder="Warehouse Name" maxlength="50" required>
+                                <input type="text" class="form-control input-item" name="input[warehouse_name]" id="warehouse_name" autocomplete="off" placeholder="Warehouse Name" maxlength="50" required>
                             </div>
                         </div>
                     </div>
@@ -33,7 +33,35 @@
                 </div>
                 <div class="modal-footer">
                     <div class='btn-group'>
-                        <button type="submit" class="btn btn-primary btn-sm" id="btn_submit">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-sm" id="btn_submit2">Submit</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form method='POST' id='frm_update_warehouse'>
+    <div class="modal fade" id="modalUpdateWarehouse" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" style="margin-top: 50px;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalLabel"><span class='fa fa-pen'></span> Add Entry</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="hidden_warehouse_id" name="input[warehouse_id]">
+                    <div class="form-group row">
+                        <div class="col">
+                            <label><strong>Warehouse Name</strong></label>
+                            <div>
+                                <input type="text" class="form-control input-item" name="input[warehouse_name]" id="update_warehouse_name" autocomplete="off" maxlength="50" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class='btn-group'>
+                        <button type="submit" class="btn btn-primary btn-sm" id="btn_update">Submit</button>
                         <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -45,17 +73,18 @@
     $("#frm_submit_2").submit(function(e) {
         e.preventDefault();
 
-        $("#btn_submit").prop('disabled', true);
-        $("#btn_submit").html("<span class='fa fa-spinner fa-spin'></span> Submitting ...");
+        $("#btn_submit2").prop('disabled', true);
+        $("#btn_submit2").html("<span class='fa fa-spinner fa-spin'></span> Submitting ...");
 
         $.ajax({
             type: "POST",
             url: "controllers/sql.php?c=Warehouses&q=add",
-            data: $("#frm_submit").serialize(),
+            data: $("#frm_submit_2").serialize(),
             success: function(data) {
                 var json = JSON.parse(data);
                 if (json.data > 0) {
                     success_add();
+                    $("#warehouse_name").val('');
                     getEntries2();
                 } else if (json.data == -2) {
                     entry_already_exists();
@@ -64,12 +93,52 @@
                 } else {
                     failed_query(json);
                 }
+
+                $("#btn_submit2").prop('disabled', false);
+                $("#btn_submit2").html("<span></span> Submit");
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 errorLogger('Error:', textStatus, errorThrown);
             }
         });
     });
+
+    $("#frm_update_warehouse").submit(function(e) {
+        e.preventDefault();
+
+        $("#btn_warehouse_update").prop('disabled', true);
+        $("#btn_warehouse_update").html("<span class='fa fa-spinner fa-spin'></span> Submitting ...");
+
+        $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=Warehouses&q=edit",
+            data: $("#btn_warehouse_update").serialize(),
+            success: function(data) {
+                var json = JSON.parse(data);
+                if (json.data > 0) {
+                    success_update();
+                    $("#modalUpdateWarehouse").modal("hide");
+                    getEntries2();
+                } else if (json.data == -2) {
+                    entry_already_exists();
+                } else {
+                    failed_query(json);
+                }
+
+                $("#btn_warehouse_update").prop('disabled', false);
+                $("#btn_warehouse_update").html("<span></span> Submit");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                errorLogger('Error:', textStatus, errorThrown);
+            }
+        });
+    });
+
+    function updateWarehouse(id, warehouse_name) {
+        $("#hidden_warehouse_id").val(id);
+        $("#update_warehouse_name").val(warehouse_name);
+        $("#modalUpdateWarehouse").modal("show");
+    }
 
     function getEntries2() {
         var hidden_id_2 = $("#hidden_id_2").val();
@@ -89,7 +158,14 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-danger btn-circle btn-sm' onclick='removeWarehouse(" + row.warehouse_id + ")'><span class='ti ti-trash'></span></button></center>";
+                        return "<center>" +
+                            "<button type='button' class='btn btn-info btn-circle btn-sm' onclick='updateWarehouse(" + row.warehouse_id + ", \"" + row.warehouse_name + "\")'>" +
+                            "<span class='ti ti-pencil'></span>" +
+                            "</button>" +
+                            "<button type='button' class='btn btn-danger btn-circle btn-sm' onclick='removeWarehouse(" + row.warehouse_id + ")'>" +
+                            "<span class='ti ti-trash'></span>" +
+                            "</button>" +
+                            "</center>";
                     }
                 },
                 {
@@ -119,7 +195,7 @@
             },
             function(isConfirm) {
                 if (isConfirm) {
-                    
+
                     $.ajax({
                         type: "POST",
                         url: "controllers/sql.php?c=Warehouses&q=remove",

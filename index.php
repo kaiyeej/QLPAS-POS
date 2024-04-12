@@ -144,9 +144,11 @@ include 'core/config.php';
 
             if (data.session_branch_id) {
               $('#session_branch_id').val(data.session_branch_id);
+              
             }
 
             $('#session_branch_id').select2();
+            
           },
           error: function(xhr, status, error) {
             console.error('Error fetching branches: ' + error);
