@@ -6,12 +6,12 @@ class StockTransfer extends Connection
     public $name = 'reference_number';
 
     private $table_detail = 'tbl_stock_transfer_details';
-    public $pk2 = 'jo_detail_id';
+    public $pk2 = 'stock_transfer_detail_id';
     public $fk_det = 'product_id';
 
     public $module_name = "Stock Transfer";
     public $inputs = [];
-    public $searchable = ['reference_number','remarks'];
+    public $searchable = ['reference_number', 'remarks'];
     public $uri = "stock-transfer";
 
     public function add()
@@ -30,23 +30,30 @@ class StockTransfer extends Connection
             'user_id'                   => $_SESSION['user']['id']
         );
 
-        return$this->insertIfNotExist($this->table, $form, '', 'Y');
+        return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
 
     public function add_detail()
     {
-        $primary_id = $this->inputs[$this->pk];
-        $fk_det     = $this->inputs[$this->fk_det];
+        $primary_id  = $this->inputs[$this->pk];
+        $fk_det      = $this->inputs[$this->fk_det];
+        $current_qty = $this->inputs['current_qty'];
         $Products = new Products;
         $product_cost = $Products->productCost($fk_det);
-        $form = array(
-            $this->pk               => $this->inputs[$this->pk],
-            'product_id'            => $this->inputs['product_id'],
-            'qty'                   => $this->inputs['qty'],
-            'cost'                  => $product_cost,
-        );
 
-        return $this->insertIfNotExist($this->table_detail, $form, "$this->pk = '$primary_id' AND $this->fk_det = '$fk_det'");
+
+        if ($current_qty > $this->inputs['qty']) {
+            $form = array(
+                $this->pk               => $this->inputs[$this->pk],
+                'product_id'            => $this->inputs['product_id'],
+                'qty'                   => $this->inputs['qty'],
+                'cost'                  => $product_cost,
+            );
+
+            return $this->insertIfNotExist($this->table_detail, $form, "$this->pk = '$primary_id' AND $this->fk_det = '$fk_det'");
+        } else {
+            return -3;
+        }
     }
 
     public function edit()
@@ -91,7 +98,8 @@ class StockTransfer extends Connection
         return $row;
     }
 
-    public function get_qty(){
+    public function get_qty()
+    {
         $Inventory = new InventoryReport();
         $current_balance = $Inventory->balance($this->inputs['product_id']);
         return $current_balance;
@@ -106,7 +114,7 @@ class StockTransfer extends Connection
         while ($row = $result->fetch_assoc()) {
             $row['product'] = Products::name($row['product_id']);
             $row['qty'] = $row['qty'];
-            $row['cost'] = number_format($row['cost'],2);
+            $row['cost'] = number_format($row['cost'], 2);
             $row['count'] = $count++;
             $rows[] = $row;
         }
@@ -148,34 +156,58 @@ class StockTransfer extends Connection
     public function finish()
     {
         $primary_id = $this->inputs['id'];
-
-        $fetch_product_id = $this->select($this->table, 'product_id, no_of_batches', "$this->pk = '$primary_id'");
-        $row = $fetch_product_id->fetch_array();
-
-        $cost = $this->totalCost($primary_id)/$row['no_of_batches'];
-
-        $Products = new Products();
-        $product_cost = $Products->productCost($row['product_id']);
-        $Products->prodAVG($row['product_id'], $row['no_of_batches'], $cost);
-
-        $form_ = array(
-            'cost' => $cost,
-        );
-
-        $this->update('tbl_product_transactions', $form_, "header_id = '$primary_id' AND detail_id='0' AND module='JO'");
-
         $form = array(
             'status' => 'F',
         );
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        $query = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        if ($query) {
+            $fetch = $this->select('tbl_stock_transfer as h, tbl_stock_transfer_details as d', "*", "h.stock_transfer_id='$primary_id' AND h.stock_transfer_id=d.stock_transfer_id");
+            while ($row = $fetch->fetch_assoc()) {
+                $form_inv_in = array(
+                    'branch_id'             => $row['branch_id'],
+                    'warehouse_id'          => $row['source_warehouse_id'],
+                    'product_id'            => $row['product_id'],
+                    'quantity'              => $row['qty'],
+                    'cost'                  => $row['cost'],
+                    'price'                 => $row['price'],
+                    'header_id'             => $primary_id,
+                    'detail_id'             => $row['stock_transfer_detail_id'],
+                    'module'                => 'STK',
+                    'type'                  => 'OUT',
+                    'status'                => 1,
+                );
+
+                $this->insert('tbl_product_transactions', $form_inv_in);
+
+                $Warehouses = new Warehouses;
+                $destination_branch_id = $Warehouses->warehouse_branch_id($row['destination_warehouse_id']);
+                $form_inv_out = array(
+                    'branch_id'             => $destination_branch_id,
+                    'warehouse_id'          => $row['destination_warehouse_id'],
+                    'quantity'              => $row['qty'],
+                    'product_id'            => $row['product_id'],
+                    'cost'                  => $row['cost'],
+                    'price'                 => $row['price'],
+                    'header_id'             => $primary_id,
+                    'detail_id'             => $row['stock_transfer_detail_id'],
+                    'module'                => 'STK',
+                    'type'                  => 'IN',
+                    'status'                => 1,
+                );
+
+                $this->insert('tbl_product_transactions', $form_inv_out);
+            }
+        }
+
+        return $query;
     }
 
-    public function totalCost($primary_id){
+    public function totalCost($primary_id)
+    {
         $result = $this->select($this->table_detail, 'sum(cost*qty)', "$this->pk = '$primary_id'");
         $row = $result->fetch_array();
 
         return $row[0];
-
     }
 
     public function schema()
@@ -218,21 +250,21 @@ class StockTransfer extends Connection
         return $this->schemaCreator($tables);
     }
 
-    public static function search($words,&$rows)
+    public static function search($words, &$rows)
     {
         $self = new self;
-        if(count($self->searchable) > 0 ){
-            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+        if (count($self->searchable) > 0) {
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable) . " LIKE '%$words%'";
             $result = $self->select($self->table, '*', $where);
             while ($row = $result->fetch_assoc()) {
                 $names = [];
-                foreach($self->searchable as $f){
+                foreach ($self->searchable as $f) {
                     $names[] = $row[$f];
                 }
                 $rows[] = array(
                     'name' => implode(" ", $names),
                     'module' => $self->module_name,
-                    'slug' => $self->uri."?id=".$row[$self->pk]
+                    'slug' => $self->uri . "?id=" . $row[$self->pk]
                 );
             }
         }

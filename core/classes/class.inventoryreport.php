@@ -6,6 +6,7 @@ class InventoryReport extends Connection
     public function view()
     {
         $product_category_id = $this->inputs['product_category_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
         $rows = array();
 
         $category_eq = $product_category_id == -1 ? ">" : $product_category_id;
@@ -16,6 +17,7 @@ class InventoryReport extends Connection
             ->selectRaw('p.product_id', 'p.product_name', 'p.product_cost', 'p.product_code', "SUM(IF(type='IN',quantity,-quantity)) AS product_qty")
             ->where('product_category_id', $category_eq, $category_col)
             ->where('status', 1)
+            ->where('warehouse_id',$warehouse_id)
             ->groupBy('p.product_id')
             ->get();
 
@@ -48,6 +50,15 @@ class InventoryReport extends Connection
     public function balance($product_id)
     {
         $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND status = 1");
+        $row = $result->fetch_assoc();
+        return (float) $row['qty'];
+    }
+
+    public function current_qty()
+    {
+        $product_id = $this->inputs['product_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
+        $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND status = 1 AND warehouse_id='$warehouse_id'");
         $row = $result->fetch_assoc();
         return (float) $row['qty'];
     }

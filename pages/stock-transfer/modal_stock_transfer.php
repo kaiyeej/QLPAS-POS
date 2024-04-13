@@ -94,7 +94,8 @@
                 <div class="row">
                     <div class="col-4" id="col-item">
                         <form method='POST' id='frm_submit_2'>
-                            <input type="hidden" id="hidden_id_2" name="input[job_order_id]">
+                            <input type="hidden" id="hidden_id_2" name="input[stock_transfer_id]">
+                            <input type="hidden" id="hidden_source_id">
 
                             <div class="form-group row">
                                 <div class="col">
@@ -108,7 +109,7 @@
                                 <div class="col">
                                     <label><strong>Inventory Qty</strong></label>
                                     <div>
-                                        <input type="number" class="form-control form-control-sm input-item" readonly autocomplete="off" id="current_qty" required>
+                                        <input type="number" class="form-control form-control-sm input-item" readonly  name="input[current_qty]" autocomplete="off" id="current_qty" required>
                                     </div>
                                 </div>
                                 <div class="col">

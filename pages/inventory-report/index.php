@@ -21,6 +21,14 @@
                                 </div>
                             </div>
                             <div class="col">
+                                <label><strong>Warehouse</strong></label>
+                                <div>
+                                    <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]">
+                                        <option class="">&mdash; Please Select &mdash; </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
                                 <label>&nbsp;</label>
                                 <div>
                                     <div class="btn-group pull-right">
@@ -93,6 +101,7 @@
 
     function getReport() {
         var product_category_id = $("#product_category_id").val();
+        var warehouse_id = $("#warehouse_id").val();
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
@@ -106,7 +115,8 @@
                 "method": "POST",
                 "data": {
                     input: {
-                        product_category_id: product_category_id
+                        product_category_id: product_category_id,
+                        warehouse_id:warehouse_id
                     }
                 },
             },

@@ -150,7 +150,7 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return "<input type='checkbox' value=" + row.jo_detail_id + " class='dt_id_2' style='position: initial; opacity:1;'>";
+                        return "<input type='checkbox' value=" + row.stock_transfer_detail_id + " class='dt_id_2' style='position: initial; opacity:1;'>";
                     }
                 },
                 {
@@ -178,30 +178,32 @@
     //     alert(source_warehouse_id);
     // }
 
-    function getCurrentQty(){
+    function getCurrentQty() {
         var product_id = $("#product_id").val();
+        var warehouse_id = $("#hidden_source_id").val();
         $.ajax({
-          type: "POST",
-          url: "controllers/sql.php?c=" + route_settings.class_name + "&q=get_qty",
-          data: {
-            input: {
-                product_id:product_id
+            type: "POST",
+            url: "controllers/sql.php?c=InventoryReport&q=current_qty",
+            data: {
+                input: {
+                    product_id: product_id,
+                    warehouse_id: warehouse_id
+                }
+            },
+            success: function(data) {
+                var json = JSON.parse(data);
+                $("#current_qty").val(json.data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                errorLogger('Error:', textStatus, errorThrown);
             }
-          },
-          success: function(data) {
-            var json = JSON.parse(data);
-            $("#current_qty").val(data);
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            errorLogger('Error:', textStatus, errorThrown);
-          }
         });
 
     }
 
     function getDestination() {
         var source_warehouse_id = $("#source_warehouse_id").val();
-        getSelectOption('Warehouses', 'destination_warehouse_id', 'warehouse_name_branch', "warehouse_id != "+source_warehouse_id);
+        getSelectOption('Warehouses', 'destination_warehouse_id', 'warehouse_name_branch', "warehouse_id != " + source_warehouse_id);
     }
 
     $(document).ready(function() {

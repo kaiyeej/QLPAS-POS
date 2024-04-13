@@ -96,9 +96,12 @@ include 'core/config.php';
         <!-- partial -->
         <div class="main-panel">
           <!-- routes -->
-          <?php require 'routes/routes.php'; ?>
+          <?php $_SESSION['branch_id'] == "" ?
+            // require '404/index.php'
+            :
+            require 'routes/routes.php'
+          ?>
           <!-- end routes -->
-
           <?php require 'components/footer.php'; ?>
         </div>
         <!-- main-panel ends -->
@@ -135,28 +138,38 @@ include 'core/config.php';
           success: function(response) {
             var data = response.data;
             var branches = data.branches;
-            console.log(data);
+            var sessionBranchId = sessionStorage.getItem('session_branch_id');
 
             $('#session_branch_id').empty();
-            $('#session_branch_id').append('<option value="">&mdash; Please Select Branch &mdash;</option>');
 
-            $.each(branches, function(index, branch) {
-              $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
-            });
+            // Append options excluding the placeholder if a branch is selected
+            if (sessionBranchId && data.session_branch_id) {
+              // A branch is already selected, don't include the placeholder
+              $.each(branches, function(index, branch) {
+                $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
+              });
+            } else {
+              // No branch selected yet, include the placeholder option
+              $('#session_branch_id').append('<option value="" disabled selected>&mdash; Please Select Branch &mdash;</option>');
+              $.each(branches, function(index, branch) {
+                $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
+              });
+            }
 
             if (data.session_branch_id) {
               $('#session_branch_id').val(data.session_branch_id);
-
             }
 
             $('#session_branch_id').select2();
-
           },
           error: function(xhr, status, error) {
             console.error('Error fetching branches: ' + error);
           }
         });
       }
+
+      // Call getBranchesSession() to populate the dropdown initially
+      getBranchesSession();
 
       $('#session_branch_id').on('change', function() {
         var selectedBranchId = $(this).val();
@@ -167,7 +180,6 @@ include 'core/config.php';
           location.reload();
         }
         updateSessionBranch(selectedBranchId);
-
       });
 
       function updateSessionBranch(branch_id) {
@@ -188,6 +200,7 @@ include 'core/config.php';
           }
         });
       }
+
 
       function checkPriceNotice() {
         $.ajax({
@@ -595,6 +608,8 @@ include 'core/config.php';
               }
             } else if (route_settings.class_name == "Deposit") {
               depositType(json['deposit_type']);
+            }else if(route_settings.class_name == "StockTransfer"){
+              $("#hidden_source_id").val(json.source_warehouse_id);
             }
 
             $('.label-item').map(function() {
