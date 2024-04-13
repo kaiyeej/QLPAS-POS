@@ -16,8 +16,10 @@ class CustomerPayment extends Connection
 
     public function add()
     {
+        $branch_id = $this->getBranch();
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
+            'branch_id'     => $branch_id,
             'customer_id'   => $this->inputs['customer_id'],
             'branch_id'     => $this->getBranch(),
             'payment_type'  => $this->inputs['payment_type'],

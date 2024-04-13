@@ -22,11 +22,13 @@ class Sales extends Connection
 
     public function add()
     {
+        $branch_id = $this->getBranch();
         $for_pick_up = isset($this->inputs['for_pick_up']) ? $this->inputs['for_pick_up'] : 0;
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'customer_id'   => $this->inputs['customer_id'],
-            'branch_id'     => $this->getBranch(),
+            'branch_id'     => $branch_id,
+            'warehouse_id'  => $this->inputs['warehouse_id'],
             'sales_type'    => $this->inputs['sales_type'],
             'discount_id'   => $this->inputs['discount_id'],
             'remarks'       => $this->inputs['remarks'],
@@ -72,6 +74,7 @@ class Sales extends Connection
     {
         $Customers = new Customers;
         $Users = new Users;
+        $Warehouses = new Warehouses;
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
@@ -87,6 +90,7 @@ class Sales extends Connection
             $row['inv_ref'] = $row['reference_number'] . " (₱" . number_format($this->dr_balance($row['sales_id']), 2) . ")";
             $row['withdrawal_ref'] = $row['reference_number'] . " (Customer: " . $customer_name . ")";
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
             $rows[] = $row;
         }
         return $rows;
@@ -95,12 +99,14 @@ class Sales extends Connection
     public function view()
     {
         $primary_id = $this->inputs['id'];
+        $Warehouses = new Warehouses;
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         if ($result->num_rows > 0) {
             $Customers = new Customers;
             $row = $result->fetch_assoc();
             $row['customer_name'] = $row['customer_id'] > 0 ? $Customers->name($row['customer_id']) : 'Walk-in';
             $row['salestype'] = $row['sales_type'] == "C" ? "Cash" : "Charge";
+            $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
             return $row;
         } else {
             return null;
@@ -151,6 +157,22 @@ class Sales extends Connection
         $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND (status='F' OR status='P')");
         $row = $result->fetch_assoc();
         return $row[$this->pk] * 1;
+    }
+
+    public function pk_by_name_branch($name = null)
+    {
+        $branch_id = $this->getBranch();
+        $name = $name == null ? $this->inputs[$this->name] : $name;
+        $result = $this->select($this->table, $this->pk, "$this->name = '$name' AND (status='F' OR status='P') AND branch_id='$branch_id'");
+        $row = $result->fetch_assoc();
+        return $row[$this->pk] * 1;
+    }
+
+    public function sales_warehouse($name)
+    {
+        $result = $this->select($this->table, 'warehouse_id', "$this->name = '$name'");
+        $row = $result->fetch_assoc();
+        return $row['warehouse_id'];
     }
 
     public function pk_name($name, $customer_id)
@@ -1068,12 +1090,14 @@ class Sales extends Connection
     public function getHeader()
     {
         $Customers = new Customers;
+        $Warehouses = new Warehouses;
         $id = $_POST['id'];
         $result = $this->select($this->table, "*", "$this->pk='$id'");
         $row = $result->fetch_assoc();
         $c_row = $Customers->view($row['customer_id']);
         $row['sales_date_mod'] = date("F j, Y", strtotime($row['sales_date']));
         $row['customer_name'] = $c_row['customer_name'];
+        $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
         $row['customer_address'] = $c_row['customer_address'];
         $row['customer_tin'] = $c_row['customer_tin'];
         $row['terms'] = $row['terms'];

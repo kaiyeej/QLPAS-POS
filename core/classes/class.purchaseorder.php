@@ -16,6 +16,8 @@ class PurchaseOrder extends Connection
 
     public function add()
     {
+        
+        $branch_id = $this->getBranch();
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => $this->getBranch(),
@@ -64,10 +66,12 @@ class PurchaseOrder extends Connection
     {
         $Suppliers = new Suppliers;
         $Users = new Users;
+        $Warehouses = new Warehouses;
         $primary_id = $this->inputs['id'];
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         $row['supplier_name'] = $Suppliers->name($row['supplier_id']);
+        $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
         $row['encoded_name'] = $Users->getUser($row['encoded_by']);
         $row['po_type_name'] = $row['po_type'] == "C" ? "Cash" : "Charge";
         return $row;
@@ -91,11 +95,13 @@ class PurchaseOrder extends Connection
     {
         $Suppliers = new Suppliers();
         $Users = new Users;
+        $Warehouses = new Warehouses;
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['supplier_id'] = $Suppliers->name($row['supplier_id']);
+            $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
             $row['total'] = $this->total($row['po_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $row['po_ref'] = $row['po_invoice']." (₱".number_format($this->po_balance($row['po_id']),2).")";
@@ -209,11 +215,13 @@ class PurchaseOrder extends Connection
     public function getHeader()
     {
         $Supplier = new Suppliers;
+        $Warehouses = new Warehouses;
         $id = $_POST['id'];
         $result = $this->select($this->table, "*", "$this->pk='$id'");
         $row = $result->fetch_assoc();
         $row['po_date_mod'] = date("F j, Y", strtotime($row['po_date']));
         $row['supplier_name'] = $Supplier->name($row['supplier_id']);
+        $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
         $rows[] = $row;
         return $rows;
     }

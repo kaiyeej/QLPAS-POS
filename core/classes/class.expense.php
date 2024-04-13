@@ -16,6 +16,7 @@ class Expense extends Connection
     public $uri = "expense";
     public function add()
     {
+        
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => $this->getBranch(),

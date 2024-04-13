@@ -18,6 +18,15 @@
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm input-item select2" name="input[warehouse_id]" id="warehouse_id" required>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Date</strong></label>
                             <div>
                                 <input type="date" class="form-control form-control-sm input-item" name="input[conversion_date]" id="conversion_date" required>
@@ -51,6 +60,7 @@
                     <div class="col-sm-4">
                         <div><b>Date:</b> <span id="conversion_date_label" class="label-item"></span></div>
                         <div><b>Reference:</b> <span id="reference_number_label" class="label-item"></span></div>
+                        <div><b>Warehouse:</b> <span id="warehouse_name_label" class="label-item"></span></div>
                         <div><b>Remarks:</b> <span id="remarks_label" class="label-item"></span></div>
                     </div>
                     <div class="col-sm-8">

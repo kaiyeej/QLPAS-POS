@@ -610,6 +610,8 @@ include 'core/config.php';
               depositType(json['deposit_type']);
             }else if(route_settings.class_name == "StockTransfer"){
               $("#hidden_source_id").val(json.source_warehouse_id);
+            }else if(route_settings.class_name == "JobOrder"){
+              $("#hidden_warehouse_id").val(json.warehouse_id);
             }
 
             $('.label-item').map(function() {

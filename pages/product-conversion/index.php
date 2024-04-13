@@ -153,9 +153,9 @@
 
     $(document).ready(function() {
         schema();
-        getEntries();
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
         getSelectOption('Products', 'product_id', 'product_name', 'product_id > 0 ORDER BY product_name ASC');
-
+        getEntries();
         myTimeout = setTimeout(copyProductSelect, 1000);
     });
 </script>

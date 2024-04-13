@@ -176,6 +176,6 @@
         getEntries();
         getSelectOption('Products', 'product_id', 'product_name', "is_package = 1");
         getSelectOption('Products', 'product_id_2', 'product_name', '', ['product_cost'], '', 'Please Select', 1);
-
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
     });
 </script>

@@ -16,6 +16,7 @@ class SupplierPayment extends Connection
 
     public function add()
     {
+        $branch_id = $this->getBranch(); 
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => $this->getBranch(),

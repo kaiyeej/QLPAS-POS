@@ -26,6 +26,15 @@
                             </div>
                         </div>
                         <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm input-item select2" name="input[warehouse_id]" id="warehouse_id" required>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Customer</strong></label>
                             <div>
                                 <select class="form-control form-control-sm input-item select2" name="input[customer_id]" id="customer_id" required>
@@ -91,6 +100,7 @@
                         <div><b>Customer:</b> <span id="customer_name_label" class="label-item"></span></div>
                         <div><b>Sales Type:</b> <span id="salestype_label" class="label-item"></span></div>
                         <div><b>Date:</b> <span id="sales_date_label" class="label-item"></span></div>
+                        <div><b>Warehouse:</b> <span id="warehouse_name_label" class="label-item"></span></div>
                         <div><b>Reference:</b> <span id="reference_number_label" class="label-item"></span></div>
                         <div><span class="badge badge-success" style="display:none;" id="for_pick_up_label">For pick-up</span></div>
                     </div>

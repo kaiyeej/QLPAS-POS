@@ -206,7 +206,7 @@
         var sales_reference_number = $("#sales_reference_number").val();
         $.ajax({
             type: "POST",
-            url: "controllers/sql.php?c=Sales&q=pk_by_name",
+            url: "controllers/sql.php?c=Sales&q=pk_by_name_branch",
             data: {
                 input: {
                     reference_number: sales_reference_number

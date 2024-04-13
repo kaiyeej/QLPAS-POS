@@ -16,6 +16,7 @@
                     </center>
                      <strong>Customer Name: </strong><span class="customer_name_span"></span><br>
                      <strong>Reference Number: </strong><span class="reference_number_span"></span><br>
+                     <strong>Warehouse: </strong><span class="warehouse_name_span"></span><br>
                      <strong>Date: </strong><span class="sales_date_span"></span><br>
                      <strong>Remarks: </strong><span class="remarks_span"></span>
                      <div class="table-responsive">
@@ -61,6 +62,7 @@
                 console.log(data);
                 var json = JSON.parse(data);
 
+                $(".warehouse_name_span").html(json.data[0].warehouse_name);
                 $(".customer_name_span").html(json.data[0].customer_name);
                 $(".reference_number_span").html(json.data[0].reference_number);
                 $(".sales_date_span").html(json.data[0].sales_date_mod);

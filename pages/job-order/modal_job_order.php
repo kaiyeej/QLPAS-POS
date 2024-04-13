@@ -7,6 +7,7 @@
                 </div>
                 <div class="modal-body" style="padding: 15px;">
                     <input type="hidden" id="hidden_id" name="input[job_order_id]">
+                    <input type="hidden" id="hidden_warehouse_id" name="input[warehouse_id]">
 
                     <div class="form-group row">
                         <div class="col">
@@ -15,6 +16,15 @@
                                 <input type="text" class="form-control form-control-sm input-item" name="input[reference_number]" maxlength="30" id="reference_number" readonly required>
                             </div>
                         </div>
+                        <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm input-item select2" name="input[warehouse_id]" id="warehouse_id" required>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <div class="col">
                             <label><strong>Product</strong></label>
                             <div>

@@ -16,6 +16,7 @@
                     </center>
                      <strong>Supplier Name: </strong><span id="supplier_name_span"></span><br>
                      <strong>Reference Number: </strong><span id="reference_number_span"></span><br>
+                     <strong>Warehouse: </strong><span id="warehouse_name_span"></span><br>
                      <strong>Date: </strong><span id="po_date_span"></span><br>
                      <strong>Remarks: </strong><span id="remarks_span"></span>
                      <div class="table-responsive">
@@ -65,6 +66,7 @@
 
                 $("#supplier_name_span").html(json.data[0].supplier_name);
                 $("#reference_number_span").html(json.data[0].reference_number);
+                $("#warehouse_name_span").html(json.data[0].warehouse_name);
                 $("#po_date_span").html(json.data[0].po_date_mod);
                 $("#remarks_span").html(json.data[0].remarks);
 

@@ -28,6 +28,15 @@
                                 <select class="form-control form-control-sm select2" name="input[supplier_id]" id="supplier_id" required></select >
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm select2" name="input[warehouse_id]" id="warehouse_id" required></select>
+                            </div>
+                        </div>
                         <div class="col">
                             <label><strong>Terms (days)</strong></label>
                             <div>
@@ -82,7 +91,7 @@
                     <div class="col-sm-3">
                         <div><b>Supplier:</b> <span id="supplier_name_label" class="label-item"></span></div>
                         <div><b>Invoice #:</b> <span id="po_invoice_label" class="label-item"></span></div>
-                        <div><b>Date:</b> <span id="po_date_label" class="label-item"></span></div>
+                        <div><b>Date:</b> <span id="po_date_label" class="label-item"></span></div><div><b>Warehouse:</b> <span id="warehouse_name_label" class="label-item"></span></div>
                         <div><b>Reference:</b> <span id="reference_number_label" class="label-item"></span></div> 
                     </div>
                     <div class="col-sm-3">

@@ -16,9 +16,11 @@ class ProductConversion extends Connection
     public $uri = "product-conversion";
     public function add()
     {
-
+        $branch_id = $this->getBranch();
         $form = array(
             $this->name             => $this->inputs[$this->name],
+            'branch_id'             => $branch_id,
+            'warehouse_id'          => $this->clean($this->inputs['warehouse_id']),
             'remarks'               => $this->clean($this->inputs['remarks']),
             'conversion_date'       => $this->inputs['conversion_date'],
             'encoded_by'            => $_SESSION['user']['id']
@@ -55,6 +57,7 @@ class ProductConversion extends Connection
     public function view()
     {
         $primary_id = $this->inputs['id'];
+        $Warehouses = new Warehouses;
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
         return $row;

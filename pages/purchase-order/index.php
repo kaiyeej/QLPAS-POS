@@ -213,6 +213,7 @@
     $(document).ready(function() {
         getEntries();
         getSelectOption('Suppliers', 'supplier_id', 'supplier_name');
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
     });
 
 </script>

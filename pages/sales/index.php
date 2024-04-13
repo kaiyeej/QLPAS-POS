@@ -402,7 +402,7 @@
         getSelectOption('Customers', 'customer_id', 'customer_name');
         getSelectOption('Products', 'product_id', 'product_name', "", ['product_price']);
         getSelectOption('Discounts', 'discount_id', 'discount_name', "discount_type = 'M'", [], '0', 'No Discount');
-
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
 
         $(".company_name_label").html(company_profile.company_name);
         $(".company_address_label").html(company_profile.company_address);
