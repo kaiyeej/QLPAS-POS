@@ -18,6 +18,7 @@ class Expense extends Connection
     {
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
+            'branch_id'     => $this->getBranch(),
             'remarks'       => $this->inputs['remarks'],
             'expense_date'  => $this->inputs['expense_date'],
             'encoded_by'    => $_SESSION['user']['id']

@@ -72,7 +72,8 @@
     function getEntries() {
         var  start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var param = "(deposit_date >= '"+start_date+"' AND deposit_date <= '"+end_date+"')";
+        var branch_id = "<?=$_SESSION['branch_id']?>";
+        var param = "(deposit_date >= '"+start_date+"' AND deposit_date <= '"+end_date+"') AND branch_id = '"+branch_id+"'";
 
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({

@@ -25,6 +25,7 @@ class PurchaseReturn extends Connection
         $po_id = $PurchaseOrder->pk_by_name($this->inputs['po_reference_number']);
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
+            'branch_id'     => $this->getBranch(),
             'po_id'         => $po_id,
             'remarks'    => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],

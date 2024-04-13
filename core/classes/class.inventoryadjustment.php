@@ -19,6 +19,7 @@ class InventoryAdjustment extends Connection
 
         $form = array(
             $this->name             => $this->inputs[$this->name],
+            'branch_id'             => $this->getBranch(),
             'remarks'               => $this->clean($this->inputs['remarks']),
             'adjustment_date'       => $this->inputs['adjustment_date'],
             'encoded_by'            => $_SESSION['user']['id']

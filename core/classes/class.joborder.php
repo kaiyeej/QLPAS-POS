@@ -20,6 +20,7 @@ class JobOrder extends Connection
         $finished_product = $this->inputs['product_id'];
         $form = array(
             $this->name         => $this->clean($this->inputs[$this->name]),
+            'branch_id'         => $this->getBranch(),
             'product_id'        => $finished_product,
             'no_of_batches'     => $this->inputs['no_of_batches'],
             'remarks'           => $this->inputs['remarks'],

@@ -19,6 +19,7 @@ class Deposit extends Connection
     {
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
+            'branch_id'     => $this->getBranch(),
             'remarks'       => $this->inputs['remarks'],
             'deposit_date'  => $this->inputs['deposit_date'],
             'deposit_type'  => $this->inputs['deposit_type'],

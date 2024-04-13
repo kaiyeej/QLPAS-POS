@@ -17,15 +17,16 @@ class PurchaseOrder extends Connection
     public function add()
     {
         $form = array(
-            $this->name => $this->clean($this->inputs[$this->name]),
-            'supplier_id' => $this->inputs['supplier_id'],
-            'po_type' => $this->inputs['po_type'],
-            'po_invoice' => $this->inputs['po_invoice'],
-            'po_terms' => $this->inputs['po_terms'],
-            'paid_status' => ($this->inputs['po_type'] == "C" ? 1 : 0),
-            'po_date' => $this->inputs['po_date'],
-            'po_remarks' => $this->inputs['po_remarks'],
-            'encoded_by' => $_SESSION['user']['id']
+            $this->name     => $this->clean($this->inputs[$this->name]),
+            'branch_id'     => $this->getBranch(),
+            'supplier_id'   => $this->inputs['supplier_id'],
+            'po_type'       => $this->inputs['po_type'],
+            'po_invoice'    => $this->inputs['po_invoice'],
+            'po_terms'      => $this->inputs['po_terms'],
+            'paid_status'   => ($this->inputs['po_type'] == "C" ? 1 : 0),
+            'po_date'       => $this->inputs['po_date'],
+            'po_remarks'    => $this->inputs['po_remarks'],
+            'encoded_by'    => $_SESSION['user']['id']
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }

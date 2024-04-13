@@ -19,6 +19,7 @@ class CustomerPayment extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'customer_id'   => $this->inputs['customer_id'],
+            'branch_id'     => $this->getBranch(),
             'payment_type'  => $this->inputs['payment_type'],
             'payment_date'  => $this->inputs['payment_date'],
             'check_date'    => $this->inputs['check_date'],

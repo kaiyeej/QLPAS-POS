@@ -18,6 +18,7 @@ class SupplierPayment extends Connection
     {
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
+            'branch_id'     => $this->getBranch(),
             'supplier_id'   => $this->inputs['supplier_id'],
             'payment_date'  => $this->inputs['payment_date'],
             'payment_type'  => $this->inputs['payment_type'],
