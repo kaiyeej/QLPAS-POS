@@ -7,6 +7,11 @@ class InventoryReport extends Connection
     {
         $product_category_id = $this->inputs['product_category_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
+        if($warehouse_id == -1){
+            $warehouse = '';
+        }else{
+            $warehouse= "warehouse_id='$warehouse_id'";
+        }
         $rows = array();
 
         $category_eq = $product_category_id == -1 ? ">" : $product_category_id;
@@ -17,7 +22,7 @@ class InventoryReport extends Connection
             ->selectRaw('p.product_id', 'p.product_name', 'p.product_cost', 'p.product_code', "SUM(IF(type='IN',quantity,-quantity)) AS product_qty")
             ->where('product_category_id', $category_eq, $category_col)
             ->where('status', 1)
-            ->where('warehouse_id',$warehouse_id)
+            ->where_($warehouse)
             ->groupBy('p.product_id')
             ->get();
 

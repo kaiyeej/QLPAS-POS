@@ -282,6 +282,18 @@ class Connection
         return $this;
     }
 
+    public function where_($field)
+    {
+        if($field == ''){
+            return "";
+        }else{
+            $where = $field;
+            $this->where[] = "$where";
+            return $this;
+        }
+        
+    }
+
     public function groupBy($column)
     {
         $this->groupBy = "GROUP BY $column";

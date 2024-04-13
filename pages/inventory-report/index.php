@@ -209,6 +209,7 @@
 
         getReport();
         getSelectOption('ProductCategories', 'product_category_id', 'product_category', '', [], -1, 'All');
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id ='" + current_branch_id + "'", [], -1, 'All');
 
         $("#company_name_label").html(company_profile.company_name);
         $("#company_address_label").html(company_profile.company_address);
