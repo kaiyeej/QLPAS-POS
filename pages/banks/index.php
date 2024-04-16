@@ -4,13 +4,13 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Banks</h3>
-                    <h6 class="font-weight-normal mb-0">Manage banks here</h6>
+                    <h6 class="font-weight-normal mb-3">Manage banks here</h6>
                 </div>
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
-                    <div class="btn-group pull-right">
+                <div class="pull-right py-3">
+                    <!-- <div class="btn-group pull-right">
                         <a href="#" class="btn btn-primary btn-sm btn-icon-split" onclick="addModal()">
                             <span class="icon text-white-50">
                                 <i class="fas fa-plus"></i>
@@ -23,7 +23,16 @@
                             </span>
                             <span class="text">Delete Entry</span>
                         </a>
-                    </div>
+                    </div> -->
+
+                    <button type="button" class="btn btn-primary btn-icon-text" onclick="addModal()">
+                        <i class="ti-plus mr-1"></i> Add Entry
+                    </button>
+
+                    <button type="button" class="btn btn-danger btn-icon-text" onclick="deleteEntry()" id="btn_delete">
+                        <i class="ti-trash mr-1"></i> Delete Entry
+                    </button>
+
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -67,7 +76,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-info btn-circle btn-sm' onclick='getEntryDetails(" + row.bank_id + ")'><span class='ti ti-pencil'></span></button></center>";
+                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails(" + row.bank_id + ")' style='padding:15px;height:45px;'><span class='ti ti-pencil'></span></button></center>";
                     }
                 },
                 {

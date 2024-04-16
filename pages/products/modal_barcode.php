@@ -19,8 +19,8 @@
             </div>
             <div class="modal-footer">
                 <div class='btn-group'>
-                    <button type="button" onclick="print_report('barcode')" class="btn btn-primary btn-sm" id="btn_print">Print</button>
-                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                    <button type="button" onclick="print_report('barcode')" class="btn btn-primary" id="btn_print">Print</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
