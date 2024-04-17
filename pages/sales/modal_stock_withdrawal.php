@@ -37,7 +37,7 @@
                             </table>
                         </div>
                         <hr>
-                        <button type="submit" class="btn btn-success btn-sm" id="btn_save_release" style="float: right;"><i class="ti ti-check"></i> Release</button>
+                        <button type="submit" class="btn btn-success" id="btn_save_release" style="float: right;"><i class="ti ti-check"></i> Release</button>
                     </form>
                     </div>
                 </div>

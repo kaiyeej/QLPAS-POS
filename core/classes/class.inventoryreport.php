@@ -4,7 +4,8 @@ class InventoryReport extends Connection
 {
     public $table = "tbl_product_transactions";
     public function view()
-    {
+    {   
+        $branch_id = $this->getBranch();
         $product_category_id = $this->inputs['product_category_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
         $warehouse = '';
@@ -20,7 +21,8 @@ class InventoryReport extends Connection
             ->join('tbl_product_transactions AS c', 'p.product_id', '=', 'c.product_id')
             ->selectRaw('p.product_id, p.product_name, p.product_cost, p.product_code, SUM(IF(c.type="IN", c.quantity, -c.quantity)) AS product_qty')
             ->where('product_category_id', $category_eq, $category_col)
-            ->where('status', 1);
+            ->where('status', 1)
+            ->where('branch_id', $branch_id);
         if ($warehouse_id != -1) {
             $query->where('warehouse_id', $warehouse_id);
         }

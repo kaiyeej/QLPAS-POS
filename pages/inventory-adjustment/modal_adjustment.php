@@ -35,8 +35,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class='btn-group'>
-                        <button type="submit" class="btn btn-primary btn-sm" id="btn_submit">Submit</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn_submit">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>

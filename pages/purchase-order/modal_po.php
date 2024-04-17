@@ -48,7 +48,7 @@
                         <div class="col">
                             <label><strong>Type</strong></label>
                             <div>
-                            <select class="form-control input-item" name="input[po_type]" id="po_type" required>
+                            <select class="form-control input-item select2" name="input[po_type]" id="po_type" required>
                                 <option value=''> &mdash; Please Select &mdash; </option>
                                 <option value='C'>Cash</option>
                                 <option value='H'>Charge</option>
@@ -73,8 +73,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class='btn-group'>
-                        <button type="submit" class="btn btn-primary btn-sm" id="btn_submit">Submit</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn_submit">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                                 </div>
                             </div>
                             <div class='btn-group'>
-                                <button type="submit" class="btn btn-info btn-sm" id="btn_submit_2">Submit</button>
+                                <button type="submit" class="btn btn-primary" id="btn_submit_2">Submit</button>
                             </div>
                         </form>
                     </div>

@@ -4,15 +4,15 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Inventory Report</h3>
-                    <h6 class="font-weight-normal mb-0">Generate your inventory here</h6>
+                    <h6 class="font-weight-normal mb-3">Generate your inventory here</h6>
                 </div>
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
+                <div class="card-body">
                     <form id='frm_generate'>
                         <div class="form-group row">
-                            <div class="col">
+                            <div class="col-3 col-xl-3">
                                 <label><strong>Category</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="product_category_id" name="input[product_category_id]">
@@ -20,7 +20,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-3 col-xl-3">
                                 <label><strong>Warehouse</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]">
@@ -28,10 +28,22 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-6 col-xl-6">
                                 <label>&nbsp;</label>
                                 <div>
-                                    <div class="btn-group pull-right">
+
+                                <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                    <i class="ti-reload mr-1"></i> Generate Entry
+                                </button>  
+                                <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Inventroy-Report')">
+                                    <i class="ti-cloud-down mr-1"></i> Export
+                                </button>
+                                <button type="button" class="btn btn-danger btn-icon-text" onclick="print_report('report_container')" id="btn_delete">
+                                    <i class="ti-printer mr-1"></i> Print
+                                </button>
+
+
+                                    <!-- <div class="btn-group pull-right">
                                         <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
                                             <span class="icon text-white-50">
                                                 <i class="fas fa-plus"></i>
@@ -50,42 +62,45 @@
                                             </span>
                                             <span class="text">Print</span>
                                         </button>
-                                    </div>
+                                    </div> -->
+
+
                                 </div>
                             </div>
                         </div>
                     </form>
-                </div>
-                <div id="report_container" class="card-body">
-                    <div class="table-responsive">
-                        <center>
-                            <h4 class="report-header"><span id="company_name_label"></span></h4>
-                            <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                            <h5 class="report-header">Inventory Report</h5><br>
-                        </center>
-                        <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>Product Code</th>
-                                    <th>Product</th>
-                                    <th>In Stock</th>
-                                    <th>For Pick-up</th>
-                                    <th>Available</th>
-                                    <th>Cost</th>
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="2" style="text-align:right">Total:</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                
+                    <div id="report_container" class="card-body">
+                        <div class="table-responsive">
+                            <center>
+                                <h4 class="report-header"><span id="company_name_label"></span></h4>
+                                <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                <h5 class="report-header">Inventory Report</h5><br>
+                            </center>
+                            <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Product Code</th>
+                                        <th>Product</th>
+                                        <th>In Stock</th>
+                                        <th>For Pick-up</th>
+                                        <th>Available</th>
+                                        <th>Cost</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2" style="text-align:right">Total:</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

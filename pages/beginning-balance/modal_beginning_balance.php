@@ -38,7 +38,7 @@
                             <label><strong>Account</strong></label>
                             <div>
                                 <select class="form-control form-control-sm input-item select2" name="input[bb_ref_id]" id="bb_ref_id" required>
-                                    <option value=''>&mdash; Please Select &mdash;</option>
+                                    <option value=''>&mdash; Pleasesd Select &mdash;</option>
                                 </select>
                             </div>
                         </div>
@@ -58,6 +58,17 @@
                         </div>
                     </div>
 
+                    <div class="form-group row">
+                        <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]">
+                                    <option class="">&mdash; Please Select &mdash; </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="form-group row">
                         <div class="col">
                             <label><strong>Remarks</strong></label>

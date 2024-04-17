@@ -23,6 +23,8 @@ class BeginningBalance extends Connection
         } else {
             $form = array(
                 $this->name     => $this->clean($this->inputs[$this->name]),
+                'branch_id'     => $this->getBranch(),
+                'warehouse_id'  => $this->inputs['warehouse_id'],
                 'bb_date'       => $this->inputs['bb_date'],
                 'bb_ref_id'     => $bb_ref_id,
                 'bb_module'     => $bb_module,

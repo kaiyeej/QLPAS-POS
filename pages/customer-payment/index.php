@@ -4,48 +4,44 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Customer Payment</h3>
-                    <h6 class="font-weight-normal mb-0">Manage customer payment here</h6>
+                    <h6 class="font-weight-normal mb-3">Manage customer payment here</h6>
                 </div>
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
+                <div class="card-body">
                     <div class="form-group row">
-                        <div class="col">
+                        <div class="col-2 col-xl-2">
                             <label><strong>Start Date</strong></label>
                             <div>
                                 <input type="date" required class="form-control form-control-sm" id="start_date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" name="input[start_date]">
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-2 col-xl-2">
                             <label><strong>End Date</strong></label>
                             <div>
                                 <input type="date" required class="form-control form-control-sm" id="end_date" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" name="input[end_date]">
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-8 col-xl-8">
                             <label>&nbsp;</label>
                             <div>
-                                <div class="btn-group">
-                                    <a href="#" class="btn btn-primary btn-sm" style="padding: 10px;" onclick="getEntries()">
-                                        <span class="text"> Generate</span>
-                                    </a>
-                                    <a href="#" class="btn btn-success btn-sm" style="padding: 10px;" onclick="addModal()">
-                                        <span class="text">Add Entry</span>
-                                    </a>
-                                    <a href="#" class="btn btn-warning btn-sm" onclick='cancelEntry()' id='btn_delete'>
-                                        <span class="text" style="color:#fff;">Cancel Entry</span>
-                                    </a>
-                                    <a href="#" class="btn btn-danger btn-sm" style="padding: 10px;" onclick='deleteEntry()' id='btn_delete'>
-                                        <span class="text">Delete Entry</span>
-                                    </a>
-                                </div>
+                                <button type="button" class="btn btn-warning btn-icon-text" onclick="getEntries()">
+                                    <i class="ti-reload mr-1"></i> Generate Entry
+                                </button>  
+                                <button type="button" class="btn btn-primary btn-icon-text" onclick="addModal()">
+                                    <i class="ti-plus mr-1"></i> Add Entry
+                                </button>
+                                <button type="button" class="btn btn-danger btn-icon-text" onclick="deleteEntry()" id="btn_delete">
+                                    <i class="ti-trash mr-1"></i> Delete Entry
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-icon-text" onclick="cancelEntry()">
+                                    <i class="ti-close mr-1"></i> Cancel Entry
+                                </button>
                             </div>
                         </div>
                     </div>
                     <hr>
-                </div>
-                <div class="card-body">
                     <div class="table-responsive">
                         <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
                             <thead>

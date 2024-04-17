@@ -134,6 +134,8 @@
     }
 
     $(document).ready(function() {
-       getEntries();
+        getEntries();
+   
+        getSelectOption('Warehouses','warehouse_id','warehouse_name','branch_id = "'+ current_branch_id +'"')
     });
 </script>

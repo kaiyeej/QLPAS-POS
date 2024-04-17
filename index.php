@@ -20,6 +20,7 @@ include 'core/config.php';
   <!-- Plugin css for this page -->
   <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
   <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+  <!-- <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css"> -->
   <link rel="stylesheet" type="text/css" href="js/select.dataTables.min.css">
 
   <!-- End plugin css for this page -->
@@ -462,6 +463,7 @@ include 'core/config.php';
 
       function deleteEntry() {
 
+        $("#btn_delete").prop('disabled', true);
         var count_checked = $("input[class='dt_id']:checked").length;
 
         if (count_checked > 0) {
@@ -505,7 +507,7 @@ include 'core/config.php';
                   }
                 });
 
-                $("#btn_delete").prop('disabled', true);
+                $("#btn_delete").prop('disabled', false);
 
               } else {
                 swal("Cancelled", "Entries are safe :)", "error");

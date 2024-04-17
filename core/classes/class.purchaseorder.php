@@ -21,6 +21,7 @@ class PurchaseOrder extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => $this->getBranch(),
+            'warehouse_id'  => $this->inputs['warehouse_id'],
             'supplier_id'   => $this->inputs['supplier_id'],
             'po_type'       => $this->inputs['po_type'],
             'po_invoice'    => $this->inputs['po_invoice'],
