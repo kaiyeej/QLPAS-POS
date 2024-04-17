@@ -35,7 +35,7 @@ class InventoryReport extends Connection
             $row['count'] = $count++;
             $row['product_code'] =  $row['product_code'];
             $row['for_pickup'] = number_format($for_pickup, 2);
-            $row['in_stock'] = number_format($row['product_qty'] + $for_pickup, 2);
+            $row['in_stock'] = $row['product_qty'] + $for_pickup;
             $row['amount'] =  number_format($row['product_qty'] * $row['product_cost'], 2);
             $rows[] = $row;
         }
@@ -58,6 +58,13 @@ class InventoryReport extends Connection
     public function balance($product_id)
     {
         $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND status = 1");
+        $row = $result->fetch_assoc();
+        return (float) $row['qty'];
+    }
+
+    public function balance_per_warehouse($product_id, $branch_id, $warehouse_id)
+    {
+        $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id = '$branch_id' AND warehouse_id = '$warehouse_id' AND status = 1");
         $row = $result->fetch_assoc();
         return (float) $row['qty'];
     }

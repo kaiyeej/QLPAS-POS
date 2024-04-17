@@ -78,7 +78,8 @@ class BeginningBalance extends Connection
         $Customers = new Customers();
         $Suppliers = new Suppliers();
         $Users = new Users();
-        $result = $this->select($this->table);
+        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             if ($row['bb_module'] == "INV") {
                 $type = "INVENTORY";

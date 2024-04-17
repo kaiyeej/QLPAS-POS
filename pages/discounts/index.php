@@ -63,8 +63,8 @@
                 {
                     "mRender": function(data, type, row) {
                         var view_icon = row.status == 'F' ? "ti-menu" : "ti-pencil";
-                        var view_btn = row.status == 'F' ? "btn-primary" : "btn-info";
-                        return "<center><button class='btn " + view_btn + " btn-circle' onclick='getEntryDetails2(" + row.discount_id + ")' styel='padding:15px;height:45px;'><span class='ti " + view_icon + "'></span></button></center>";
+                        var view_btn = row.status == 'F' ? "btn-info" : "btn-primary";
+                        return "<center><button class='btn " + view_btn + " btn-circle' onclick='getEntryDetails2(" + row.discount_id + ")' style='padding:15px;height:45px;'><span class='ti " + view_icon + "'></span></button></center>";
                     }
                 },
                 {

@@ -23,13 +23,15 @@ class PurchaseReturn extends Connection
     {
         $PurchaseOrder = new PurchaseOrder;
         $po_id = $PurchaseOrder->pk_by_name($this->inputs['po_reference_number']);
+        $warehouse_id =  $PurchaseOrder->get_row($po_id, 'warehouse_id');
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => $this->getBranch(),
+            'warehouse_id'  => $warehouse_id,
             'po_id'         => $po_id,
-            'remarks'    => $this->inputs['remarks'],
+            'remarks'       => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['user']['id']
         );
         $pr_id = $this->insert($this->table, $form,'Y');
 
@@ -59,12 +61,14 @@ class PurchaseReturn extends Connection
     {
         $PurchaseOrder = new PurchaseOrder;
         $Users = new Users;
+        $Warehouse = new Warehouses;
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['po_reference_number'] = $PurchaseOrder->name($row['po_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $row['warehouse_name'] = $Warehouse->name($row['warehouse_id']);
             $rows[] = $row;
         }
         return $rows;

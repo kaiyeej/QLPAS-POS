@@ -48,6 +48,7 @@
                                     <th>Date</th>
                                     <th>Reference</th>
                                     <th>PO Reference</th>
+                                    <th>Warehouse</th>
                                     <th>Encoded by</th>
                                     <th>Status</th>
                                     <th>Date Added</th>
@@ -66,7 +67,7 @@
 <?php include 'modal_purchase_return.php' ?>
 <script type="text/javascript">
     function getEntries() {
-        var  start_date = $("#start_date").val();
+        var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
         var branch_id = "<?=$_SESSION['branch_id']?>"
         var param = "(return_date >= '"+start_date+"' AND return_date <= '"+end_date+"') AND branch_id = '"+branch_id+"'";
@@ -92,7 +93,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.pr_id + ")'><span class='ti ti-list'></span></button></center>";
+                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.pr_id + ")' style='padding:15px;height:45px;'><span class='ti ti-menu'></span></button></center>";
                     }
                 },
                 {
@@ -103,6 +104,9 @@
                 },
                 {
                     "data": "po_reference_number"
+                },
+                {
+                    "data": "warehouse_name"
                 },
                 {
                     "data": "encoded_name"
@@ -163,7 +167,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<button type='button' class='btn btn-success btn-circle btn-sm' onclick='addReturn(" + row.pr_detail_id + ")'><span class='ti ti-plus'></span></button>";
+                        return "<button type='button' class='btn btn-success btn-circle btn-sm' onclick='addReturn(" + row.pr_detail_id + ")' style='padding:15px;height:45px;'><span class='ti ti-plus'></span></button>";
                     }
                 },
             ]

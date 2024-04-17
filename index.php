@@ -507,7 +507,7 @@ include 'core/config.php';
                   }
                 });
 
-                $("#btn_delete").prop('disabled', false);
+                
 
               } else {
                 swal("Cancelled", "Entries are safe :)", "error");
@@ -516,6 +516,7 @@ include 'core/config.php';
         } else {
           swal("Cannot proceed!", "Please select entries to delete!", "warning");
         }
+        $("#btn_delete").prop('disabled', false);
       }
 
       function cancelEntry() {

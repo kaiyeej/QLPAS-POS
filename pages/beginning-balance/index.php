@@ -64,6 +64,8 @@
 <script type="text/javascript">
 
     function getEntries() {
+        var branch_id = "<?=$_SESSION['branch_id']?>"
+        var param = "branch_id = '"+branch_id+"'";
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
@@ -73,7 +75,9 @@
                 "dataSrc": "data",
                 "type": "POST",
                 "data": {
-                   
+                    input:{
+                        param:param
+                    }
                 }
             },
             "columns": [{

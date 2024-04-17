@@ -93,7 +93,6 @@ class StockWithdrawal extends Connection
 
     public function edit_detail()
     {
-
         $product_id = $this->inputs['product_id'];
         $sw_detail_id = $this->inputs['sw_detail_id'];
         $sw_remaining_qty = $this->inputs['sw_remaining_qty'];
@@ -101,6 +100,7 @@ class StockWithdrawal extends Connection
 
         // check inventory here ...
         $Inventory = new InventoryReport();
+        // incluede branch_id and warehouse_id
         $current_balance = $Inventory->balance($product_id);
         if (($current_balance + $sw_qty + $sw_remaining_qty) - $this->inputs['quantity'] >= 0) {
 
@@ -327,6 +327,7 @@ class StockWithdrawal extends Connection
             $row['product'] = Products::name($row['product_id']);
             $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
             $row['remaining_qty'] = $remaining_qty;
+            // incluede branch_id and warehouse_id
             $row['current_qty'] = $Inv->balance($row['product_id']) + $row['qty'] + $remaining_qty;
             $row['qty'] = number_format($row['qty']);
             $rows[] = $row;

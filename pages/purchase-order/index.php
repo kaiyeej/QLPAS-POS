@@ -47,6 +47,7 @@
                                     <th></th>
                                     <th>Reference #</th>
                                     <th>Supplier</th>
+                                    <th>Warehouse</th>
                                     <th>Encoded by</th>
                                     <th>Status</th>
                                     <th>Date</th>
@@ -111,6 +112,9 @@
                 },
                 {
                     "data": "supplier_id"
+                },
+                {
+                    "data":"warehouse_name"
                 },
                 {
                     "data": "encoded_name"

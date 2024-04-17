@@ -21,13 +21,12 @@ class Sales extends Connection
 
 
     public function add()
-    {
-        $branch_id = $this->getBranch();
+    { 
         $for_pick_up = isset($this->inputs['for_pick_up']) ? $this->inputs['for_pick_up'] : 0;
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'customer_id'   => $this->inputs['customer_id'],
-            'branch_id'     => $branch_id,
+            'branch_id'     => $this->getBranch(),
             'warehouse_id'  => $this->inputs['warehouse_id'],
             'sales_type'    => $this->inputs['sales_type'],
             'discount_id'   => $this->inputs['discount_id'],
@@ -52,7 +51,8 @@ class Sales extends Connection
             'withdrawal_status'   => $for_pick_up,
             'paid_status'   => ($this->inputs['sales_type'] == "C" ? 1 : 0),
             'sales_date'    => $this->inputs['sales_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['user']['id'],
+            'warehouse_id'  => $this->inputs['warehouse_id'],
         );
         return $this->updateIfNotExist($this->table, $form);
     }
@@ -135,7 +135,7 @@ class Sales extends Connection
     }
 
     public function generate()
-    {
+    {   
         //return 'DR-' . date('ymdHis');
         $fetch = $this->select($this->table, "max(sales_id) + 1 as max_id", $this->pk > 0);
         $row = $fetch->fetch_assoc();
@@ -144,8 +144,9 @@ class Sales extends Connection
 
     public function finish()
     {
+        
         $primary_id = $this->inputs['id'];
-        $form = array(
+        $form = array(  
             'status' => 'F',
         );
         return $this->update($this->table, $form, "$this->pk = '$primary_id'");
@@ -168,9 +169,9 @@ class Sales extends Connection
         return $row[$this->pk] * 1;
     }
 
-    public function sales_warehouse($name)
+    public function sales_warehouse($sales_id)
     {
-        $result = $this->select($this->table, 'warehouse_id', "$this->name = '$name'");
+        $result = $this->select($this->table, 'warehouse_id', "$this->pk = '$sales_id'");
         $row = $result->fetch_assoc();
         return $row['warehouse_id'];
     }
@@ -215,10 +216,12 @@ class Sales extends Connection
     {
         $primary_id = $this->inputs[$this->pk];
         $fk_det     = $this->inputs[$this->fk_det];
+        $branch_id  = $this->getBranch();
+        $warehouse_id = $this->dataRow($primary_id, 'warehouse_id');
 
         // check inventory here ...
         $Inventory = new InventoryReport();
-        $current_balance = $Inventory->balance($this->inputs['product_id']);
+        $current_balance = $Inventory->balance_per_warehouse($this->inputs['product_id'], $branch_id, $warehouse_id);
         if ($current_balance - $this->inputs['quantity'] >= 0) {
 
             $Products = new Products;

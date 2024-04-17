@@ -22,7 +22,7 @@ class SalesReturn extends Connection
         $Sales = new Sales;
         $branch_id = $this->getBranch();
         $sales_id = $Sales->pk_by_name($this->inputs['sales_reference_number']);
-        $warehouse_id = $Sales->sales_warehouse($this->inputs['warehouse_id']);
+        $warehouse_id = $Sales->sales_warehouse($sales_id);
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => $this->getBranch(),
