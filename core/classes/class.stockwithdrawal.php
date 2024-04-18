@@ -124,7 +124,13 @@ class StockWithdrawal extends Connection
         $sum_released = $this->select('tbl_stock_withdrawal_details', "sum(qty)", "status='F' AND sales_detail_id='$primary_id'");
         $total_released = $sum_released->fetch_array();
 
-        $total = ($total_sales[0] - $total_sales_return[0]) - $total_released[0];
+        if($total_released[0] - $total_sales_return[0] >= 0){
+            $total = $total_sales[0] - $total_released[0];
+        }else{
+            $total = $total_sales[0] - $total_sales_return[0];
+        }
+
+        // $total = $total_sales[0] - ($total_sales_return[0] - $total_released[0]);
 
         return $total;
     }
