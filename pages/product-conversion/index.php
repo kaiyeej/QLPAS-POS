@@ -26,6 +26,7 @@
                                     <th></th>
                                     <th>Reference</th>
                                     <th>Conversion Date</th>
+                                    <th>Warehouse</th>
                                     <th>Remarks</th>
                                     <th>Status</th>
                                     <th>Date Added</th>
@@ -67,7 +68,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.conversion_id + ")' style='padding:15px;height:45px'><span class='ti ti-list'></span></button></center>";
+                        return "<center><button class='btn btn-primary btn-circle' onclick='getEntryDetails2(" + row.conversion_id + ")' style='padding:15px;height:45px'><span class='ti ti-menu'></span></button></center>";
                     }
                 },
                 {
@@ -75,6 +76,9 @@
                 },
                 {
                     "data": "conversion_date"
+                },
+                {
+                    "data": "warehouse_name"
                 },
                 {
                     "data": "remarks"
@@ -111,7 +115,7 @@
                 }
             },
             "columnDefs": [{
-                "targets": [2, 3, 4],
+                "targets": [2, 4],
                 "render": $.fn.dataTable.render.number(',', '.', 2, ''),
                 "className": 'dt-body-right'
             }],

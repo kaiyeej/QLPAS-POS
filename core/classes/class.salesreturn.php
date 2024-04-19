@@ -158,6 +158,14 @@ class SalesReturn extends Connection
             $form = array(
                 'quantity_return' => $new_quantity_return,
             );
+
+             //inventory
+             $form2 = array(
+                'quantity' => $new_quantity_return
+            );
+
+            $this->update('tbl_product_transactions' , $form2 ,"detail_id = '$primary_id_2' AND module = 'SR' AND type='IN'");
+
             return $this->update($this->table_detail, $form, "$this->pk2 = '$primary_id_2'");
         }
     }

@@ -132,7 +132,7 @@
                             </div>
 
                             <div class='btn-group'>
-                                <button type="submit" class="btn btn-info btn-sm" id="btn_submit_2">Submit</button>
+                                <button type="submit" class="btn btn-primary" id="btn_submit_2">Submit</button>
                             </div>
                         </form>
                     </div>

@@ -17,9 +17,12 @@ class StockWithdrawal extends Connection
     {
         $sales_id = $this->inputs['sales_id'];
         $ref_number = $this->clean($this->inputs[$this->name]);
+        $Sales = new Sales;
+        $warehouse_id = $Sales->dataRow($sales_id, 'warehouse_id');
         $form = array(
             $this->name => $ref_number,
             'branch_id' => $this->getBranch(),
+            'warehouse_id' => $warehouse_id,
             'sales_id' => $sales_id,
             'remarks' => $this->inputs['remarks'],
             'withdrawal_date' => $this->inputs['withdrawal_date'],

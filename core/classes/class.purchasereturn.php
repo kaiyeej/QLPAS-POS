@@ -125,7 +125,15 @@ class PurchaseReturn extends Connection
             $form = array(
                 'qty_return' => $new_qty_return,
             );
+
+            //inventory
+            $form2 = array(
+                'quantity' => $new_qty_return
+            );
+
+            $this->update('tbl_product_transactions' , $form2 ,"detail_id = '$primary_id_2' AND module = 'PR' AND type='OUT'");
             return $this->update($this->table_detail, $form, "$this->pk2 = '$primary_id_2'");
+
         }
     }
 

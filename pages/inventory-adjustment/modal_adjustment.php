@@ -18,6 +18,15 @@
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm input-item select2" name="input[warehouse_id]" id="warehouse_id" required>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Date</strong></label>
                             <div>
                                 <input type="date" class="form-control form-control-sm input-item" name="input[adjustment_date]" id="adjustment_date" required>
@@ -98,7 +107,7 @@
                             </div>
 
                             <div class='btn-group'>
-                                <button type="submit" class="btn btn-info btn-sm" id="btn_submit_2">Submit</button>
+                                <button type="submit" class="btn btn-primary" id="btn_submit_2">Submit</button>
                             </div>
                         </form>
                     </div>

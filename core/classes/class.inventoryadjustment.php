@@ -14,12 +14,14 @@ class InventoryAdjustment extends Connection
     public $inputs = [];
     public $searchable = ['reference_number','remarks'];
     public $uri = "inventory-adjustment";
+
     public function add()
     {
 
         $form = array(
             $this->name             => $this->inputs[$this->name],
             'branch_id'             => $this->getBranch(),
+            'warehouse_id'          => $this->inputs['warehouse_id'],
             'remarks'               => $this->clean($this->inputs['remarks']),
             'adjustment_date'       => $this->inputs['adjustment_date'],
             'encoded_by'            => $_SESSION['user']['id']

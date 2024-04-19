@@ -46,9 +46,11 @@ class ProductConversion extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
+        $Warehouse = new Warehouses();
         while ($row = $result->fetch_assoc()) {
             // $row['original_product'] = Products::name($row['original_product_id']);
             // $row['converted_product'] = Products::name($row['converted_product_id']);
+            $row['warehouse_name'] = $Warehouse->name($row['warehouse_id']);
             $rows[] = $row;
         }
         return $rows;
@@ -57,9 +59,11 @@ class ProductConversion extends Connection
     public function view()
     {
         $primary_id = $this->inputs['id'];
-        $Warehouses = new Warehouses;
+        $Warehouse = new Warehouses;
         $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
         $row = $result->fetch_assoc();
+        $row['warehouse_name'] = $Warehouse->name($row['warehouse_id']);
+
         return $row;
     }
 
@@ -81,7 +85,6 @@ class ProductConversion extends Connection
         return $this->module . '-' . date('YmdHis');
     }
 
-
     public function show_detail()
     {
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
@@ -102,21 +105,45 @@ class ProductConversion extends Connection
             return 'PC-SAME-ITEM';
         }
 
-        $Products = new Products();
-        $original_cost = $Products->productCost($this->inputs['original_product_id']);
-        $converted_cost = $original_cost * $this->inputs['original_qty'] / $this->inputs['converted_qty'];
-        $form = array(
-            $this->pk               => $this->inputs[$this->pk],
-            'original_product_id'   => $this->inputs['original_product_id'],
-            'original_qty'          => $this->inputs['original_qty'],
-            'original_cost'         => $original_cost,
-            'original_price'        => $Products->productPrice($this->inputs['original_product_id']),
-            'converted_product_id'  => $this->inputs['converted_product_id'],
-            'converted_qty'         => $this->inputs['converted_qty'],
-            'converted_cost'        => $converted_cost,
-            'converted_price'       => $Products->productPrice($this->inputs['converted_product_id']),
-        );
-        return $this->insert($this->table_detail, $form);
+        // check inventory here ...
+        $branch_id = $this->getBranch();
+        $warehouse_id = $this->dataRow($this->inputs[$this->pk], 'warehouse_id');
+        $InventoryReport = new InventoryReport();
+        $current_balance = $InventoryReport->balance_per_warehouse($this->inputs['original_product_id'], $branch_id, $warehouse_id);
+
+        if ($current_balance >= $this->inputs['original_qty']) {
+
+            $Products = new Products();
+            $original_cost = $Products->productCost($this->inputs['original_product_id']);
+            $converted_cost = $original_cost * $this->inputs['original_qty'] / $this->inputs['converted_qty'];
+            $form = array(
+                $this->pk               => $this->inputs[$this->pk],
+                'original_product_id'   => $this->inputs['original_product_id'],
+                'original_qty'          => $this->inputs['original_qty'],
+                'original_cost'         => $original_cost,
+                'original_price'        => $Products->productPrice($this->inputs['original_product_id']),
+                'converted_product_id'  => $this->inputs['converted_product_id'],
+                'converted_qty'         => $this->inputs['converted_qty'],
+                'converted_cost'        => $converted_cost,
+                'converted_price'       => $Products->productPrice($this->inputs['converted_product_id']),
+            );
+            return $this->insert($this->table_detail, $form);
+
+        }else{
+            return -3;
+        }
+ 
+    }
+
+    public function dataRow($primary_id, $field)
+    {
+        $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_array();
+            return $row[$field];
+        } else {
+            return "";
+        }
     }
 
     public function remove_detail()

@@ -776,18 +776,23 @@ class Sales extends Connection
     public function released()
     {
         $StockWithdrawal = new StockWithdrawal;
+        $branch_id = $this->getBranch();
         $sales_id = $this->inputs['sales_id'];
+        $warehouse_id = $this->dataRow($this->inputs['sales_id'], 'warehouse_id');
+
         $ref_number = $StockWithdrawal->generate(); //'SW-' . date('YmdHis');
         $r_qty = $this->inputs['r_qty'];
         $r_id = $this->inputs['r_id'];
         $p_id = $this->inputs['p_id'];
 
         $form = array(
-            $this->name => $ref_number,
-            'sales_id' => $sales_id,
-            'withdrawal_date' => date("Y-m-d"), //$this->sales_date($sales_id),
-            'status' => 'S',
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            $this->name         => $ref_number,
+            'branch_id'         => $branch_id,
+            'warehouse_id'         => $warehouse_id,
+            'sales_id'          => $sales_id,
+            'withdrawal_date'   => date("Y-m-d"), //$this->sales_date($sales_id),
+            'status'            => 'S',
+            'encoded_by'        => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
         );
 
         $withdrawal_id = $this->insert('tbl_stock_withdrawal', $form, 'Y');

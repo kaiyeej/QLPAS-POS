@@ -31,7 +31,7 @@ class InventoryReport extends Connection
 
         $count = 1;
         while ($row = $result->fetch_assoc()) {
-            $for_pickup = $this->pick_up_balance($row['product_id']);
+            $for_pickup = $this->pick_up_balance($row['product_id'], $branch_id, $warehouse_id);
             $row['count'] = $count++;
             $row['product_code'] =  $row['product_code'];
             $row['for_pickup'] = number_format($for_pickup, 2);
@@ -42,10 +42,11 @@ class InventoryReport extends Connection
         return $rows;
     }
 
-    public function pick_up_balance($product_id)
-    {
+    public function pick_up_balance($product_id, $branch_id, $warehouse_id)
+    {   
+        $param = ($warehouse_id != -1)? "AND h.warehouse_id = '$warehouse_id' AND h.branch_id = '$branch_id'" : "";
 
-        $fetchCS = $this->select("tbl_sales as h, tbl_sales_details as d", "sales_detail_id,customer_id", "h.sales_id=d.sales_id AND h.withdrawal_status=1  AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$product_id' GROUP BY d.sales_detail_id");
+        $fetchCS = $this->select("tbl_sales as h, tbl_sales_details as d", "sales_detail_id,customer_id", "h.sales_id=d.sales_id AND h.withdrawal_status=1  AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$product_id' $param GROUP BY d.sales_detail_id");
         $total = 0;
         $StockWithdrawal = new StockWithdrawal;
         while ($row = $fetchCS->fetch_assoc()) {
