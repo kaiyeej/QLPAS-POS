@@ -62,6 +62,23 @@ class Warehouses extends Connection
         return $rows;
     }
 
+    public function pos_warehouses(){
+        $rows = array();
+        $fetch = $this->select("tbl_branch", "*", "branch_id > 0 ORDER BY branch_name ASC");
+        while($row = $fetch->fetch_assoc()){
+            $wh_rows = array();
+            $fetch_warehouses = $this->select($this->table, "*", "branch_id='$row[branch_id]'");
+            while($warehouse_row = $fetch_warehouses->fetch_assoc()){
+                $wh_rows[] = $warehouse_row;
+            }
+
+            $row['warehouse_data'] = $wh_rows;
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
     public function view()
     {
         $primary_id = $this->inputs['id'];

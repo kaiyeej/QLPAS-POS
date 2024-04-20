@@ -111,7 +111,8 @@ class SalesSummary extends Connection
 
     public function getLatestSalesSummary()
     {
-        $result = $this->select($this->table, "*", "status='S'");
+        $cashier_id = $this->inputs['cashier_id'];
+        $result = $this->select($this->table, "*", "status='S' AND cashier_id='$cashier_id'");
         if($result->num_rows > 0){
             return $result->fetch_assoc();
         }else{
