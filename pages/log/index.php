@@ -9,7 +9,7 @@
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
+                <div class="card-body">
                     <form id='frm_generate'>
                         <div class="form-group row">
                             <div class="col">
@@ -45,27 +45,27 @@
                             </div>
                         </div>
                     </form>
-                </div>
-                <div id="report_container" class="card-body">
-                    <div class="table-responsive">
-                        <center>
-                            <h4 class="report-header"><span id="company_name_label"></span></h4>
-                            <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                            <h5 class="report-header">Logs Report</h5><br>
-                        </center>
-                        <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Action</th>
-                                    <th>Module</th>
-                                    <th>Date</th>
-                                    <th>Encoder</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                    <div id="report_container">
+                        <div class="table-responsive">
+                            <center>
+                                <h4 class="report-header"><span id="company_name_label"></span></h4>
+                                <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                <h5 class="report-header">Logs Report</h5><br>
+                            </center>
+                            <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Action</th>
+                                        <th>Module</th>
+                                        <th>Date</th>
+                                        <th>Encoder</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
