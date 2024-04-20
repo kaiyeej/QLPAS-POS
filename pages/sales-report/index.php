@@ -9,11 +9,9 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Sales Report</h3>
-                    <h6 class="font-weight-normal mb-0">Generate sales report here</h6>
+                    <h6 class="font-weight-normal mb-3">Generate sales report here</h6>
                 </div>
             </div>
-            <br>
-            <br>
             <div class="col-12 col-xl-12 card shadow mb-4">
                 <ul id="tabs" class="nav nav-tabs">
                     <li class="nav-item"><a href="" data-target="#daily" data-toggle="tab" class="nav-link small text-uppercase active">Daily</a></li>
@@ -26,7 +24,7 @@
                 <div id="tabsContent" class="tab-content">
                     <div id="daily" class="tab-pane fade active show">
                         <h5>Daily Report</h5>
-                        <div class="card-header py-3">
+                        <div class="card-body">
                             <form id='frm_generate_daily'>
                                 <div class="form-group row">
                                     <div class="col">
@@ -49,74 +47,63 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-0">
                                         <label>&nbsp;</label>
                                         <div>
-                                            <div class="btn-group pull-right">
-                                                <button type="submit" id="btn_daily" class="btn btn-primary btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-reload"></i>
-                                                    </span>
-                                                    <span class="text"> Generate</span>
-                                                </button>
-                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_daily','Daily-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-cloud-down"></i>
-                                                    </span>
-                                                    <span class="text"> Export</span>
-                                                </button>
-                                                <button type="button" onclick="print_report('daily_container')" class="btn btn-info btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-printer"></i>
-                                                    </span>
-                                                    <span class="text"> Print</span>
-                                                </button>
-                                            </div>
+                                            <button type="submit" id="btn_daily" class="btn btn-warning btn-icon-text">
+                                                <i class="ti-reload mr-1"></i> Generate
+                                            </button>  
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_daily','Daily-Sales-Report')">
+                                                <i class="ti-cloud-down mr-1"></i> Export
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('daily_container')" id="btn_delete">
+                                                <i class="ti-printer mr-1"></i> Print
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div id="daily_container" class="card-body">
-                            <center>
-                                <h4 class="report-header"><span class="company_name_label"></span></h4>
-                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Daily Sales Report</h5>
-                                <span id="span_daily_date"></span>
-                            </center>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dt_entries_daily" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ITEM</th>
-                                            <th style="text-align:right">QTY</th>
-                                            <th style="text-align:right">DISCOUNT</th>
-                                            <th style="text-align:right">AMOUNT</th>
-                                            <th style="text-align:right">NET AMOUNT</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="1" style="text-align:right">Total:</th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div id="daily_container">
+                                <center>
+                                    <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                    <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                    <h5 class="report-header">Daily Sales Report</h5>
+                                    <span id="span_daily_date"></span>
+                                </center>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dt_entries_daily" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ITEM</th>
+                                                <th style="text-align:right">QTY</th>
+                                                <th style="text-align:right">DISCOUNT</th>
+                                                <th style="text-align:right">AMOUNT</th>
+                                                <th style="text-align:right">NET AMOUNT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="1" style="text-align:right">Total:</th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div id="yearly" class="tab-pane fade">
                         <h5>Yearly Report</h5>
-                        <div class="card-header py-3">
+                        <div class="card-body">
                             <form id='frm_generate_yearly'>
                                 <div class="form-group row">
-                                    <div class="col-md-4">
+                                    <div class="col">
                                         <label><strong>Year</strong></label>
                                         <div>
                                             <select class="form-control select2" style="width: 100%;" id='sales_year' name='sales_year' required>
@@ -135,7 +122,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col">
                                         <div class="row">
                                             <label><strong>Category</strong></label>
                                             <select class="form-control form-control-sm select2" required id="product_category_id_2" name="input[product_category_id_2]">
@@ -143,83 +130,72 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-5">
                                         <label>&nbsp;</label>
                                         <div>
-                                            <div class="btn-group pull-right">
-                                                <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-reload"></i>
-                                                    </span>
-                                                    <span class="text"> Generate</span>
-                                                </button>
-                                                <button type="button" onclick="exportTableToExcel(this,'dt_year_entries','Yearly-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-cloud-down"></i>
-                                                    </span>
-                                                    <span class="text"> Export</span>
-                                                </button>
-                                                <button type="button" onclick="print_report('yearly_container')" class="btn btn-info btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-printer"></i>
-                                                    </span>
-                                                    <span class="text"> Print</span>
-                                                </button>
-                                            </div>
+                                            <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                                <i class="ti-reload mr-1"></i> Generate
+                                            </button>  
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_year_entries','Yearly-Sales-Report')">
+                                                <i class="ti-cloud-down mr-1"></i> Export
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('yearly_container')" id="btn_delete">
+                                                <i class="ti-printer mr-1"></i> Print
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div id="yearly_container" class="card-body">
-                            <center>
-                                <h4 class="report-header"><span class="company_name_label"></span></h4>
-                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Yearly Sales Report</h5>
-                            </center>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dt_year_entries" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ITEM</th>
-                                            <th style="text-align:right;">JAN</th>
-                                            <th style="text-align:right;">FEB</th>
-                                            <th style="text-align:right;">MAR</th>
-                                            <th style="text-align:right;">APR</th>
-                                            <th style="text-align:right;">MAY</th>
-                                            <th style="text-align:right;">JUNE</th>
-                                            <th style="text-align:right;">JULY</th>
-                                            <th style="text-align:right;">AUG</th>
-                                            <th style="text-align:right;">SEP</th>
-                                            <th style="text-align:right;">OCT</th>
-                                            <th style="text-align:right;">NOV</th>
-                                            <th style="text-align:right;">DEC</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th style="text-align:right">Total:</th>
-                                            <?php
-                                            $count = 1;
-                                            while ($count <= 12) {
-                                            ?>
-                                                <th></th>
-                                            <?php
-                                                $count++;
-                                            } ?>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                       
+                            <div id="yearly_container">
+                                <center>
+                                    <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                    <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                    <h5 class="report-header">Yearly Sales Report</h5>
+                                </center>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dt_year_entries" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ITEM</th>
+                                                <th style="text-align:right;">JAN</th>
+                                                <th style="text-align:right;">FEB</th>
+                                                <th style="text-align:right;">MAR</th>
+                                                <th style="text-align:right;">APR</th>
+                                                <th style="text-align:right;">MAY</th>
+                                                <th style="text-align:right;">JUNE</th>
+                                                <th style="text-align:right;">JULY</th>
+                                                <th style="text-align:right;">AUG</th>
+                                                <th style="text-align:right;">SEP</th>
+                                                <th style="text-align:right;">OCT</th>
+                                                <th style="text-align:right;">NOV</th>
+                                                <th style="text-align:right;">DEC</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th style="text-align:right">Total:</th>
+                                                <?php
+                                                $count = 1;
+                                                while ($count <= 12) {
+                                                ?>
+                                                    <th></th>
+                                                <?php
+                                                    $count++;
+                                                } ?>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div id="cashier" class="tab-pane fade">
                         <h5>Per Cashier Report</h5>
-                        <div class="card-header py-3">
+                        <div class="card-body">
                             <form id='frm_generate_cashier'>
                                 <div class="form-group row">
                                     <div class="col">
@@ -242,66 +218,55 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-0">
                                         <label>&nbsp;</label>
                                         <div>
-                                            <div class="btn-group pull-right">
-                                                <button type="submit" id="btn_cashier" class="btn btn-primary btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-reload"></i>
-                                                    </span>
-                                                    <span class="text"> Generate</span>
-                                                </button>
-                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_cashier','Per-Cashier-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-cloud-down"></i>
-                                                    </span>
-                                                    <span class="text"> Export</span>
-                                                </button>
-                                                <button type="button" onclick="print_report2('cashier_container')" class="btn btn-info btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-printer"></i>
-                                                    </span>
-                                                    <span class="text"> Print</span>
-                                                </button>
-                                            </div>
+                                            <button type="submit" id="btn_cashier" class="btn btn-warning btn-icon-text">
+                                                <i class="ti-reload mr-1"></i> Generate
+                                            </button>  
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_cashier','Per-Cashier-Sales-Report')">
+                                                <i class="ti-cloud-down mr-1"></i> Export
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('cashier_container')" id="btn_delete">
+                                                <i class="ti-printer mr-1"></i> Print
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div id="cashier_container" class="card-body">
-                            <center>
-                                <h4 class="report-header"><span class="company_name_label"></span></h4>
-                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Sales Per Cashier Report</h5>
-                            </center>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dt_entries_cashier" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ITEM</th>
-                                            <th style="text-align:right">QTY</th>
-                                            <th style="text-align:right">AMOUNT</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="1" style="text-align:right">Total:</th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div id="cashier_container">
+                                <center>
+                                    <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                    <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                    <h5 class="report-header">Sales Per Cashier Report</h5>
+                                </center>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dt_entries_cashier" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ITEM</th>
+                                                <th style="text-align:right">QTY</th>
+                                                <th style="text-align:right">AMOUNT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="1" style="text-align:right">Total:</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div id="customer" class="tab-pane fade">
                         <h5>Per Customer Report</h5>
-                        <div class="card-header py-3">
+                        <div class="card-body">
                             <form id='frm_generate_customer'>
                                 <div class="form-group row">
                                     <div class="col">
@@ -324,66 +289,56 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-0">
                                         <label>&nbsp;</label>
                                         <div>
-                                            <div class="btn-group pull-right">
-                                                <button type="submit" id="btn_customer" class="btn btn-primary btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-reload"></i>
-                                                    </span>
-                                                    <span class="text"> Generate</span>
-                                                </button>
-                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_customer','Per-Customer-Sales-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-cloud-down"></i>
-                                                    </span>
-                                                    <span class="text"> Export</span>
-                                                </button>
-                                                <button type="button" onclick="print_report2('customer_container')" class="btn btn-info btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-printer"></i>
-                                                    </span>
-                                                    <span class="text"> Print</span>
-                                                </button>
-                                            </div>
+                                            <button type="submit" id="btn_customer" class="btn btn-warning btn-icon-text">
+                                                <i class="ti-reload mr-1"></i> Generate
+                                            </button>  
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_customer','Per-Customer-Sales-Report')">
+                                                <i class="ti-cloud-down mr-1"></i> Export
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('customer_container')" id="btn_delete">
+                                                <i class="ti-printer mr-1"></i> Print
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div id="customer_container" class="card-body">
-                            <center>
-                                <h4 class="report-header"><span class="company_name_label"></span></h4>
-                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Sales Per Customer Report</h5>
-                            </center>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dt_entries_customer" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ITEM</th>
-                                            <th style="text-align:right">QTY</th>
-                                            <th style="text-align:right">AMOUNT</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="1" style="text-align:right">Total:</th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                        
+                            <div id="customer_container">
+                                <center>
+                                    <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                    <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                    <h5 class="report-header">Sales Per Customer Report</h5>
+                                </center>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dt_entries_customer" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ITEM</th>
+                                                <th style="text-align:right">QTY</th>
+                                                <th style="text-align:right">AMOUNT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="1" style="text-align:right">Total:</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div id="summary" class="tab-pane fade">
                         <h5>Summary Report</h5>
-                        <div class="card-header py-3">
+                        <div class="card-body">
                             <form id='frm_generate_summary'>
                                 <div class="form-group row">
                                     <div class="col">
@@ -406,67 +361,56 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-0">
                                         <label>&nbsp;</label>
                                         <div>
-                                            <div class="btn-group pull-right">
-                                                <button type="submit" id="btn_cashier2" class="btn btn-primary btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-reload"></i>
-                                                    </span>
-                                                    <span class="text"> Generate</span>
-                                                </button>
-                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_summary','Sales-Summary-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-cloud-down"></i>
-                                                    </span>
-                                                    <span class="text"> Export</span>
-                                                </button>
-                                                <button type="button" onclick="print_report2('summary_container')" class="btn btn-info btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-printer"></i>
-                                                    </span>
-                                                    <span class="text"> Print</span>
-                                                </button>
-                                            </div>
+                                            <button type="submit" id="btn_cashier2" class="btn btn-warning btn-icon-text">
+                                                <i class="ti-reload mr-1"></i> Generate
+                                            </button>  
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_summary','Sales-Summary-Report')">
+                                                <i class="ti-cloud-down mr-1"></i> Export
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('summary_container')" id="btn_delete">
+                                                <i class="ti-printer mr-1"></i> Print
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div id="summary_container" class="card-body">
-                            <center>
-                                <h4 class="report-header"><span class="company_name_label"></span></h4>
-                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Sales Summary Report</h5>
-                            </center>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dt_entries_summary" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align:right">DATE</th>
-                                            <th>CASHIER</th>
-                                            <th style="text-align:right">STARTING BALANCE</th>
-                                            <th style="text-align:right">TOTAL SALES</th>
-                                            <th style="text-align:right">TOTAL CASH SALES</th>
-                                            <th style="text-align:right">TOTAL CHARGE SALES</th>
-                                            <th style="text-align:right">COLLECTED</th>
-                                            <th style="text-align:right">DEFICIT</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="3" style="text-align:right">Total:</th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div id="summary_container">
+                                <center>
+                                    <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                    <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                    <h5 class="report-header">Sales Summary Report</h5>
+                                </center>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dt_entries_summary" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:right">DATE</th>
+                                                <th>CASHIER</th>
+                                                <th style="text-align:right">STARTING BALANCE</th>
+                                                <th style="text-align:right">TOTAL SALES</th>
+                                                <th style="text-align:right">TOTAL CASH SALES</th>
+                                                <th style="text-align:right">TOTAL CHARGE SALES</th>
+                                                <th style="text-align:right">COLLECTED</th>
+                                                <th style="text-align:right">DEFICIT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="3" style="text-align:right">Total:</th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

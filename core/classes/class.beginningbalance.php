@@ -31,7 +31,8 @@ class BeginningBalance extends Connection
                 'bb_qty'        => $this->inputs['bb_qty'],
                 'bb_amount'     => $this->inputs['bb_amount'],
                 'bb_remarks'    => $this->inputs['bb_remarks'],
-                'encoded_by'    => $_SESSION['user']['id']
+                'encoded_by'    => $_SESSION['user']['id'],
+                'date_added'    => $this->getCurrentDate()
             );
 
             if ($bb_module == "INV") {
@@ -56,14 +57,15 @@ class BeginningBalance extends Connection
             return 2;
         } else {
             $form = array(
-                $this->name     => $this->clean($this->inputs[$this->name]),
-                'bb_date'       => $this->inputs['bb_date'],
-                'bb_ref_id'     => $bb_ref_id,
-                'bb_module'     => $bb_module,
-                'bb_qty'        => $this->inputs['bb_qty'],
-                'bb_amount'     => $this->inputs['bb_amount'],
-                'bb_remarks'    => $this->inputs['bb_remarks'],
-                'encoded_by'    => $_SESSION['user']['id']
+                $this->name             => $this->clean($this->inputs[$this->name]),
+                'bb_date'               => $this->inputs['bb_date'],
+                'bb_ref_id'             => $bb_ref_id,
+                'bb_module'             => $bb_module,
+                'bb_qty'                => $this->inputs['bb_qty'],
+                'bb_amount'             => $this->inputs['bb_amount'],
+                'bb_remarks'            => $this->inputs['bb_remarks'],
+                'encoded_by'            => $_SESSION['user']['id'],
+                'date_last_modified'    => $this->getCurrentDate()
             );
             $result = $this->updateIfNotExist($this->table, $form);
             Logs::storeCrud($this->module_name, 'u', $result, $bb_ref_id);

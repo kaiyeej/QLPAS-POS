@@ -35,7 +35,8 @@ class Sales extends Connection
             'withdrawal_status'   => $for_pick_up,
             'paid_status'   => ($this->inputs['sales_type'] == "C" ? 1 : 0),
             'sales_date'    => $this->inputs['sales_date'],
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            'encoded_by'    => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id'],
+            'date_added'    =>$this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -44,15 +45,16 @@ class Sales extends Connection
     {
         $for_pick_up = isset($this->inputs['for_pick_up']) ? 1 : 0;
         $form = array(
-            'customer_id'   => $this->inputs['customer_id'],
-            'sales_type'    => $this->inputs['sales_type'],
-            'remarks'       => $this->inputs['remarks'],
-            'for_pick_up'   => $for_pick_up,
-            'withdrawal_status'   => $for_pick_up,
-            'paid_status'   => ($this->inputs['sales_type'] == "C" ? 1 : 0),
-            'sales_date'    => $this->inputs['sales_date'],
-            'encoded_by'    => $_SESSION['user']['id'],
-            'warehouse_id'  => $this->inputs['warehouse_id'],
+            'customer_id'           => $this->inputs['customer_id'],
+            'sales_type'            => $this->inputs['sales_type'],
+            'remarks'               => $this->inputs['remarks'],
+            'for_pick_up'           => $for_pick_up,
+            'withdrawal_status'     => $for_pick_up,
+            'paid_status'           => ($this->inputs['sales_type'] == "C" ? 1 : 0),
+            'sales_date'            => $this->inputs['sales_date'],
+            'encoded_by'            => $_SESSION['user']['id'],
+            'warehouse_id'          => $this->inputs['warehouse_id'],
+            'date_last_modified'    =>$this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

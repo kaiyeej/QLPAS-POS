@@ -21,7 +21,8 @@ class Branches extends Connection
             return 2;
         } else {
             $form = array(
-                'branch_name' => $this->inputs['branch_name'],
+                'branch_name'   => $this->inputs['branch_name'],
+                'date_added'    => $this->getCurrentDate()
             );
 
             $result = $this->insert($this->table, $form);
@@ -40,7 +41,8 @@ class Branches extends Connection
             return 2;
         } else {
             $form = array(
-                'branch_name' => $this->inputs['branch_name'],
+                'branch_name'           => $this->inputs['branch_name'],
+                'date_last_modified'    => $this->getCurrentDate()
             );
 
             $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");

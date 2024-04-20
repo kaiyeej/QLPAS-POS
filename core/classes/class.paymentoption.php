@@ -14,7 +14,8 @@ class PaymentOption extends Connection
             return 2;
         } else {
             $form = array(
-                $this->name => $this->inputs[$this->name]
+                $this->name => $this->inputs[$this->name],
+                'date_added'    => $this->getCurrentDate()
             );
             return $this->insert($this->table, $form);
         }
@@ -29,7 +30,8 @@ class PaymentOption extends Connection
             return 2;
         } else {
             $form = array(
-                $this->name => $this->inputs[$this->name]
+                $this->name             => $this->inputs[$this->name],
+                'date_last_modified'    => $this->getCurrentDate()
             );
             return $this->update($this->table, $form, "$this->pk = '$primary_id'");
         }

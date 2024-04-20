@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Branches</h3>
-                    <h6 class="font-weight-normal mb-2">Manage branches here</h6>
+                    <h6 class="font-weight-normal mb-3">Manage branches here</h6>
                 </div>
             </div>
 

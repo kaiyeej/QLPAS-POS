@@ -19,7 +19,7 @@
                         <div class="col">
                             <label><strong>Category</strong></label>
                             <div>
-                                <select class="form-control input-item" name="input[user_category]" id="user_category" required>
+                                <select class="form-control input-item select2" name="input[user_category]" id="user_category" required>
                                     <option value="">&mdash; Please Select &mdash;</option>
                                     <option value="S">Staff</option>
                                     <option value="C">Cashier</option>
@@ -47,8 +47,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class='btn-group'>
-                        <button type="submit" class="btn btn-primary btn-sm" id="btn_submit">Submit</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn_submit">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>

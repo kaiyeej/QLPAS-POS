@@ -9,12 +9,12 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Statement of Accounts</h3>
-                    <h6 class="font-weight-normal mb-0">Generate statement of accounts here</h6>
+                    <h6 class="font-weight-normal mb-3">Generate statement of accounts here</h6>
                 </div>
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
+                <div class="card-body">
                     <form id='frm_generate'>
                         <div class="form-group row">
                             <div class="col">
@@ -37,71 +37,60 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-0">
                                 <label>&nbsp;</label>
                                 <div>
-                                    <div class="btn-group pull-right">
-                                        <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
-                                            <span class="icon">
-                                                <i class="ti ti-reload"></i>
-                                            </span>
-                                            <span class="text"> Generate</span>
-                                        </button>
-                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries','Payable-Ledger-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                            <span class="icon">
-                                                <i class="ti ti-cloud-down"></i>
-                                            </span>
-                                            <span class="text"> Export</span>
-                                        </button>
-                                        <button type="button" onclick="print_report('report_container')" class="btn btn-info btn-sm btn-icon-split">
-                                            <span class="icon">
-                                                <i class="ti ti-printer"></i>
-                                            </span>
-                                            <span class="text"> Print</span>
-                                        </button>
-                                    </div>
+                                    <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                        <i class="ti-reload mr-1"></i> Generate
+                                    </button>  
+                                    <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Payable-Ledger-Report')">
+                                        <i class="ti-cloud-down mr-1"></i> Export
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container')">
+                                        <i class="ti-printer mr-1"></i> Print
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </form>
-                </div>
-                <div id="report_container" class="card-body">
-                    <center>
-                        <h4 class="report-header"><span id="company_name_label"></span></h4>
-                        <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                        <h5>Statement of Accounts</h5><br>
-                    </center>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>DATE</th>
-                                    <th>DESCRIPTION</th>
-                                    <th>REFERENCE #</th>
-                                    <th style="text-align:right">AMOUNT</th>
-                                    <th style="text-align:right">PAYMENT</th>
-                                    <th style="text-align:right">ACCOUNT BALANCE</th>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right"><strong>Account:</strong></td>
-                                    <td colspan="5"><span id="span_customer"></span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="5" style="text-align:right"><strong>Balance Fowarded:</strong></td>
-                                    <td><span id="span_balance_fowarded"></span></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" style="text-align:right">Summary:</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th><span id="span_total"></span></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div id="report_container">
+                        <center>
+                            <h4 class="report-header"><span id="company_name_label"></span></h4>
+                            <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                            <h5>Statement of Accounts</h5><br>
+                        </center>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>DATE</th>
+                                        <th>DESCRIPTION</th>
+                                        <th>REFERENCE #</th>
+                                        <th style="text-align:right">AMOUNT</th>
+                                        <th style="text-align:right">PAYMENT</th>
+                                        <th style="text-align:right">ACCOUNT BALANCE</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:right"><strong>Account:</strong></td>
+                                        <td colspan="5"><span id="span_customer"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" style="text-align:right"><strong>Balance Fowarded:</strong></td>
+                                        <td><span id="span_balance_fowarded"></span></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right">Summary:</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th><span id="span_total"></span></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

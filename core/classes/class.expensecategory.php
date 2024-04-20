@@ -14,7 +14,8 @@ class ExpenseCategories extends Connection
         $form = array(
             $this->name             => $this->clean($this->inputs[$this->name]),
             'expense_category_code' => $this->inputs['expense_category_code'],
-            'expense_type' => $this->inputs['expense_type']
+            'expense_type' => $this->inputs['expense_type'],
+            'date_added'    => $this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form);
     }
@@ -24,7 +25,8 @@ class ExpenseCategories extends Connection
         $form = array(
             $this->name             => $this->clean($this->inputs[$this->name]),
             'expense_category_code' => $this->inputs['expense_category_code'],
-            'expense_type'          => $this->inputs['expense_type']
+            'expense_type'          => $this->inputs['expense_type'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

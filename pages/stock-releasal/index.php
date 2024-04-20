@@ -5,11 +5,9 @@
                 <div class="row">
                     <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                         <h3 class="font-weight-bold">Stock Releasal Report</h3>
-                        <h6 class="font-weight-normal mb-0">Generate stock releasal here</h6>
+                        <h6 class="font-weight-normal mb-3">Generate stock releasal here</h6>
                     </div>
                 </div>
-                <br>
-                <br>
                 <div class="card shadow mb-4">
                     <ul id="tabs" class="nav nav-tabs">
                         <li class="nav-item"><a href="" data-target="#per_transaction" data-toggle="tab" class="nav-link small text-uppercase active">Per Transaction</a></li>
@@ -19,67 +17,58 @@
                     <div id="tabsContent" class="tab-content">
                         <div id="per_transaction" class="tab-pane fade active show">
                             <h5>Per Transaction Report</h5>
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <form id='frm_generate'>
-                                        <div class="form-group row">
-                                            <div class="col">
-                                                <label><strong>Start Date</strong></label>
-                                                <div>
-                                                    <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="start_date" name="input[start_date]">
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <label><strong>End Date</strong></label>
-                                                <div>
-                                                    <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="end_date" name="input[end_date]">
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <label><strong>Customer</strong></label>
-                                                <div>
-                                                    <select class="form-control form-control-sm select2" id="customer_id" name="input[customer_id]">
-                                                        <option class="-1">&mdash; All &mdash; </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <label><strong>Product</strong></label>
-                                                <div>
-                                                    <select class="form-control form-control-sm select2" id="product_id" name="input[product_id]">
-                                                        <option class="-1">&mdash; All &mdash; </option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <label>&nbsp;</label>
-                                                <div>
-                                                    <div class="btn-group pull-right">
-                                                        <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-plus"></i>
-                                                            </span>
-                                                            <span class="text">Generate</span>
-                                                        </button>
-                                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries','Stock-Releasal-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                            <span class="icon">
-                                                                <i class="ti ti-cloud-down"></i>
-                                                            </span>
-                                                            <span class="text"> Export</span>
-                                                        </button>
-                                                        <button onclick="print_report('report_container')" type="button" class="btn btn-info btn-sm btn-icon-split">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-trash"></i>
-                                                            </span>
-                                                            <span class="text">Print</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
+                            
+                            <div class="card-body">
+                                <form id='frm_generate'>
+                                    <div class="form-group row">
+                                        <div class="col">
+                                            <label><strong>Start Date</strong></label>
+                                            <div>
+                                                <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="start_date" name="input[start_date]">
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div id="report_container" class="card-body">
+                                        <div class="col">
+                                            <label><strong>End Date</strong></label>
+                                            <div>
+                                                <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="end_date" name="input[end_date]">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label><strong>Customer</strong></label>
+                                            <div>
+                                                <select class="form-control form-control-sm select2" id="customer_id" name="input[customer_id]">
+                                                    <option class="-1">&mdash; All &mdash; </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label><strong>Product</strong></label>
+                                            <div>
+                                                <select class="form-control form-control-sm select2" id="product_id" name="input[product_id]">
+                                                    <option class="-1">&mdash; All &mdash; </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col" style="display: flex; justify-content: flex-end;">
+                                            <label>&nbsp;</label>
+                                            <div>
+                                                <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                                    <i class="ti-reload mr-1"></i> Generate
+                                                </button>  
+                                                <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Stock-Releasal-Report')">
+                                                    <i class="ti-cloud-down mr-1"></i> Export
+                                                </button>
+                                                <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container')">
+                                                    <i class="ti-printer mr-1"></i> Print
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div id="report_container">
                                     <center>
                                         <h4 class="report-header"><span class="company_name_label"></span></h4>
                                         <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
@@ -94,8 +83,7 @@
 
                         <div id="per_item" class="tab-pane fade">
                             <h5>Per Item Stock Releasal Report</h5>
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
+                                <div class="card-body">
                                     <form id='frm_generate_item'>
                                         <div class="form-group row">
                                             <div class="col">
@@ -118,35 +106,24 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col">
+                                            <div class="col-0">
                                                 <label>&nbsp;</label>
                                                 <div>
-                                                    <div class="btn-group pull-right">
-                                                        <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-plus"></i>
-                                                            </span>
-                                                            <span class="text">Generate</span>
-                                                        </button>
-                                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries_item','Stock-Releasal-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                            <span class="icon">
-                                                                <i class="ti ti-cloud-down"></i>
-                                                            </span>
-                                                            <span class="text"> Export</span>
-                                                        </button>
-                                                        <button onclick="print_report('report_container_item')" type="button" class="btn btn-info btn-sm btn-icon-split">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-trash"></i>
-                                                            </span>
-                                                            <span class="text">Print</span>
-                                                        </button>
-                                                    </div>
+                                                    <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                                        <i class="ti-reload mr-1"></i> Generate
+                                                    </button>  
+                                                    <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_item','Stock-Releasal-Report')">
+                                                        <i class="ti-cloud-down mr-1"></i> Export
+                                                    </button>
+                                                    <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container_item')">
+                                                        <i class="ti-printer mr-1"></i> Print
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </form>
-                                </div>
-                                <div id="report_container_item" class="card-body">
+                                
+                                <div id="report_container_item">
                                     <center>
                                         <h4 class="report-header"><span class="company_name_label"></span></h4>
                                         <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
@@ -174,9 +151,7 @@
                                         </table>
                                     </div>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>

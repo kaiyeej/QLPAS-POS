@@ -27,7 +27,8 @@ class SupplierPayment extends Connection
             'check_number'  => $this->inputs['check_number'],
             'check_date'    => $this->inputs['check_date'],
             'remarks'       => $this->inputs['remarks'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['user']['id'],
+            'date_added'    => $this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -42,7 +43,8 @@ class SupplierPayment extends Connection
             'check_number'  => $this->inputs['check_number'],
             'check_date'    => $this->inputs['check_date'],
             'remarks'       => $this->inputs['remarks'],
-            'encoded_by' => $_SESSION['user']['id']
+            'encoded_by'            => $_SESSION['user']['id'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

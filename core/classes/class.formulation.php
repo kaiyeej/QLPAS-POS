@@ -13,6 +13,7 @@ class Formulation extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'remarks'       => $this->inputs['remarks'],
+            'date_added'    => $this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -32,7 +33,8 @@ class Formulation extends Connection
     {
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
-            'remarks'      => $this->inputs['remarks']
+            'remarks'      => $this->inputs['remarks'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form, '', 'Y');
     }

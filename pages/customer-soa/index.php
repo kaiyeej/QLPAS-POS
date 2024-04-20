@@ -24,13 +24,13 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Customer Statement of Accounts</h3>
-                    <h6 class="font-weight-normal mb-0">Generate report here</h6>
+                    <h6 class="font-weight-normal mb-3">Generate report here</h6>
                     <br>
                 </div>
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
+                <div class="card-body">
                     <form id='frm_generate'>
                         <div class="form-group row">
                             <div class="col">
@@ -45,7 +45,7 @@
                                 <label>&nbsp;</label>
                                 <div>
                                     <div class="btn-group pull-right">
-                                        <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
+                                        <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-split">
                                             <span class="icon">
                                                 <i class="ti ti-reload"></i>
                                             </span>
@@ -56,33 +56,34 @@
                             </div>
                         </div>
                     </form>
-                </div>
-                <div id="report_container" class="card-body">
-                    <center>
-                        <h4 class="report-header"><span id="company_name_label"></span></h4>
-                        <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                        <h5>Receivable Report</h5><br>
-                    </center>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>ACCOUNT</th>
-                                    <th style="text-align:right">BALANCE</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="2" style="text-align:right">Total:</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                
+                    <div id="report_container">
+                        <center>
+                            <h4 class="report-header"><span id="company_name_label"></span></h4>
+                            <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                            <h5>Receivable Report</h5><br>
+                        </center>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ACCOUNT</th>
+                                        <th style="text-align:right">BALANCE</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2" style="text-align:right">Total:</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

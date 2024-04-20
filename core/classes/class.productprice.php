@@ -17,10 +17,11 @@ class ProductPrice extends Connection
     {
         $effective_date = date('Y-m-d', strtotime($this->inputs['effective_date']));
         $form = array(
-            $this->name => $this->clean($this->inputs[$this->name]),
-            'effective_date' => $effective_date,
-            'remarks' => $this->clean($this->inputs['remarks']),
-            'status' => 'S',
+            $this->name         => $this->clean($this->inputs[$this->name]),
+            'effective_date'    => $effective_date,
+            'remarks'           => $this->clean($this->inputs['remarks']),
+            'status'            => 'S',
+            'date_added'        => $this->getCurrentDate()
         );
         $result = $this->insertIfNotExist($this->table, $form, "effective_date = '$effective_date'", 'Y');
         $new_result = $result > 0 ? 1 : abs($result); // for return last_id
@@ -32,9 +33,10 @@ class ProductPrice extends Connection
     {
         $effective_date = date('Y-m-d', strtotime($this->inputs['effective_date']));
         $form = array(
-            $this->name => $this->clean($this->inputs[$this->name]),
-            'effective_date' => $effective_date,
-            'remarks' => $this->clean($this->inputs['remarks'])
+            $this->name             => $this->clean($this->inputs[$this->name]),
+            'effective_date'        => $effective_date,
+            'remarks'               => $this->clean($this->inputs['remarks']),
+            'date_last_modified'    => $this->getCurrentDate()
         );
 
         $result = $this->updateIfNotExist($this->table, $form, "effective_date = '$effective_date' AND ");

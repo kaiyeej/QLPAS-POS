@@ -25,7 +25,8 @@ class JobOrder extends Connection
             'no_of_batches'     => $this->inputs['no_of_batches'],
             'remarks'           => $this->inputs['remarks'],
             'job_order_date'    => $this->inputs['job_order_date'],
-            'encoded_by'        => $_SESSION['user']['id']
+            'encoded_by'        => $_SESSION['user']['id'],
+            'date_added'    => $this->getCurrentDate()
         );
         $lastId = $this->insertIfNotExist($this->table, $form, '', 'Y');
 
@@ -78,7 +79,8 @@ class JobOrder extends Connection
             'no_of_batches'         => $this->inputs['no_of_batches'],
             'remarks'               => $this->inputs['remarks'],
             'job_order_date'        => $this->inputs['job_order_date'],
-            'encoded_by'            => $_SESSION['user']['id']
+            'encoded_by'            => $_SESSION['user']['id'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

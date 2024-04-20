@@ -9,19 +9,17 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Purchase Report</h3>
-                    <h6 class="font-weight-normal mb-0">Generate purchase report here</h6>
+                    <h6 class="font-weight-normal mb-3">Generate purchase report here</h6>
                 </div>
             </div>
-            <br>
-            <br>
-            <div class="col-12 col-xl-12 card shadow mb-4">
+            <div class="col-12 col-xl-12 card shadow">
                 <ul id="tabs" class="nav nav-tabs">
                     <li class="nav-item active"><a href="" data-target="#supplier" data-toggle="tab" class="nav-link small text-uppercase">Per Supplier</a></li>
                 </ul>
                 <br>
                 <div id="tabsContent" class="tab-content">
                     <div id="supplier" class="tab-pane active">
-                        <div class="card-header py-3">
+                        <div class="card-body">
                             <form id='frm_generate_supplier'>
                                 <div class="form-group row">
                                     <div class="col">
@@ -44,59 +42,48 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-0">
                                         <label>&nbsp;</label>
                                         <div>
-                                            <div class="btn-group pull-right">
-                                                <button type="submit" id="btn_supplier" class="btn btn-primary btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-reload"></i>
-                                                    </span>
-                                                    <span class="text"> Generate</span>
-                                                </button>
-                                                <button type="button" onclick="exportTableToExcel(this,'dt_entries_supplier','Purchase-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-cloud-down"></i>
-                                                    </span>
-                                                    <span class="text"> Export</span>
-                                                </button>
-                                                <button type="button" onclick="print_report2('supplier_container')" class="btn btn-info btn-sm btn-icon-split">
-                                                    <span class="icon">
-                                                        <i class="ti ti-printer"></i>
-                                                    </span>
-                                                    <span class="text"> Print</span>
-                                                </button>
-                                            </div>
+                                            <button type="submit" id="btn_supplier" class="btn btn-warning btn-icon-text">
+                                                <i class="ti-reload mr-1"></i> Generate
+                                            </button>  
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_supplier','Purchase-Report')">
+                                                <i class="ti-cloud-down mr-1"></i> Export
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('supplier_container')" id="btn_delete">
+                                                <i class="ti-printer mr-1"></i> Print
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div id="supplier_container" class="card-body">
-                            <center>
-                                <h4 class="report-header"><span class="company_name_label"></span></h4>
-                                <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Purchase Report Per Supplier</h5>
-                            </center>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dt_entries_supplier" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>ITEM</th>
-                                            <th style="text-align:right">QTY</th>
-                                            <th style="text-align:right">AMOUNT</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="1" style="text-align:right">Total:</th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div id="supplier_container">
+                                <center>
+                                    <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                    <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                    <h5 class="report-header">Purchase Report Per Supplier</h5>
+                                </center>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dt_entries_supplier" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ITEM</th>
+                                                <th style="text-align:right">QTY</th>
+                                                <th style="text-align:right">AMOUNT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="1" style="text-align:right">Total:</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

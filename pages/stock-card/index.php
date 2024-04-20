@@ -4,12 +4,12 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Stock Card Report</h3>
-                    <h6 class="font-weight-normal mb-0">Generate stock card here</h6>
+                    <h6 class="font-weight-normal mb-3">Generate stock card here</h6>
                 </div>
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
+                <div class="card-body">
                     <form id='frm_generate'>
                         <div class="form-group row">
                             <div class="col">
@@ -40,69 +40,60 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col" style="display: flex; justify-content:end;">
                                 <label>&nbsp;</label>
                                 <div>
-                                    <div class="btn-group pull-right">
-                                        <button type="submit" id="btn_generate" class="btn btn-primary btn-sm btn-icon-split">
-                                            <span class="icon text-white-50">
-                                                <i class="fas fa-plus"></i>
-                                            </span>
-                                            <span class="text">Generate</span>
-                                        </button>
-                                        <button type="button" onclick="exportTableToExcel(this,'dt_entries','Stock-Card-Report')" class="btn btn-success btn-sm btn-icon-split">
-                                            <span class="icon">
-                                                <i class="ti ti-cloud-down"></i>
-                                            </span>
-                                            <span class="text"> Export</span>
-                                        </button>
-                                        <button onclick="print_report('report_container')" type="button" class="btn btn-info btn-sm btn-icon-split">
-                                            <span class="icon text-white-50">
-                                                <i class="fas fa-trash"></i>
-                                            </span>
-                                            <span class="text">Print</span>
-                                        </button>
-                                    </div>
+                                    <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                        <i class="ti-reload mr-1"></i> Generate
+                                    </button>  
+                                    <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Stock-Card-Report')">
+                                        <i class="ti-cloud-down mr-1"></i> Export
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container')">
+                                        <i class="ti-printer mr-1"></i> Print
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </form>
-                </div>
-                <div id="report_container" class="card-body">
-                    <center>
-                        <h4 class="report-header"><span id="company_name_label"></span></h4>
-                        <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                        <h5 class="report-header">Stock Card Report</h5><br>
-                    </center>
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>DATE</th>
-                                    <th>TRANSACTION</th>
-                                    <th>REFERENCE #</th>
-                                    <th>UNIT COST</th>
-                                    <th>QTY IN</th>
-                                    <th>QTY OUT</th>
-                                    <th>BALANCE QTY</th>
-                                    <th>AMOUNT</th>
-                                </tr>
-                                <tr>
-                                    <th style="text-align:right;" colspan="6">Balance Fowarded</th>
-                                    <th><span class="label-item" id="qty_label"></span></th>
-                                    <th><span class="label-item" id="amount_label"></span><input type='hidden' class='current_qty' id="bf_qty_label"><input type='hidden' class='current_amount' id="bf_amount_label"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="6" style="text-align:right">Current:</th>
-                                    <th><span id="span_current_qty"></span></th>
-                                    <th><span id="span_current_amount"></span></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div id="report_container">
+                        <center>
+                            <h4 class="report-header"><span id="company_name_label"></span></h4>
+                            <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
+                            <h5 class="report-header">Stock Card Report</h5><br>
+                        </center>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dt_entries" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>DATE</th>
+                                        <th>TRANSACTION</th>
+                                        <th>REFERENCE #</th>
+                                        <th>UNIT COST</th>
+                                        <th>QTY IN</th>
+                                        <th>QTY OUT</th>
+                                        <th>BALANCE QTY</th>
+                                        <th>AMOUNT</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align:right;" colspan="6">Balance Fowarded</th>
+                                        <th><span class="label-item" id="qty_label"></span></th>
+                                        <th><span class="label-item" id="amount_label"></span><input type='hidden' class='current_qty' id="bf_qty_label"><input type='hidden' class='current_amount' id="bf_amount_label"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="6" style="text-align:right">Current:</th>
+                                        <th><span id="span_current_qty"></span></th>
+                                        <th><span id="span_current_amount"></span></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

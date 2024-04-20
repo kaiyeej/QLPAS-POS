@@ -17,7 +17,8 @@ class DebitMemo extends Connection
             'memo_type'     => $this->inputs['memo_type'],
             'account_id'    => $this->inputs['account_id'],
             'remarks'       => $this->inputs['remarks'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['user']['id'],
+            'date_added'    => $this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -43,11 +44,11 @@ class DebitMemo extends Connection
         }
 
         $form = array(
-            $this->pk => $this->inputs[$this->pk],
-            $this->fk_det => $reference_id,
-            'amount' => $this->inputs['amount'],
-            'ref_type' => $type,
-            'description' => $this->inputs['description'],
+            $this->pk               => $this->inputs[$this->pk],
+            $this->fk_det           => $reference_id,
+            'amount'                => $this->inputs['amount'],
+            'ref_type'              => $type,
+            'description'           => $this->inputs['description']
             
         );
 
@@ -57,9 +58,10 @@ class DebitMemo extends Connection
     public function edit()
     {
         $form = array(
-            'memo_date'     => $this->inputs['memo_date'],
-            'remarks'       => $this->inputs['remarks'],
-            'encoded_by' => $_SESSION['user']['id']
+            'memo_date'             => $this->inputs['memo_date'],
+            'remarks'               => $this->inputs['remarks'],
+            'encoded_by'            => $_SESSION['user']['id'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

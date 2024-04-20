@@ -31,16 +31,17 @@ class PurchaseReturn extends Connection
             'po_id'         => $po_id,
             'remarks'       => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['user']['id'],
+            'date_added'    => $this->getCurrentDate()
         );
         $pr_id = $this->insert($this->table, $form,'Y');
 
         $form_detail = array(
-            'pr_id' => "$pr_id AS pr_id",
-            'po_detail_id' => 'po_detail_id',
-            'product_id' => 'product_id',
-            'qty' => 'qty',
-            'supplier_price' => 'supplier_price'
+            'pr_id'             => "$pr_id AS pr_id",
+            'po_detail_id'      => 'po_detail_id',
+            'product_id'        => 'product_id',
+            'qty'               => 'qty',
+            'supplier_price'    => 'supplier_price'
         );
 
         $this->insert_select($this->table_detail, 'tbl_purchase_order_details', $form_detail, "po_id = '$po_id' ");
@@ -50,9 +51,10 @@ class PurchaseReturn extends Connection
     public function edit()
     {
         $form = array(
-            'remarks'    => $this->inputs['remarks'],
-            'return_date'   => $this->inputs['return_date'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'remarks'               => $this->inputs['remarks'],
+            'return_date'           => $this->inputs['return_date'],
+            'encoded_by'            => $_SESSION['user']['id'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

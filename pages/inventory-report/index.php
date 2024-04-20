@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <form id='frm_generate'>
                         <div class="form-group row">
-                            <div class="col-3 col-xl-3">
+                            <div class="col">
                                 <label><strong>Category</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="product_category_id" name="input[product_category_id]">
@@ -20,7 +20,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-3 col-xl-3">
+                            <div class="col">
                                 <label><strong>Warehouse</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]">
@@ -28,7 +28,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-6 col-xl-6">
+                            <div class="col-5">
                                 <label>&nbsp;</label>
                                 <div>
 
@@ -38,7 +38,7 @@
                                 <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Inventroy-Report')">
                                     <i class="ti-cloud-down mr-1"></i> Export
                                 </button>
-                                <button type="button" class="btn btn-danger btn-icon-text" onclick="print_report('report_container')" id="btn_delete">
+                                <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container')" id="btn_delete">
                                     <i class="ti-printer mr-1"></i> Print
                                 </button>
 

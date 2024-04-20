@@ -20,12 +20,13 @@ class Customers extends Connection
             return 2;
         } else {
             $form = array(
-                'customer_name' => $this->inputs['customer_name'],
-                'customer_address' => $this->inputs['customer_address'],
+                'customer_name'     => $this->inputs['customer_name'],
+                'customer_address'  => $this->inputs['customer_address'],
                 'customer_contact_number' => $this->inputs['customer_contact_number'],
-                'customer_tin' => $this->inputs['customer_tin'],
-                'remarks' => $this->inputs['remarks'],
-                'customer_terms' => $this->inputs['customer_terms']
+                'customer_tin'      => $this->inputs['customer_tin'],
+                'remarks'           => $this->inputs['remarks'],
+                'customer_terms'    => $this->inputs['customer_terms'],
+                'date_added'        => $this->getCurrentDate()
             );
             $result = $this->insert($this->table, $form);
             Logs::storeCrud($this->module_name, 'c', $result, $customer_name);
@@ -44,14 +45,15 @@ class Customers extends Connection
             return 2;
         } else {
             $form = array(
-                'customer_name' => $this->inputs['customer_name'],
-                'customer_address' => $this->inputs['customer_address'],
+                'customer_name'         => $this->inputs['customer_name'],
+                'customer_address'      => $this->inputs['customer_address'],
                 'customer_contact_number' => $this->inputs['customer_contact_number'],
-                'customer_tin' => $this->inputs['customer_tin'],
-                'remarks' => $this->inputs['remarks'],
-                'suki_card_number' => $this->inputs['suki_card_number'],
-                'date_last_modified' => $this->getCurrentDate(),
-                'customer_terms' => $this->inputs['customer_terms']
+                'customer_tin'          => $this->inputs['customer_tin'],
+                'remarks'               => $this->inputs['remarks'],
+                'suki_card_number'      => $this->inputs['suki_card_number'],
+                'date_last_modified'    => $this->getCurrentDate(),
+                'customer_terms'        => $this->inputs['customer_terms'],
+                'date_last_modified'    => $this->getCurrentDate()
             );
             $old_name = $this->name($primary_id);
             $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");

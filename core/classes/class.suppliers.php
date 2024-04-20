@@ -20,10 +20,11 @@ class Suppliers extends Connection
             return 2;
         } else {
             $form = array(
-                'supplier_name' => $this->inputs['supplier_name'],
-                'supplier_address' => $this->inputs['supplier_address'],
-                'contact_number' => $this->inputs['contact_number'],
-                'remarks' => $this->inputs['remarks']
+                'supplier_name'     => $this->inputs['supplier_name'],
+                'supplier_address'  => $this->inputs['supplier_address'],
+                'contact_number'    => $this->inputs['contact_number'],
+                'remarks'           => $this->inputs['remarks'],
+                'date_added'        => $this->getCurrentDate()
             );
             $result = $this->insert($this->table, $form);
             Logs::storeCrud($this->module_name, 'c', $result, $supplier_name);
@@ -41,10 +42,11 @@ class Suppliers extends Connection
             return 2;
         } else {
             $form = array(
-                'supplier_name' => $supplier_name,
-                'supplier_address' => $this->inputs['supplier_address'],
-                'contact_number' => $this->inputs['contact_number'],
-                'remarks' => $this->inputs['remarks']
+                'supplier_name'     => $supplier_name,
+                'supplier_address'  => $this->inputs['supplier_address'],
+                'contact_number'    => $this->inputs['contact_number'],
+                'remarks'           => $this->inputs['remarks'],
+                'date_last_modified'    => $this->getCurrentDate()
             );
             $old_name = $this->name($primary_id);
             $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");

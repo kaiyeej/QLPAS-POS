@@ -16,8 +16,9 @@ class Profile extends Connection
             return 2;
         } else {
             $form = array(
-                'user_fullname' => $user_fullname,
-                'username' => $username
+                'user_fullname'         => $user_fullname,
+                'username'              => $username,
+                'date_last_modified'    => $this->getCurrentDate()
             );
             return $this->update($this->table, $form, "$this->pk = '$primary_id'");
         }

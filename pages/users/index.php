@@ -4,29 +4,20 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Users</h3>
-                    <h6 class="font-weight-normal mb-0">Manage users here</h6>
+                    <h6 class="font-weight-normal mb-3">Manage users here</h6>
                 </div>
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-header py-3">
-                    <!--<h6 class="m-0 font-weight-bold text-primary">List of Users</h6>-->
-                    <div class="btn-group pull-right">
-                        <a href="#" class="btn btn-primary btn-sm btn-icon-split" onclick="addUser()">
-                            <span class="icon text-white-50">
-                                <i class="fas fa-plus"></i>
-                            </span>
-                            <span class="text">Add Entry</span>
-                        </a>
-                        <a href="#" class="btn btn-danger btn-sm btn-icon-split" onclick='deleteEntry()' id='btn_delete'>
-                            <span class="icon text-white-50">
-                                <i class="fas fa-trash"></i>
-                            </span>
-                            <span class="text">Delete Entry</span>
-                        </a>
-                    </div>
-                </div>
                 <div class="card-body">
+                    <button type="button" class="btn btn-primary btn-icon-text" onclick="addUser()">
+                        <i class="ti-plus mr-1"></i> Add Entry
+                    </button>
+
+                    <button type="button" class="btn btn-danger btn-icon-text" onclick="deleteEntry()" id="btn_delete">
+                        <i class="ti-trash mr-1"></i> Delete Entry
+                    </button>
+                    
                     <div class="table-responsive">
                         <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
                             <thead>
@@ -163,7 +154,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-info btn-circle btn-sm' onclick='getUserDetails(" + row.user_id + ")'><span class='ti ti-pencil'></span></button></center>";
+                        return "<center><button class='btn btn-primary btn-circle' onclick='getUserDetails(" + row.user_id + ")' style='padding:15px;height:45px;'><span class='ti ti-pencil'></span></button></center>";
                     }
                 },
                 {

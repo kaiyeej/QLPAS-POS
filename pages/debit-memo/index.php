@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Debit Memo</h3>
-                    <h6 class="font-weight-normal mb-1">Manage debit memo here</h6>
+                    <h6 class="font-weight-normal mb-2">Manage debit memo here</h6>
                     <h6 class="font-weight-bold mb-3" style='color:red'>NOTE: Use this module to encode supplier discounts, customer's interests, and other transactions related to debit in Accounts Receivable and credit in Accounts Payable.</h6>
                 </div>
             </div>

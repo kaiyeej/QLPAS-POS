@@ -20,13 +20,14 @@ class StockWithdrawal extends Connection
         $Sales = new Sales;
         $warehouse_id = $Sales->dataRow($sales_id, 'warehouse_id');
         $form = array(
-            $this->name => $ref_number,
-            'branch_id' => $this->getBranch(),
-            'warehouse_id' => $warehouse_id,
-            'sales_id' => $sales_id,
-            'remarks' => $this->inputs['remarks'],
-            'withdrawal_date' => $this->inputs['withdrawal_date'],
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            $this->name         => $ref_number,
+            'branch_id'         => $this->getBranch(),
+            'warehouse_id'      => $warehouse_id,
+            'sales_id'          => $sales_id,
+            'remarks'           => $this->inputs['remarks'],
+            'withdrawal_date'   => $this->inputs['withdrawal_date'],
+            'encoded_by'        => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id'],
+            'date_added'        => $this->getCurrentDate()
         );
         $withdrawal_id = $this->insertIfNotExist($this->table, $form, "reference_number = '$ref_number'", 'Y');
 
@@ -58,10 +59,11 @@ class StockWithdrawal extends Connection
     public function edit()
     {
         $form = array(
-            'sales_id' => $this->inputs['sales_id'],
-            'remarks' => $this->inputs['remarks'],
-            'withdrawal_date' => $this->inputs['withdrawal_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'sales_id'              => $this->inputs['sales_id'],
+            'remarks'               => $this->inputs['remarks'],
+            'withdrawal_date'       => $this->inputs['withdrawal_date'],
+            'encoded_by'            => $_SESSION['user']['id'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

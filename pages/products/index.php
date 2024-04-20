@@ -81,7 +81,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return row.product_barcode == '' ? "" : "<center><button class='btn btn-warning btn-circle' onclick=\"openBarcodeModal('" + row.product_barcode + "')\" style='padding:15px;height:45px;'><span class='ti ti-printer'></span></button></center>";
+                        return row.product_barcode == '' ? "" : "<center><button class='btn btn-success btn-circle' onclick=\"openBarcodeModal('" + row.product_barcode + "')\" style='padding:15px;height:45px;'><span class='ti ti-printer'></span></button></center>";
                     }
                 },
                 {

@@ -20,7 +20,8 @@ class Products extends Connection
             'remarks'               => $this->inputs['remarks'],
             'product_code'          => $this->inputs['product_code'],
             'product_barcode'       => $this->inputs['product_barcode'],
-            'is_package'            => isset($this->inputs['is_package']) ? '1' : '0'
+            'is_package'            => isset($this->inputs['is_package']) ? '1' : '0',
+            'date_added'            => $this->getCurrentDate()
         );
         $param = "product_code='" . $this->inputs['product_code'] . "'";
         $param .= $this->inputs['product_barcode'] != '' ? " OR product_barcode = '" . $this->inputs['product_barcode'] . "'" : '';
@@ -38,7 +39,8 @@ class Products extends Connection
             'product_price'         => $this->inputs['product_price'],
             'product_barcode'       => $this->inputs['product_barcode'],
             'remarks'               => $this->inputs['remarks'],
-            'is_package'            => isset($this->inputs['is_package']) ? '1' : '0'
+            'is_package'            => isset($this->inputs['is_package']) ? '1' : '0',
+            'date_last_modified'    => $this->getCurrentDate()
         );
         $param = "(product_code='" . $this->inputs['product_code'] . "'";
         $param .= $this->inputs['product_barcode'] != '' ? " OR product_barcode = '" . $this->inputs['product_barcode'] . "')" : ')';

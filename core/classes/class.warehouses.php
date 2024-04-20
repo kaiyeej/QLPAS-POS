@@ -22,8 +22,9 @@ class Warehouses extends Connection
             return -2;
         } else {
             $form = array(
-                'warehouse_name' => $warehouse_name,
-                'branch_id' => $branch_id
+                'warehouse_name'        => $warehouse_name,
+                'branch_id'             => $branch_id,
+                'date_last_modified'    => $this->getCurrentDate()
             );
 
             $result = $this->insert($this->table, $form);
@@ -42,7 +43,8 @@ class Warehouses extends Connection
             return 2;
         } else {
             $form = array(
-                'warehouse_name' => $this->inputs['warehouse_name'],
+                'warehouse_name'        => $this->inputs['warehouse_name'],
+                'date_last_modified'    => $this->getCurrentDate()
             );
 
             $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");

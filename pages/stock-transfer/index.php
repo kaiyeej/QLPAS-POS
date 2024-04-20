@@ -95,7 +95,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.stock_transfer_id + ")' style='padding:15px;height:45px;'><span class='ti ti-list'></span></button></center>";
+                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.stock_transfer_id + ")' style='padding:15px;height:45px;'><span class='ti ti-menu'></span></button></center>";
                     }
                 },
                 {
@@ -115,7 +115,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : "<span class='badge badge-danger'>Saved</span>";
+                        return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : "<span class='badge badge-warning'>Saved</span>";
                     }
                 },
                 {

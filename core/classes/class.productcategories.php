@@ -14,7 +14,8 @@ class ProductCategories extends Connection
     public function add()
     {
         $form = array(
-            $this->name => $this->clean($this->inputs[$this->name])
+            $this->name => $this->clean($this->inputs[$this->name]),
+            'date_added'    => $this->getCurrentDate()
         );
 
         $result = $this->insertIfNotExist($this->table, $form);
@@ -25,7 +26,8 @@ class ProductCategories extends Connection
     public function edit()
     {
         $form = array(
-            $this->name => $this->clean($this->inputs[$this->name])
+            $this->name => $this->clean($this->inputs[$this->name]),
+            'date_last_modified'    => $this->getCurrentDate()
         );
         $old_name = $this->name($this->inputs[$this->pk]);
         $result = $this->updateIfNotExist($this->table, $form);

@@ -22,7 +22,8 @@ class Expense extends Connection
             'branch_id'     => $this->getBranch(),
             'remarks'       => $this->inputs['remarks'],
             'expense_date'  => $this->inputs['expense_date'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['user']['id'],
+            'date_added'    => $this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -32,7 +33,8 @@ class Expense extends Connection
         $form = array(
             'remarks'       => $this->inputs['remarks'],
             'expense_date'  => $this->inputs['expense_date'],
-            'encoded_by'    => $_SESSION['user']['id']
+            'encoded_by'    => $_SESSION['user']['id'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

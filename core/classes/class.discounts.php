@@ -33,7 +33,8 @@ class Discounts extends Connection
             'discount_amount'   => $this->inputs['discount_amount'],
             'discount_type'     => $this->inputs['discount_type'],
             'discount_start'    => $this->inputs['discount_start'],
-            'discount_end'      => $this->inputs['discount_end']
+            'discount_end'      => $this->inputs['discount_end'],
+            'date_added'    => $this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -61,7 +62,8 @@ class Discounts extends Connection
             'discount_amount'   => $this->inputs['discount_amount'],
             'discount_type'     => $this->inputs['discount_type'],
             'discount_start'    => $this->inputs['discount_start'],
-            'discount_end'      => $this->inputs['discount_end']
+            'discount_end'      => $this->inputs['discount_end'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

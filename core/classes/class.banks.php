@@ -21,10 +21,11 @@ class Banks extends Connection
             return 2;
         } else {
             $form = array(
-                'bank_name' => $this->inputs['bank_name'],
-                'bank_branch' => $this->inputs['bank_branch'],
-                'bank_account_name' => $this->inputs['bank_account_name'],
-                'bank_account_number' => $this->inputs['bank_account_number']
+                'bank_name'             => $this->inputs['bank_name'],
+                'bank_branch'           => $this->inputs['bank_branch'],
+                'bank_account_name'     => $this->inputs['bank_account_name'],
+                'bank_account_number'   => $this->inputs['bank_account_number'],
+                'date_added'            => $this->getCurrentDate() 
             );
 
             $result = $this->insert($this->table, $form);
@@ -43,10 +44,11 @@ class Banks extends Connection
             return 2;
         } else {
             $form = array(
-                'bank_name' => $this->inputs['bank_name'],
-                'bank_branch' => $this->inputs['bank_branch'],
-                'bank_account_name' => $this->inputs['bank_account_name'],
-                'bank_account_number' => $this->inputs['bank_account_number']
+                'bank_name'             => $this->inputs['bank_name'],
+                'bank_branch'           => $this->inputs['bank_branch'],
+                'bank_account_name'     => $this->inputs['bank_account_name'],
+                'bank_account_number'   => $this->inputs['bank_account_number'],
+                'date_last_modified'    => $this->getCurrentDate()
             );
 
             $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");

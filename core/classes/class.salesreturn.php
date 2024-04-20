@@ -31,7 +31,8 @@ class SalesReturn extends Connection
             'warehouse_id'  => $warehouse_id,
             'remarks'       => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
-            'encoded_by' => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
+            'encoded_by'    => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id'],
+            'date_added'    => $this->getCurrentDate()
         );
         $sales_return_id = $this->insert($this->table, $form, 'Y');
 
@@ -65,9 +66,10 @@ class SalesReturn extends Connection
     public function edit()
     {
         $form = array(
-            'remarks'       => $this->inputs['remarks'],
-            'return_date'   => $this->inputs['return_date'],
-            'encoded_by' => $_SESSION['user']['id']
+            'remarks'               => $this->inputs['remarks'],
+            'return_date'           => $this->inputs['return_date'],
+            'encoded_by'            => $_SESSION['user']['id'],
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }

@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12 col-xl-12 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Receivable Ledger</h3>
-                    <h6 class="font-weight-normal mb-0">Generate accounts receivable here</h6>
+                    <h6 class="font-weight-normal mb-3">Generate accounts receivable here</h6>
                 </div>
             </div>
 

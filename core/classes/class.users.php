@@ -17,8 +17,9 @@ class Users extends Connection
             $form = array(
                 'user_fullname' => $this->inputs['user_fullname'],
                 'user_category' => $this->inputs['user_category'],
-                'username' => $this->inputs['username'],
-                'password' => md5($pass)
+                'username'      => $this->inputs['username'],
+                'password'      => md5($pass),
+                'date_added'    => $this->getCurrentDate()
             );
             return $this->insert($this->table, $form);
         }
@@ -34,8 +35,9 @@ class Users extends Connection
             return 2;
         } else {
             $form = array(
-                'user_fullname' => $user_fullname,
-                'username' => $username
+                'user_fullname'         => $user_fullname,
+                'username'              => $username,
+                'date_last_modified'    => $this->getCurrentDate()
             );
             if ($primary_id != $_SESSION['user']['id']) {
                 $form['user_category'] = $this->inputs['user_category'];
