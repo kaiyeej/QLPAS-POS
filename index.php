@@ -179,12 +179,13 @@ include 'core/config.php';
 
         sessionStorage.setItem('session_branch_id', selectedBranchId);
 
-        // if (selectedBranchId != currentSessionBranchId) {
-        //   sessionStorage.setItem('session_branch_id', selectedBranchId);
-        //   location.reload();
-        // }
         updateSessionBranch(selectedBranchId);
-        location.reload();
+        // location.reload();
+        
+        if (selectedBranchId != currentSessionBranchId) {
+          sessionStorage.setItem('session_branch_id', selectedBranchId);
+          location.reload();
+        }
       });
 
       function updateSessionBranch(branch_id) {
