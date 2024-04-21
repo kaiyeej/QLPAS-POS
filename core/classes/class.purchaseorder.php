@@ -123,8 +123,25 @@ class PurchaseOrder extends Connection
         $form = array(
             'status' => 'F',
         );
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+
+        $result =  $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        if($result){
+            $row_header = $this->rows($primary_id);
+            $InventoryReport = new InventoryReport;
+            $InventoryReport->update_product_qty($this->table_detail, $this->pk, $primary_id, $row_header['branch_id'], $row_header['warehouse_id']);
+        }
+
+        return $result;
     }
+
+
+    public function rows($primary_id)
+    {
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
 
     public function generate()
     {
@@ -241,10 +258,12 @@ class PurchaseOrder extends Connection
 
     public function totalPurchaseDays($days)
     {
-        $fetchData = $this->select('tbl_purchase_order_details as d, tbl_purchase_order as h', "sum(supplier_price*qty) as total", "h.po_id = d.po_id AND h.po_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
+        
+        $branch_id = $this->getBranch();
+        $fetchData = $this->select('tbl_purchase_order_details as d, tbl_purchase_order as h', "sum(supplier_price*qty) as total", "h.po_id = d.po_id AND h.po_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F' AND h.branch_id='$branch_id'");
         $row = $fetchData->fetch_assoc();
 
-        $result_pr = $this->select("tbl_purchase_return as pr, tbl_purchase_return_details as prd", "SUM(prd.qty_return*prd.supplier_price) as total", "pr.pr_id=prd.pr_id AND pr.status='F' AND pr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
+        $result_pr = $this->select("tbl_purchase_return as pr, tbl_purchase_return_details as prd", "SUM(prd.qty_return*prd.supplier_price) as total", "pr.pr_id=prd.pr_id  AND pr.branch_id='$branch_id' AND pr.status='F' AND pr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
         $row_sr = $result_pr->fetch_assoc();
 
         return ($row['total']-$row_sr['total']) == 0 ? 0 : ($row['total']-$row_sr['total']);

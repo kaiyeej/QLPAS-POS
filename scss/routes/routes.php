@@ -95,7 +95,7 @@ $routes = array(
 
 
 $base_folder = "pages/";
-$page = str_replace("/QLPAS-POS/", "", $request);
+$page = str_replace("/pos/", "", $request);
 
 // chec if has parameters
 if (substr_count($page, "?") > 0) {

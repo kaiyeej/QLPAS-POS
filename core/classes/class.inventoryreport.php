@@ -89,6 +89,34 @@ class InventoryReport extends Connection
         return (float) $row['total'];
     }
 
+    public function update_product_qty($table_detail, $primary_key, $primary_id, $branch_id, $warehouse_id, $product_field = "product_id"){
+
+        $fetch = $this->select($table_detail, $product_field, "$primary_key='$primary_id'");
+        while($row = $fetch->fetch_assoc()){
+            $product_id = $row[$product_field];
+
+            $fetch_inv = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id' AND status = 1");
+            $inv_row = $fetch_inv->fetch_assoc();
+            $current_qty =  $inv_row['qty']*1;
+            
+            $fetch_count = $this->select("tbl_product_warehouses", "product_warehouse_id", "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+            $count_row = $fetch_count->fetch_assoc();
+
+            if($count_row['product_warehouse_id'] > 0){
+                $this->update("tbl_product_warehouses",["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+            }else{
+                $form = array(
+                    "product_id" => $product_id,
+                    "branch_id" => $branch_id,
+                    "warehouse_id" => $warehouse_id,
+                    "product_qty" => $current_qty
+                );
+
+                $this->insert("tbl_product_warehouses", $form);
+            }
+        }
+    }
+
     public function inventory_script_runner(){
         $fetch = $this->select("tbl_products","*","product_id > 0");
         while($row = $fetch->fetch_assoc()){

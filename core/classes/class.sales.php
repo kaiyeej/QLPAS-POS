@@ -21,7 +21,7 @@ class Sales extends Connection
 
 
     public function add()
-    { 
+    {
         $for_pick_up = isset($this->inputs['for_pick_up']) ? $this->inputs['for_pick_up'] : 0;
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
@@ -36,7 +36,7 @@ class Sales extends Connection
             'paid_status'   => ($this->inputs['sales_type'] == "C" ? 1 : 0),
             'sales_date'    => $this->inputs['sales_date'],
             'encoded_by'    => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id'],
-            'date_added'    =>$this->getCurrentDate()
+            'date_added'    => $this->getCurrentDate()
         );
         return $this->insertIfNotExist($this->table, $form, '', 'Y');
     }
@@ -54,7 +54,7 @@ class Sales extends Connection
             'sales_date'            => $this->inputs['sales_date'],
             'encoded_by'            => $_SESSION['user']['id'],
             'warehouse_id'          => $this->inputs['warehouse_id'],
-            'date_last_modified'    =>$this->getCurrentDate()
+            'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
     }
@@ -137,7 +137,7 @@ class Sales extends Connection
     }
 
     public function generate()
-    {   
+    {
         //return 'DR-' . date('ymdHis');
         $fetch = $this->select($this->table, "max(sales_id) + 1 as max_id", $this->pk > 0);
         $row = $fetch->fetch_assoc();
@@ -146,7 +146,6 @@ class Sales extends Connection
 
     public function finish()
     {
-        
         $primary_id = $this->inputs['id'];
         $fetch = $this->select($this->table, "*", "$this->pk='$primary_id'");
         $row = $fetch->fetch_assoc();
@@ -156,9 +155,15 @@ class Sales extends Connection
         );
 
         // update inventory qty
-        $this->update_product_qty($primary_id, $row['branch_id'], $row['warehouse_id']);
+        $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        if ($result) {
+            $fetch = $this->select($this->table, "*", "$this->pk='$primary_id'");
+            $row = $fetch->fetch_assoc();
+            $InventoryReport = new InventoryReport;
+            $InventoryReport->update_product_qty("tbl_sales_details", "sales_id", $primary_id, $row['branch_id'], $row['warehouse_id']);
+        }
 
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        return $result;
     }
 
     public function pk_by_name($name = null)
@@ -431,7 +436,7 @@ class Sales extends Connection
 
         // check inventory here ...
         $Inventory = new InventoryReport();
-        $current_balance = $Inventory->balance_per_warehouse($product_id,$branch_id, $warehouse_id);
+        $current_balance = $Inventory->balance_per_warehouse($product_id, $branch_id, $warehouse_id);
         if ($current_balance - $this->inputs['quantity'] >= 0) {
 
             $sales_id = $this->detailsRow($sales_detail_id, 'sales_id');
@@ -485,7 +490,7 @@ class Sales extends Connection
                 }
 
                 // checker for sales num
-                if($reference_number == ""){
+                if ($reference_number == "") {
                     $reference_number = sprintf("%'.06d", $sales_id);
                     $form = array(
                         'reference_number' => $reference_number
@@ -529,7 +534,7 @@ class Sales extends Connection
                         $this->edit_detail();
                     }
                 }
-                
+
                 $response['response_code'] = 1;
                 $response['response_sales_num'] = $reference_number;
                 return $response;
@@ -616,6 +621,7 @@ class Sales extends Connection
         $RedeemedPoints = new RedeemedPoints;
         $Customers = new Customers;
         $RedeemedPoints = new RedeemedPoints;
+        $InventoryReport = new InventoryReport;
         $reference_number = $this->inputs['reference_number'];
         $customer_payment_amount = $this->inputs['customer_payment_amount'];
         $sales_type = $this->inputs['sales_type'];
@@ -686,40 +692,13 @@ class Sales extends Connection
             $RedeemedPoints->finish();
 
             // update inventory qty
-            $this->update_product_qty($primary_id, $branch_id, $warehouse_id);
+            //$this->update_product_qty($primary_id, $branch_id, $warehouse_id);
+            $InventoryReport->update_product_qty("tbl_sales_details", "sales_id", $primary_id, $branch_id, $warehouse_id);
 
             // finish all related customer payment
             return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
         } else {
             return -1;
-        }
-    }
-
-    public function update_product_qty($primary_id, $branch_id, $warehouse_id){
-
-        $fetch = $this->select($this->table_detail, "product_id", "$this->pk='$primary_id'");
-        while($row = $fetch->fetch_assoc()){
-            $product_id = $row['product_id'];
-
-            $fetch_inv = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id' AND status = 1");
-            $inv_row = $fetch_inv->fetch_assoc();
-            $current_qty =  $inv_row['qty']*1;
-            
-            $fetch_count = $this->select("tbl_product_warehouses", "product_warehouse_id", "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
-            $count_row = $fetch_count->fetch_assoc();
-
-            if($count_row['product_warehouse_id'] > 0){
-                $this->update("tbl_product_warehouses",["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
-            }else{
-                $form = array(
-                    "product_id" => $product_id,
-                    "branch_id" => $branch_id,
-                    "warehouse_id" => $warehouse_id,
-                    "product_qty" => $current_qty
-                );
-
-                $this->insert("tbl_product_warehouses", $form);
-            }
         }
     }
 
@@ -798,8 +777,8 @@ class Sales extends Connection
         $fetch_charge_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details AS d,
         tbl_customer_payment AS cp, tbl_customer_payment_details AS cpd", "sum((d.quantity_return*d.price)-d.discount) as total_charge_sr, SUM(cpd.amount) AS total_cp", "s.sales_return_id=d.sales_return_id AND s.status='F' AND s.sales_summary_id=0 AND s.encoded_by='$user_id' AND cp.cp_id=cpd.cp_id AND cpd.ref_id=s.sales_id AND cpd.`type`='DR' AND cp.`status`='F'");
         $charge_sales_return_row = $fetch_charge_sales_return->fetch_assoc();
-        $sales_rows['total_charge_sales_return'] =  $charge_sales_return_row['total_charge_sr']*1;
-        $sales_rows['total_returned_payment'] =  $charge_sales_return_row['total_cp']*1;
+        $sales_rows['total_charge_sales_return'] =  $charge_sales_return_row['total_charge_sr'] * 1;
+        $sales_rows['total_returned_payment'] =  $charge_sales_return_row['total_cp'] * 1;
 
         // redeemed points
         $fetch_redeemed_points = $this->select("tbl_redeemed_points", "sum(redeem_points) as total_points", "status='F' and sales_summary_id=0 and encoded_by='$user_id' ");
@@ -887,10 +866,11 @@ class Sales extends Connection
 
     public function totalSalesDays($days)
     {
-        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
+        $branch_id = $this->getBranch();
+        $fetchData = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.sales_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F' AND h.branch_id='$branch_id'");
         $row = $fetchData->fetch_assoc();
 
-        $result_sr = $this->select("tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
+        $result_sr = $this->select("tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.branch_id='$branch_id' AND sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.return_date BETWEEN NOW() - INTERVAL $days DAY AND NOW()");
         $total_sr = $result_sr->fetch_array();
 
 
@@ -1229,13 +1209,14 @@ class Sales extends Connection
         $today = date('H:i:s');
         $year = date('Y', strtotime($today) + 28800);
 
+        $branch_id = $this->getBranch();
         $rows = array();
         $count = 1;
         while ($count <= 12) {
-            $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.status='F' AND MONTH(h.sales_date)='$count' AND YEAR(h.sales_date) = '$year'");
+            $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total", "h.sales_id = d.sales_id AND h.status='F' AND MONTH(h.sales_date)='$count' AND YEAR(h.sales_date) = '$year' AND h.branch_id='$branch_id'");
             $total_sales = $result->fetch_assoc();
 
-            $result_sr = $this->select('tbl_sales_return_details as d, tbl_sales_return as h', "sum((quantity_return*price)-discount) as total", "h.sales_return_id = d.sales_return_id AND h.status='F' AND MONTH(h.return_date)='$count' AND YEAR(h.return_date) = '$year'");
+            $result_sr = $this->select('tbl_sales_return_details as d, tbl_sales_return as h', "sum((quantity_return*price)-discount) as total", "h.sales_return_id = d.sales_return_id AND h.status='F' AND MONTH(h.return_date)='$count' AND YEAR(h.return_date) = '$year' AND h.branch_id='$branch_id'");
             $total_return = $result_sr->fetch_assoc();
 
 
@@ -1258,10 +1239,11 @@ class Sales extends Connection
     public function top_products()
     {
 
+        $branch_id = $this->getBranch();
         $Products = new Products;
         $sales_return = new SalesReturn;
         $rows = array();
-        $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total,product_id, count(h.sales_id) as count", "h.sales_id = d.sales_id AND h.status='F' GROUP BY d.product_id ORDER BY sum((quantity*price)-discount) DESC LIMIT 10");
+        $result = $this->select('tbl_sales_details as d, tbl_sales as h', "sum((quantity*price)-discount) as total,product_id, count(h.sales_id) as count", "h.sales_id = d.sales_id AND h.status='F' AND h.branch_id='$branch_id' GROUP BY d.product_id ORDER BY sum((quantity*price)-discount) DESC LIMIT 10");
         while ($row = $result->fetch_assoc()) {
             $total = $row['total'] - $sales_return->total_return_by_product($row['product_id']);
             $row['product'] = $Products->name($row['product_id']);

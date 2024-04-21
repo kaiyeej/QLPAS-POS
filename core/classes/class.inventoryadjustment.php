@@ -119,7 +119,16 @@ class InventoryAdjustment extends Connection
         $form = array(
             'status' => 'F',
         );
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        // update inventory qty
+        if ($result) {
+            $fetch = $this->select($this->table, "*", "$this->pk='$primary_id'");
+            $row = $fetch->fetch_assoc();
+            $InventoryReport = new InventoryReport;
+            $InventoryReport->update_product_qty($this->table_detail, $this->pk, $primary_id, $row['branch_id'], $row['warehouse_id']);
+        }
+
+        return $result;
     }
 
     public function schema()

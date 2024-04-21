@@ -43,7 +43,7 @@ class StockTransfer extends Connection
         $product_cost = $Products->productCost($fk_det);
 
 
-        if ($current_qty > $this->inputs['qty']) {
+        if ($current_qty >= $this->inputs['qty']) {
             $form = array(
                 $this->pk               => $this->inputs[$this->pk],
                 'product_id'            => $this->inputs['product_id'],
@@ -199,9 +199,25 @@ class StockTransfer extends Connection
 
                 $this->insert('tbl_product_transactions', $form_inv_out);
             }
+
+            // update inv
+            $InventoryReport = new InventoryReport;
+            $hRows = $this->rows($primary_id);
+            $InventoryReport->update_product_qty("tbl_stock_transfer_details", $this->pk, $primary_id, $hRows['branch_id'], $hRows['source_warehouse_id'], "product_id");
+            $InventoryReport->update_product_qty("tbl_stock_transfer_details", $this->pk, $primary_id, $hRows['destination_branch_id'], $hRows['destination_warehouse_id'], "product_id");
         }
 
+
         return $query;
+    }
+
+    
+
+    public function rows($primary_id)
+    {
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row;
     }
 
     public function totalCost($primary_id)

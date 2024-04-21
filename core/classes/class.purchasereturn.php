@@ -109,7 +109,23 @@ class PurchaseReturn extends Connection
         $form = array(
             'status' => 'F',
         );
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+
+        $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+
+        if($result){
+            $row_header = $this->rows($primary_id);
+            $InventoryReport = new InventoryReport;
+            $InventoryReport->update_product_qty($this->table_detail, $this->pk, $primary_id, $row_header['branch_id'], $row_header['warehouse_id']);
+        }
+
+        return $result;
+    }
+
+    public function rows($primary_id)
+    {
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row;
     }
 
     public function add_detail()
