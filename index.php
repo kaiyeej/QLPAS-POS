@@ -176,10 +176,13 @@ include 'core/config.php';
         var selectedBranchId = $(this).val();
         var currentSessionBranchId = sessionStorage.getItem('session_branch_id');
 
-        if (selectedBranchId !== currentSessionBranchId) {
-          sessionStorage.setItem('session_branch_id', selectedBranchId);
-          location.reload();
-        }
+        sessionStorage.setItem('session_branch_id', selectedBranchId);
+        location.reload();
+
+        // if (selectedBranchId != currentSessionBranchId) {
+        //   sessionStorage.setItem('session_branch_id', selectedBranchId);
+        //   location.reload();
+        // }
         updateSessionBranch(selectedBranchId);
       });
 
@@ -507,7 +510,7 @@ include 'core/config.php';
                   }
                 });
 
-                
+
 
               } else {
                 swal("Cancelled", "Entries are safe :)", "error");
@@ -611,9 +614,9 @@ include 'core/config.php';
               }
             } else if (route_settings.class_name == "Deposit") {
               depositType(json['deposit_type']);
-            }else if(route_settings.class_name == "StockTransfer"){
+            } else if (route_settings.class_name == "StockTransfer") {
               $("#hidden_source_id").val(json.source_warehouse_id);
-            }else if(route_settings.class_name == "JobOrder"){
+            } else if (route_settings.class_name == "JobOrder") {
               $("#hidden_warehouse_id").val(json.warehouse_id);
             }
 
