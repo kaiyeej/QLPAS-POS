@@ -172,20 +172,7 @@ include 'core/config.php';
       // Call getBranchesSession() to populate the dropdown initially
       getBranchesSession();
 
-      function changeBranch(){
-        var selectedBranchId = $(this).val();
-        var currentSessionBranchId = sessionStorage.getItem('session_branch_id');
-
-        sessionStorage.setItem('session_branch_id', selectedBranchId);
-        location.reload();
-
-        // if (selectedBranchId != currentSessionBranchId) {
-        //   sessionStorage.setItem('session_branch_id', selectedBranchId);
-        //   location.reload();
-        // }
-        updateSessionBranch(selectedBranchId);
-      }
-
+     
       $('#session_branch_id').on('change', function() {
         var selectedBranchId = $(this).val();
         var currentSessionBranchId = sessionStorage.getItem('session_branch_id');
