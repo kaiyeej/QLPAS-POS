@@ -102,11 +102,13 @@ class StockWithdrawal extends Connection
         $sw_detail_id = $this->inputs['sw_detail_id'];
         $sw_remaining_qty = $this->inputs['sw_remaining_qty'];
         $sw_qty = $this->inputs['sw_qty'];
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
 
         // check inventory here ...
         $Inventory = new InventoryReport();
-        // incluede branch_id and warehouse_id
-        $current_balance = $Inventory->balance($product_id);
+        // include branch_id and warehouse_id
+        $current_balance = $Inventory->balance_per_warehouse($product_id, $branch_id, $warehouse_id);
         if (($current_balance + $sw_qty + $sw_remaining_qty) - $this->inputs['quantity'] >= 0) {
 
             $form = array(
@@ -326,6 +328,8 @@ class StockWithdrawal extends Connection
         $Products = new Products();
         $Sales = new Sales();
         $Inv = new InventoryReport();
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
         
         $claim_slip_id = $this->inputs['claim_slip_id'];
         $fetch = $this->select("tbl_claim_slips", "withdrawal_id", "claim_slip_id='$claim_slip_id'");
@@ -339,7 +343,7 @@ class StockWithdrawal extends Connection
             $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
             $row['remaining_qty'] = $remaining_qty;
             // incluede branch_id and warehouse_id
-            $row['current_qty'] = $Inv->balance($row['product_id']) + $row['qty'] + $remaining_qty;
+            $row['current_qty'] = $Inv->balance_per_warehouse($row['product_id'], $branch_id, $warehouse_id) + $row['qty'] + $remaining_qty;
             $row['qty'] = number_format($row['qty']);
             $rows[] = $row;
         }

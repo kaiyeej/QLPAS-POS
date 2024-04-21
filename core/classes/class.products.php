@@ -152,6 +152,8 @@ class Products extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : '';
         $ProductCategories = new ProductCategories();
         $Inv = new InventoryReport();
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
 
         $rows = array();
         $result = $this->select($this->table, '*', $param);
@@ -160,7 +162,7 @@ class Products extends Connection
             $row['count'] = $count++;
             $row['product_category'] = $ProductCategories->name($row['product_category_id']);
 
-            $row['current_qty'] = $Inv->balance($row['product_id']);
+            $row['current_qty'] = $Inv->balance_per_warehouse($row['product_id'], $branch_id, $warehouse_id);
             $rows[] = $row;
         }
         return $rows;

@@ -98,7 +98,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getDetails(" + row.cp_id + "," + row.customer_id + ")'><span class='ti ti-list'></span></button><button onclick='printRecord("+ row.cp_id +")' class='btn btn-secondary btn-circle btn-sm'><span class='ti ti-printer'></span></button></center>";
+                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-2' onclick='getDetails(" + row.cp_id + "," + row.customer_id + ")' style='padding:15px;height:45px'><span class='ti ti-menu'></span></button><button onclick='printRecord("+ row.cp_id +")' class='btn btn-warning btn-circle' style='padding:15px;height:45px'><span class='ti ti-printer'></span></button></div>";
                     }
                 },
                 {

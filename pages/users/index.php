@@ -9,7 +9,7 @@
             </div>
 
             <div class="col-12 col-xl-12 card shadow mb-4">
-                <div class="card-body">
+                <div class="pull-right py-3">
                     <button type="button" class="btn btn-primary btn-icon-text" onclick="addUser()">
                         <i class="ti-plus mr-1"></i> Add Entry
                     </button>
@@ -17,7 +17,8 @@
                     <button type="button" class="btn btn-danger btn-icon-text" onclick="deleteEntry()" id="btn_delete">
                         <i class="ti-trash mr-1"></i> Delete Entry
                     </button>
-                    
+                </div>
+                <div class="card-body">
                     <div class="table-responsive">
                         <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
                             <thead>
@@ -44,6 +45,7 @@
 
 <?php require_once 'modal_users.php'; ?>
 <?php require_once 'modal_privileges.php'; ?>
+<?php require_once 'modal_warehouse.php'; ?>
 <script type="text/javascript">
     function addUser() {
         $("#div_password").show();
@@ -149,12 +151,12 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return row.user_category != 'S' ? '' : "<center><button class='btn btn-success btn-circle btn-sm' onclick='getUserPrivileges(" + row.user_id + ")'><span class='ti ti-key'></span></button></center>";
+                        return row.user_category != 'S' ? '' : "<center><button class='btn btn-success btn-circle' onclick='getUserPrivileges(" + row.user_id + ")'><span class='ti ti-key'></span></button></center>";
                     }
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle' onclick='getUserDetails(" + row.user_id + ")' style='padding:15px;height:45px;'><span class='ti ti-pencil'></span></button></center>";
+                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-2' onclick='getUserDetails(" + row.user_id + ")' style='padding:15px;height:45px;'><span class='ti ti-pencil'></span></button><button class='btn btn-warning btn-circle' onclick='assignWarehouse(" + row.user_id + ")' style='padding:15px;height:45px;'><span class='ti-location-pin'></span></button></div>";
                     }
                 },
                 {
@@ -175,7 +177,14 @@
             ]
         });
     }
+
+    function assignWarehouse(id){
+        $("#modalEntry2").modal("show");
+        $("#hidden_id_2").val(id);
+    }
+
     $(document).ready(function() {
         getEntries();
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
     });
 </script>

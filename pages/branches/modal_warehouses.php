@@ -49,7 +49,7 @@
                     <h4 class="modal-title" id="modalLabel"><span class='fa fa-pen'></span> Add Entry</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" id="hidden_warehouse_id" name="input[warehouse_id]">
+                    <input type="hidden" id="hidden_warehouse_id" name="input[warehouse_id]">
                     <div class="form-group row">
                         <div class="col">
                             <label><strong>Warehouse Name</strong></label>
@@ -61,8 +61,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class='btn-group'>
-                        <button type="submit" class="btn btn-primary btn-sm" id="btn_update">Submit</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="btn_update">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -158,14 +158,14 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return "<center>" +
-                            "<button type='button' class='btn btn-info btn-circle btn-sm' onclick='updateWarehouse(" + row.warehouse_id + ", \"" + row.warehouse_name + "\")'>" +
+                        return "<div style='display:flex;align-items:center'>" +
+                            "<button type='button' class='btn btn-primary btn-circle btn-sm mr-2' onclick='updateWarehouse(" + row.warehouse_id + ", \"" + row.warehouse_name + "\")' style='padding:15px;height:45px;'>" +
                             "<span class='ti ti-pencil'></span>" +
                             "</button>" +
-                            "<button type='button' class='btn btn-danger btn-circle btn-sm' onclick='removeWarehouse(" + row.warehouse_id + ")'>" +
+                            "<button type='button' class='btn btn-danger btn-circle btn-sm' onclick='removeWarehouse(" + row.warehouse_id + ")' style='padding:15px;height:45px;'>" +
                             "<span class='ti ti-trash'></span>" +
                             "</button>" +
-                            "</center>";
+                            "</div>";
                     }
                 },
                 {

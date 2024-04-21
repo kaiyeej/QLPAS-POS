@@ -419,10 +419,12 @@ class Sales extends Connection
 
         $sales_detail_id = $this->inputs['sales_detail_id'];
         $product_id = $this->detailsRow($sales_detail_id, 'product_id');
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
 
         // check inventory here ...
         $Inventory = new InventoryReport();
-        $current_balance = $Inventory->balance($product_id);
+        $current_balance = $Inventory->balance_per_warehouse($product_id,$branch_id, $warehouse_id);
         if ($current_balance - $this->inputs['quantity'] >= 0) {
 
             $sales_id = $this->detailsRow($sales_detail_id, 'sales_id');
@@ -462,7 +464,7 @@ class Sales extends Connection
 
             // check inventory here ...
             $Inventory = new InventoryReport();
-            $current_balance = $Inventory->balance($this->inputs['product_id']);
+            $current_balance = $Inventory->balance($this->inputs['product_id'], $this->inputs['branch_id'], $this->inputs['warehouse_id']);
             if ($current_balance - $this->inputs['quantity'] >= 0) {
 
                 $reference_number = $this->inputs['reference_number'];
