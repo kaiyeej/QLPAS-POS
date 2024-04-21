@@ -177,15 +177,14 @@ include 'core/config.php';
         var selectedBranchId = $(this).val();
         var currentSessionBranchId = sessionStorage.getItem('session_branch_id');
 
-        sessionStorage.setItem('session_branch_id', selectedBranchId);
-
-        updateSessionBranch(selectedBranchId);
         // location.reload();
         
         if (selectedBranchId != currentSessionBranchId) {
           sessionStorage.setItem('session_branch_id', selectedBranchId);
           location.reload();
         }
+
+        updateSessionBranch(selectedBranchId);
       });
 
       function updateSessionBranch(branch_id) {
