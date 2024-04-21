@@ -70,7 +70,7 @@ $Users = new Users();
                         <div class="card-body">
                             <p class="mb-4">Number of Customers</p>
                             <p class="fs-30 mb-2">
-                                <?= $Customers->totalCustomers(); ?>
+                                <?= number_format($Customers->totalCustomers()); ?>
                             </p>
                             <p>(Total number)</p>
                         </div>

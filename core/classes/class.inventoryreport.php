@@ -93,7 +93,7 @@ class InventoryReport extends Connection
 
         $fetch = $this->select($table_detail, $product_field, "$primary_key='$primary_id'");
         while($row = $fetch->fetch_assoc()){
-            $product_id = $row['product_id'];
+            $product_id = $row[$product_field];
 
             $fetch_inv = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id' AND status = 1");
             $inv_row = $fetch_inv->fetch_assoc();

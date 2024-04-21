@@ -166,7 +166,23 @@ class ProductConversion extends Connection
         $form = array(
             'status' => 'F',
         );
-        return $this->update($this->table, $form, "$this->pk = '$primary_id'");
+
+        $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
+        if($result){
+            $hRows = $this->rows($primary_id);
+            $InventoryReport = new InventoryReport;
+            $InventoryReport->update_product_qty($this->table_detail, $this->pk, $primary_id, $hRows['branch_id'], $hRows['warehouse_id'], "converted_product_id");
+            $InventoryReport->update_product_qty($this->table_detail, $this->pk, $primary_id, $hRows['branch_id'], $hRows['warehouse_id'], "original_product_id");
+        }
+
+        return $result;
+    }
+
+    public function rows($primary_id)
+    {
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row;
     }
 
     public function schema()

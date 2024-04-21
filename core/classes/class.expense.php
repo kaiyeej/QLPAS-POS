@@ -135,7 +135,9 @@ class Expense extends Connection
 
     public function totalExpensesDays($days)
     {
-        $fetchData = $this->select('tbl_expense_details as d, tbl_expense as h', "sum(amount) as total", "h.expense_id = d.expense_id AND h.expense_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F'");
+        
+        $branch_id = $this->getBranch();
+        $fetchData = $this->select('tbl_expense_details as d, tbl_expense as h', "sum(amount) as total", "h.expense_id = d.expense_id AND h.expense_date BETWEEN NOW() - INTERVAL $days DAY AND NOW() AND h.status='F' AND h.branch_id='$branch_id'");
         $row = $fetchData->fetch_assoc();
 
         return $row['total'] == 0 ? 0 : $row['total'];
@@ -179,6 +181,7 @@ class Expense extends Connection
         $current_year = date('Y');
         $last_5years = $current_year - 4;
 
+        $branch_id = $this->getBranch();
         $datasets = [];
         $counter = 0;
         for ($i = $last_5years; $i <= $current_year; $i++) {
@@ -190,7 +193,7 @@ class Expense extends Connection
                 $result = $this->select(
                     "tbl_expense_details AS d,tbl_expense AS h",
                     "SUM(amount) AS amount",
-                    "h.expense_id = d.expense_id AND h.status = 'F' AND YEAR(h.expense_date) = '$i' AND expense_category_id = '$row[expense_category_id]'"
+                    "h.expense_id = d.expense_id AND h.status = 'F' AND YEAR(h.expense_date) = '$i' AND expense_category_id = '$row[expense_category_id]' AND h.branch_id='$branch_id'"
                 );
 
                 if ($result->num_rows > 0) {
