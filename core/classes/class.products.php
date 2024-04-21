@@ -148,17 +148,19 @@ class Products extends Connection
     public function pos_show()
     {
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : '';
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
         $ProductCategories = new ProductCategories();
         $Inv = new InventoryReport();
 
         $rows = array();
-        $result = $this->select($this->table, '*', $param);
+        $result = $this->select("$this->table p LEFT JOIN tbl_product_warehouses pw ON p.product_id=pw.product_id", '*', "branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
         $count = 1;
         while ($row = $result->fetch_assoc()) {
             $row['count'] = $count++;
             $row['product_category'] = $ProductCategories->name($row['product_category_id']);
 
-            $row['current_qty'] = $Inv->balance($row['product_id']);
+            $row['current_qty'] = $row['product_qty'];//$Inv->balance($row['product_id']);
             $rows[] = $row;
         }
         return $rows;

@@ -138,9 +138,16 @@ class Sales extends Connection
     public function finish()
     {
         $primary_id = $this->inputs['id'];
+        $fetch = $this->select($this->table, "*", "$this->pk='$primary_id'");
+        $row = $fetch->fetch_assoc();
+
         $form = array(
             'status' => 'F',
         );
+
+        // update inventory qty
+        $this->update_product_qty($primary_id, $row['branch_id'], $row['warehouse_id']);
+
         return $this->update($this->table, $form, "$this->pk = '$primary_id'");
     }
 
@@ -582,6 +589,8 @@ class Sales extends Connection
         $reference_number = $this->inputs['reference_number'];
         $customer_payment_amount = $this->inputs['customer_payment_amount'];
         $sales_type = $this->inputs['sales_type'];
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
 
         $param = "reference_number='$reference_number'";
 
@@ -645,10 +654,42 @@ class Sales extends Connection
             // finish all redeemed points
             $RedeemedPoints->inputs['sales_id'] = $primary_id;
             $RedeemedPoints->finish();
+
+            // update inventory qty
+            $this->update_product_qty($primary_id, $branch_id, $warehouse_id);
+
             // finish all related customer payment
             return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
         } else {
             return -1;
+        }
+    }
+
+    public function update_product_qty($primary_id, $branch_id, $warehouse_id){
+
+        $fetch = $this->select($this->table_detail, "product_id", "$this->pk='$primary_id'");
+        while($row = $fetch->fetch_assoc()){
+            $product_id = $row['product_id'];
+
+            $fetch_inv = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id' AND status = 1");
+            $inv_row = $fetch_inv->fetch_assoc();
+            $current_qty =  $inv_row['qty']*1;
+            
+            $fetch_count = $this->select("tbl_product_warehouses", "product_warehouse_id", "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+            $count_row = $fetch_count->fetch_assoc();
+
+            if($count_row['product_warehouse_id'] > 0){
+                $this->update("tbl_product_warehouses",["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+            }else{
+                $form = array(
+                    "product_id" => '',
+                    "branch_id" => '',
+                    "warehouse_id" => '',
+                    "product_qty" => $current_qty
+                );
+
+                $this->insert("tbl_product_warehouses", $form);
+            }
         }
     }
 
