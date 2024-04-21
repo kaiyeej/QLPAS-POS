@@ -88,4 +88,44 @@ class InventoryReport extends Connection
         $row = $result->fetch_assoc();
         return (float) $row['total'];
     }
+
+    public function inventory_script_runner(){
+        $fetch = $this->select("tbl_products","*","product_id > 0");
+        while($row = $fetch->fetch_assoc()){
+            $product_id = $row['product_id'];
+            // fetch branch
+            $fetch_branches = $this->select("tbl_branch","branch_id","branch_id > 0");
+            while($row_branches = $fetch_branches->fetch_assoc()){
+                $branch_id = $row_branches['branch_id'];
+                $fetch_warehouse = $this->select("tbl_warehouses", "warehouse_id", "warehouse_id > 0");
+                while($warehouse_row = $fetch_warehouse->fetch_assoc()){
+                    $warehouse_id = $warehouse_row['warehouse_id'];
+
+                    // current inv
+
+                    $fetch_inv = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id' AND status = 1");
+                    $inv_row = $fetch_inv->fetch_assoc();
+                    $current_qty =  $inv_row['qty']*1;
+
+
+                    // insert or update
+                    $fetch_count = $this->select("tbl_product_warehouses", "product_warehouse_id", "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+                    $count_row = $fetch_count->fetch_assoc();
+
+                    if($count_row['product_warehouse_id'] > 0){
+                        $this->update("tbl_product_warehouses",["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+                    }else{
+                        $form = array(
+                            "product_id" => $product_id,
+                            "branch_id" => $branch_id,
+                            "warehouse_id" => $warehouse_id,
+                            "product_qty" => $current_qty
+                        );
+
+                        $this->insert("tbl_product_warehouses", $form);
+                    }
+                }
+            }
+        }
+    }
 }
