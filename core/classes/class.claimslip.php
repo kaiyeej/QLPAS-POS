@@ -16,6 +16,8 @@ class ClaimSlip extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'sales_id'      => $this->inputs['sales_id'],
+            'branch_id'      => $this->inputs['branch_id'],
+            'warehouse_id'      => $this->inputs['warehouse_id'],
             'withdrawal_id' => isset($this->inputs['withdrawal_id']) ? $this->inputs['withdrawal_id'] :  0,
             'total_amount'  => $this->inputs['total_amount'],
             'status'        => isset($this->inputs['status']) ? $this->inputs['status'] :  'S'

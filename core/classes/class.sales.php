@@ -624,6 +624,7 @@ class Sales extends Connection
         $sales_type = $this->inputs['sales_type'];
         $branch_id = $this->inputs['branch_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
+        $release_warehouse_id = $this->inputs['release_warehouse_id'];
 
         $param = "reference_number='$reference_number'";
 
@@ -681,6 +682,8 @@ class Sales extends Connection
                 $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
                 $ClaimSlip->inputs['sales_id'] = $primary_id;
                 $ClaimSlip->inputs['total_amount'] = $this->inputs['total_amount'];
+                $ClaimSlip->inputs['warehouse_id'] = $this->inputs['release_warehouse_id'];
+                $ClaimSlip->inputs['branch_id'] = $this->inputs['branch_id'];
                 $ClaimSlip->add();
             }
 
