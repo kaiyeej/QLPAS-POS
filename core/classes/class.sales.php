@@ -682,9 +682,9 @@ class Sales extends Connection
                 $this->update("tbl_product_warehouses",["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
             }else{
                 $form = array(
-                    "product_id" => '',
-                    "branch_id" => '',
-                    "warehouse_id" => '',
+                    "product_id" => $product_id,
+                    "branch_id" => $branch_id,
+                    "warehouse_id" => $warehouse_id,
                     "product_qty" => $current_qty
                 );
 
