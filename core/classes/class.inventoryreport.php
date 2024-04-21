@@ -89,9 +89,9 @@ class InventoryReport extends Connection
         return (float) $row['total'];
     }
 
-    public function update_product_qty($table_detail, $primary_key , $primary_id, $branch_id, $warehouse_id){
+    public function update_product_qty($table_detail, $primary_key, $primary_id, $branch_id, $warehouse_id, $product_field = "product_id"){
 
-        $fetch = $this->select($table_detail, "product_id", "$primary_key='$primary_id'");
+        $fetch = $this->select($table_detail, $product_field, "$primary_key='$primary_id'");
         while($row = $fetch->fetch_assoc()){
             $product_id = $row['product_id'];
 
