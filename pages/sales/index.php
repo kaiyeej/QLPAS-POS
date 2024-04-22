@@ -39,7 +39,7 @@
                             <label>&nbsp;</label>
                             <div>
                                 <button type="button" class="btn btn-warning btn-icon-text" onclick="getEntries()">
-                                    <i class="ti-reload mr-1"></i> Generate Entry
+                                    <i class="ti-reload mr-1"></i> Generate
                                 </button>  
                                 <button type="button" class="btn btn-primary btn-icon-text" onclick="addModal()">
                                     <i class="ti-plus mr-1"></i> Add Entry

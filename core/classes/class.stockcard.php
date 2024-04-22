@@ -8,6 +8,8 @@ class StockCard extends Connection
         $product_id = $this->inputs['product_id'];
         $start_date = $this->inputs['start_date'];
         $end_date = $this->inputs['end_date'];
+        $branch_id = $this->getBranch();
+        $warehouse_id = $this->inputs['warehouse_id'];
         $rows = array();
         $JobOrder = new JobOrder;
         $PurchaseOrder = new PurchaseOrder;
@@ -18,7 +20,7 @@ class StockCard extends Connection
         $SalesReturn = new SalesReturn;
         $PurchaseReturn = new PurchaseReturn;
 
-        $result = $this->select($this->table, "*,IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out", "product_id = '$product_id' AND status = '1' AND date_added BETWEEN '$start_date' AND '$end_date' AND quantity > 0 ORDER BY date_modified ASC");
+        $result = $this->select($this->table, "*,IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out", "product_id = '$product_id' AND status = '1' AND branch_id = '$branch_id' AND warehouse_id = '$warehouse_id' AND date_added BETWEEN '$start_date' AND '$end_date' AND quantity > 0 ORDER BY date_modified ASC");
 
         $bf = $this->balance_fowarded();
         $qty_balance = $bf['qty'];
@@ -66,15 +68,17 @@ class StockCard extends Connection
     {
         $start_date = $this->inputs['start_date'];
         $product_id = $this->inputs['product_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
+        $branch_id = $this->getBranch();
         $rows = array();
         // $result = $this->select($this->table, "IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out, SUM(CASE WHEN type = 'IN' THEN cost*quantity ELSE 0 END) as total_cost, SUM(CASE WHEN type = 'IN' THEN quantity ELSE 0 END) as total_qty", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date'");
-        $result = $this->select($this->table, "SUM(CASE WHEN type = 'IN' THEN cost*quantity ELSE 0 END) as total_cost", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date'");
+        $result = $this->select($this->table, "SUM(CASE WHEN type = 'IN' THEN cost*quantity ELSE 0 END) as total_cost", "product_id = '$product_id' AND status = 1 AND branch_id = '$branch_id' AND warehouse_id = '$warehouse_id' AND date_added < '$start_date'");
         $row = $result->fetch_array();
 
-        $result_in = $this->select($this->table, "SUM(quantity) as qty_in", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date' AND type='IN'");
+        $result_in = $this->select($this->table, "SUM(quantity) as qty_in", "product_id = '$product_id' AND status = 1 AND branch_id = '$branch_id' AND warehouse_id = '$warehouse_id' AND date_added < '$start_date' AND type='IN'");
         $rowIN = $result_in->fetch_array();
 
-        $resultOut = $this->select($this->table, "SUM(quantity) as qty_out", "product_id = '$product_id' AND status = 1 AND date_added < '$start_date' AND type='OUt'");
+        $resultOut = $this->select($this->table, "SUM(quantity) as qty_out", "product_id = '$product_id' AND status = 1 AND branch_id = '$branch_id' AND warehouse_id = '$warehouse_id' AND date_added < '$start_date' AND type='OUt'");
         $rowOut = $resultOut->fetch_array();
 
         $qty = $rowIN['qty_in'] - $rowOut['qty_out'];
