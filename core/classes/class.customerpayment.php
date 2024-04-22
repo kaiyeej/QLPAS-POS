@@ -21,7 +21,7 @@ class CustomerPayment extends Connection
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $branch_id,
             'customer_id'   => $this->inputs['customer_id'],
-            'branch_id'     => $this->getBranch(),
+            //'branch_id'     => $this->getBranch(),
             'payment_type'  => $this->inputs['payment_type'],
             'payment_date'  => $this->inputs['payment_date'],
             'check_date'    => $this->inputs['check_date'],
