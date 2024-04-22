@@ -26,7 +26,7 @@ class Sales extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'customer_id'   => $this->inputs['customer_id'],
-            'branch_id'     => $this->getBranch(),
+            'branch_id'     => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $this->getBranch(),
             'warehouse_id'  => $this->inputs['warehouse_id'],
             'sales_type'    => $this->inputs['sales_type'],
             'discount_id'   => $this->inputs['discount_id'],
