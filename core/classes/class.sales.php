@@ -26,7 +26,7 @@ class Sales extends Connection
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             'customer_id'   => $this->inputs['customer_id'],
-            'branch_id'     => $this->getBranch(),
+            'branch_id'     => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $this->getBranch(),
             'warehouse_id'  => $this->inputs['warehouse_id'],
             'sales_type'    => $this->inputs['sales_type'],
             'discount_id'   => $this->inputs['discount_id'],
@@ -627,6 +627,7 @@ class Sales extends Connection
         $sales_type = $this->inputs['sales_type'];
         $branch_id = $this->inputs['branch_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
+        $release_warehouse_id = $this->inputs['release_warehouse_id'];
 
         $param = "reference_number='$reference_number'";
 
@@ -655,6 +656,7 @@ class Sales extends Connection
             $CustomerPayment->inputs['check_date'] = "";
             $CustomerPayment->inputs['check_number'] = "";
             $CustomerPayment->inputs['check_bank'] = 0;
+            $CustomerPayment->inputs['branch_id'] = $this->inputs['branch_id'];
             $CustomerPayment->inputs['encoded_by'] = $this->inputs['encoded_by'];
             $customer_payment_id = $CustomerPayment->add();
 
@@ -684,6 +686,8 @@ class Sales extends Connection
                 $ClaimSlip->inputs['reference_number'] = $ClaimSlip->generate();
                 $ClaimSlip->inputs['sales_id'] = $primary_id;
                 $ClaimSlip->inputs['total_amount'] = $this->inputs['total_amount'];
+                $ClaimSlip->inputs['warehouse_id'] = $this->inputs['release_warehouse_id'];
+                $ClaimSlip->inputs['branch_id'] = $this->inputs['branch_id'];
                 $ClaimSlip->add();
             }
 
@@ -802,8 +806,9 @@ class Sales extends Connection
     public function released()
     {
         $StockWithdrawal = new StockWithdrawal;
-        $branch_id = $this->getBranch();
+        //$branch_id = isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $this->getBranch();
         $sales_id = $this->inputs['sales_id'];
+        $branch_id = $this->dataRow($this->inputs['sales_id'], 'branch_id');
         $warehouse_id = $this->dataRow($this->inputs['sales_id'], 'warehouse_id');
 
         $ref_number = $StockWithdrawal->generate(); //'SW-' . date('YmdHis');

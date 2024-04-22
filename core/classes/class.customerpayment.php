@@ -19,9 +19,9 @@ class CustomerPayment extends Connection
         $branch_id = $this->getBranch();
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
-            'branch_id'     => $branch_id,
+            'branch_id'     => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $branch_id,
             'customer_id'   => $this->inputs['customer_id'],
-            'branch_id'     => $this->getBranch(),
+            //'branch_id'     => $this->getBranch(),
             'payment_type'  => $this->inputs['payment_type'],
             'payment_date'  => $this->inputs['payment_date'],
             'check_date'    => $this->inputs['check_date'],
@@ -318,6 +318,7 @@ class CustomerPayment extends Connection
     {
 
         if($this->inputs['payment_option_id'] > 0){
+            $branch_id = $this->inputs['branch_id'];
             $amount = $this->inputs['amount'] * 1;
             $totalPayable = $this->inputs['total_payment_amount'] * 1;
             $amount_paid = $this->getTotalPaymentPOS() * 1;

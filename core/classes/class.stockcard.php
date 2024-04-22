@@ -83,7 +83,7 @@ class StockCard extends Connection
 
         $qty = $rowIN['qty_in'] - $rowOut['qty_out'];
         $row['qty'] = $qty;
-        $row['amount'] = number_format(($qty*($row['total_cost']/$rowIN['qty_in'])),2);
+        $row['amount'] = $rowIN['qty_in'] > 0 ? number_format(($qty*($row['total_cost']/$rowIN['qty_in'])),2) : 0;
         $rows = $row;
         return $rows;
     }
