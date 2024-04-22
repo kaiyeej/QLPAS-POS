@@ -801,8 +801,9 @@ class Sales extends Connection
     public function released()
     {
         $StockWithdrawal = new StockWithdrawal;
-        $branch_id = isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $this->getBranch();
+        //$branch_id = isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $this->getBranch();
         $sales_id = $this->inputs['sales_id'];
+        $branch_id = $this->dataRow($this->inputs['sales_id'], 'branch_id');
         $warehouse_id = $this->dataRow($this->inputs['sales_id'], 'warehouse_id');
 
         $ref_number = $StockWithdrawal->generate(); //'SW-' . date('YmdHis');
