@@ -125,7 +125,7 @@ class InventoryReport extends Connection
             $fetch_branches = $this->select("tbl_branch","branch_id","branch_id = 1");
             while($row_branches = $fetch_branches->fetch_assoc()){
                 $branch_id = $row_branches['branch_id'];
-                $fetch_warehouse = $this->select("tbl_warehouses", "warehouse_id", "warehouse_id = 2");
+                $fetch_warehouse = $this->select("tbl_warehouses", "warehouse_id", "warehouse_id = 1");
                 while($warehouse_row = $fetch_warehouse->fetch_assoc()){
                     $warehouse_id = $warehouse_row['warehouse_id'];
 
