@@ -653,6 +653,7 @@ class Sales extends Connection
             $CustomerPayment->inputs['check_date'] = "";
             $CustomerPayment->inputs['check_number'] = "";
             $CustomerPayment->inputs['check_bank'] = 0;
+            $CustomerPayment->inputs['branch_id'] = $this->inputs['branch_id'];
             $CustomerPayment->inputs['encoded_by'] = $this->inputs['encoded_by'];
             $customer_payment_id = $CustomerPayment->add();
 
