@@ -72,8 +72,10 @@ class StockTransfer extends Connection
     }
 
     public function show()
-    {
-        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+    {   
+        $branch_id = $this->getBranch();
+        $param = "branch_id = '$branch_id'";
+        $param .= isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $Users = new Users;
         $Warehouses = new Warehouses;

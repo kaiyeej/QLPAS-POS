@@ -60,8 +60,9 @@ class Sales extends Connection
     }
 
     public function show_data()
-    {
-        $param = "s.encoded_by = u.user_id AND s.customer_id = c.customer_id ";
+    {   
+        $branch_id = $this->getBranch();
+        $param = "s.encoded_by = u.user_id AND s.customer_id = c.customer_id AND branch_id = '$branch_id'";
         $param .= isset($this->inputs['param']) ? $this->inputs['param'] : '';
         $rows = array();
         $result = $this->select('tbl_sales AS s,tbl_users AS u,tbl_customers AS c', 's.*,u.user_fullname AS encoded_name,c.customer_name AS customer,c.suki_card_number', $param);
