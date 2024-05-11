@@ -266,9 +266,10 @@ class Sales extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $count = 1;
-        $result = $this->select($this->table_detail, '*', $param);
+        $result = $this->select("$this->table_detail d LEFT JOIN tbl_products p ON d.product_id=p.product_id", 'd.*, p.product_name', $param);
         while ($row = $result->fetch_assoc()) {
-            $row['product'] = Products::name($row['product_id']);
+            //$row['product'] = Products::name($row['product_id']);
+            $row['product'] = $row['product_name'];
             $amount = ($row['quantity'] * $row['price']) - $row['discount'];
             $row['amount'] = number_format($amount, 2);
             $row['pos_qty'] = number_format($row['quantity']);
