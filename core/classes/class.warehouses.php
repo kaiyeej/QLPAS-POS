@@ -37,10 +37,10 @@ class Warehouses extends Connection
     {
         $primary_id = $this->inputs[$this->pk];
         $warehouse_name = $this->clean($this->inputs['warehouse_name']);
-        $is_exist = $this->select($this->table, $this->pk, "warehouse_name = '$warehouse_name' AND $this->pk != '$primary_id'");
+        $branch_id = $this->clean($this->inputs['branch_id']);
+        $is_exist = $this->select($this->table, $this->pk, "warehouse_name = '$warehouse_name' AND branch_id = '$branch_id' AND $this->pk != '$primary_id'");
         if ($is_exist->num_rows > 0) {
-            Logs::storeCrud($this->module_name, 'u', 2, $warehouse_name);
-            return 2;
+            return -2;
         } else {
             $form = array(
                 'warehouse_name'        => $this->inputs['warehouse_name'],

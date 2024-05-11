@@ -21,7 +21,7 @@ class CustomerPayment extends Connection
             $this->name     => $this->clean($this->inputs[$this->name]),
             'branch_id'     => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $branch_id,
             'customer_id'   => $this->inputs['customer_id'],
-            'branch_id'     => $this->getBranch(),
+            //'branch_id'     => $this->getBranch(),
             'payment_type'  => $this->inputs['payment_type'],
             'payment_date'  => $this->inputs['payment_date'],
             'check_date'    => $this->inputs['check_date'],
@@ -54,7 +54,9 @@ class CustomerPayment extends Connection
     {
         $Customers = new Customers;
         $Users = new Users;
-        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $branch_id = $this->getBranch();
+        $param = "branch_id = '$branch_id'";
+        $param .= isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {

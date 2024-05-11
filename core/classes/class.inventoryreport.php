@@ -122,10 +122,10 @@ class InventoryReport extends Connection
         while($row = $fetch->fetch_assoc()){
             $product_id = $row['product_id'];
             // fetch branch
-            $fetch_branches = $this->select("tbl_branch","branch_id","branch_id > 0");
+            $fetch_branches = $this->select("tbl_branch","branch_id","branch_id = 1");
             while($row_branches = $fetch_branches->fetch_assoc()){
                 $branch_id = $row_branches['branch_id'];
-                $fetch_warehouse = $this->select("tbl_warehouses", "warehouse_id", "warehouse_id > 0");
+                $fetch_warehouse = $this->select("tbl_warehouses", "warehouse_id", "warehouse_id = 1");
                 while($warehouse_row = $fetch_warehouse->fetch_assoc()){
                     $warehouse_id = $warehouse_row['warehouse_id'];
 
@@ -155,5 +155,7 @@ class InventoryReport extends Connection
                 }
             }
         }
+
+        return json_encode("All scripts are good!");
     }
 }

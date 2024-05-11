@@ -21,7 +21,7 @@ class StockWithdrawal extends Connection
         $warehouse_id = $Sales->dataRow($sales_id, 'warehouse_id');
         $form = array(
             $this->name         => $ref_number,
-            'branch_id'         => $this->getBranch(),
+            'branch_id'         => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $this->getBranch(),
             'warehouse_id'      => $warehouse_id,
             'sales_id'          => $sales_id,
             'remarks'           => $this->inputs['remarks'],
@@ -147,7 +147,9 @@ class StockWithdrawal extends Connection
         $Customers = new Customers();
         $Sales = new Sales();
         $Users = new Users();
-        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $branch_id = $this->getBranch();
+        $param = "branch_id = '$branch_id'";
+        $param .= isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {

@@ -41,8 +41,10 @@ class InventoryAdjustment extends Connection
     }
 
     public function show()
-    {
-        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+    {   
+        $branch_id = $this->getBranch();
+        $param = "branch_id = $branch_id AND";
+        $param .= isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {

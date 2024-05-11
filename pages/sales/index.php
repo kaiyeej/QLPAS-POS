@@ -39,7 +39,7 @@
                             <label>&nbsp;</label>
                             <div>
                                 <button type="button" class="btn btn-warning btn-icon-text" onclick="getEntries()">
-                                    <i class="ti-reload mr-1"></i> Generate Entry
+                                    <i class="ti-reload mr-1"></i> Generate
                                 </button>  
                                 <button type="button" class="btn btn-primary btn-icon-text" onclick="addModal()">
                                     <i class="ti-plus mr-1"></i> Add Entry
@@ -86,9 +86,7 @@
     function getEntries() {
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var branch_id = "<?=$_SESSION['branch_id']?>"
-        var param = "AND (sales_date >= '" + start_date + "' AND sales_date <= '" + end_date + "') AND branch_id = '"+branch_id+"'";
-
+        var param = "AND (sales_date >= '" + start_date + "' AND sales_date <= '" + end_date + "')";
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
@@ -113,7 +111,7 @@
                 {
                     "mRender": function(data, type, row) {
                         var charge_slip = row.sales_type == "C" ? "style='display:none;'" : "";
-                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-1' onclick='getEntryDetails2(" + row.sales_id + ")' style='padding:15px;height:45px;'><span class='ti ti-menu'></span></button><button onclick='printRecord(" + row.sales_id + ")' class='btn btn-warning btn-circle' style='padding:15px;height:45px;'><span class='ti ti-printer'></span></button><button onclick='chargeSlip(" + row.sales_id + ")' " + charge_slip + " class='btn btn-warning btn-circle btn-sm'><span class='ti ti-receipt'></span></button></div>";
+                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-1' onclick='getEntryDetails2(" + row.sales_id + ")' style='padding:15px;height:45px;'><span class='ti ti-menu'></span></button><button onclick='printRecord(" + row.sales_id + ")' class='btn btn-warning btn-circle mr-1' style='padding:15px;height:45px;'><span class='ti ti-printer'></span></button><button onclick='chargeSlip(" + row.sales_id + ")' " + charge_slip + " class='btn btn-info btn-circle btn-sm' style='padding:15px;height:45px;'><span class='ti ti-receipt'></span></button></div>";
                     }
                 },
                 {

@@ -11,7 +11,7 @@
             <div class="col-12 col-xl-12 card shadow mb-4">
                 <div class="card-body">
                     <form id='frm_generate'>
-                        <div class="form-group row">
+                        <div class="form-group row" style="display: flex; flex-wrap:wrap; gap:1 rem;">
                             <div class="col">
                                 <label><strong>Start Date</strong></label>
                                 <div>
@@ -40,9 +40,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm input-item select2" name="input[warehouse_id]" id="warehouse_id" required>
+                                </select>
+                            </div>
+                        </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col" style="display: flex; justify-content:end;">
+                            <div class="col" style="display: flex; flex-wrap:wrap; gap:1 rem; justify-content:end;">
                                 <label>&nbsp;</label>
                                 <div>
                                     <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
@@ -149,6 +156,7 @@
         var product_id = $("#product_id").val();
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
+        var warehouse_id = $("#warehouse_id").val();
         balance_fowarded();
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
@@ -166,7 +174,8 @@
                         product_category_id: product_category_id,
                         product_id: product_id,
                         start_date:start_date,
-                        end_date:end_date
+                        end_date:end_date,
+                        warehouse_id:warehouse_id
                     }
                 },
             },
@@ -214,13 +223,15 @@
     function balance_fowarded() {
         var product_id = $("#product_id").val();
         var start_date = $("#start_date").val();
+        var warehouse_id = $("#warehouse_id").val();
         $.ajax({
             type: "POST",
             url: "controllers/sql.php?c=" + route_settings.class_name + "&q=balance_fowarded",
             data: {
                 input: {
                     product_id: product_id,
-                    start_date:start_date
+                    start_date:start_date,
+                    warehouse_id:warehouse_id   
                 }
             },
             success: function(data) {
@@ -253,5 +264,6 @@
         $("#company_address_label").html(company_profile.company_address);
         // getReport();
         getSelectOption('ProductCategories', 'product_category_id', 'product_category');
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
     });
 </script>

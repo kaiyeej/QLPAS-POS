@@ -46,10 +46,11 @@
         <div class="modal-dialog" style="margin-top: 50px;" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modalLabel"><span class='fa fa-pen'></span> Add Entry</h4>
+                    <h4 class="modal-title" id="modalLabel"><span class='fa fa-pen'></span> Update Entry</h4>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="hidden_warehouse_id" name="input[warehouse_id]">
+                    <input type="hidden" id="hidden_branch_id_2" name="input[branch_id]">
                     <div class="form-group row">
                         <div class="col">
                             <label><strong>Warehouse Name</strong></label>
@@ -112,7 +113,7 @@
         $.ajax({
             type: "POST",
             url: "controllers/sql.php?c=Warehouses&q=edit",
-            data: $("#btn_warehouse_update").serialize(),
+            data: $("#frm_update_warehouse").serialize(),
             success: function(data) {
                 var json = JSON.parse(data);
                 if (json.data > 0) {
@@ -125,6 +126,7 @@
                     failed_query(json);
                 }
 
+
                 $("#btn_warehouse_update").prop('disabled', false);
                 $("#btn_warehouse_update").html("<span></span> Submit");
             },
@@ -134,8 +136,9 @@
         });
     });
 
-    function updateWarehouse(id, warehouse_name) {
+    function updateWarehouse(id, branch_id, warehouse_name) {
         $("#hidden_warehouse_id").val(id);
+        $("#hidden_branch_id_2").val(branch_id);
         $("#update_warehouse_name").val(warehouse_name);
         $("#modalUpdateWarehouse").modal("show");
     }
@@ -159,7 +162,7 @@
             "columns": [{
                     "mRender": function(data, type, row) {
                         return "<div style='display:flex;align-items:center'>" +
-                            "<button type='button' class='btn btn-primary btn-circle btn-sm mr-2' onclick='updateWarehouse(" + row.warehouse_id + ", \"" + row.warehouse_name + "\")' style='padding:15px;height:45px;'>" +
+                            "<button type='button' class='btn btn-primary btn-circle btn-sm mr-2' onclick='updateWarehouse(" + row.warehouse_id + ", " + row.branch_id + ", \"" + row.warehouse_name + "\")' style='padding:15px;height:45px;'>" +
                             "<span class='ti ti-pencil'></span>" +
                             "</button>" +
                             "<button type='button' class='btn btn-danger btn-circle btn-sm' onclick='removeWarehouse(" + row.warehouse_id + ")' style='padding:15px;height:45px;'>" +

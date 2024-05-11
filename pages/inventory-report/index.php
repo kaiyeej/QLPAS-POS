@@ -33,7 +33,7 @@
                                 <div>
 
                                 <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
-                                    <i class="ti-reload mr-1"></i> Generate Entry
+                                    <i class="ti-reload mr-1"></i> Generate
                                 </button>  
                                 <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Inventroy-Report')">
                                     <i class="ti-cloud-down mr-1"></i> Export

@@ -25,9 +25,9 @@ class SalesReturn extends Connection
         $warehouse_id = $Sales->sales_warehouse($sales_id);
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
-            'branch_id'     => $this->getBranch(),
+            //'branch_id'     => $this->getBranch(),
             'sales_id'      => $sales_id,
-            'branch_id'     => $branch_id,
+            'branch_id'     => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $branch_id,
             'warehouse_id'  => $warehouse_id,
             'remarks'       => $this->inputs['remarks'],
             'return_date'   => $this->inputs['return_date'],
@@ -78,7 +78,9 @@ class SalesReturn extends Connection
     {
         $Sales = new Sales;
         $Users = new Users;
-        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $branch_id = $this->getBranch();
+        $param = "branch_id = '$branch_id'";
+        $param .= isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {

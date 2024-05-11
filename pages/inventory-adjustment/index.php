@@ -44,9 +44,6 @@
 <?php include 'modal_adjustment.php' ?>
 <script type="text/javascript">
     function getEntries() {
-        var branch_id = "<?=$_SESSION['branch_id']?>";
-
-        var param = "branch_id = '"+branch_id+"'";
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
@@ -54,11 +51,6 @@
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
                 "dataSrc": "data",
                 "type":"POST",
-                "data":{
-                    input:{
-                        param:param
-                    }
-                }
             },
             "columns": [{
                     "mRender": function(data, type, row) {
