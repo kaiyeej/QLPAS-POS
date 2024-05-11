@@ -58,7 +58,7 @@ class StockCard extends Connection
             $row['module'] = $module;
             $row['reference_number'] = $reference_number;
             $row['amount'] = number_format($qty_balance * $row['cost'],2);
-            $row['date'] = date('M d, Y', strtotime($row['date_modified']));
+            $row['date'] = date('M d, Y', strtotime($row['date_added']));
             $rows[] = $row;
         }
         return $rows;
