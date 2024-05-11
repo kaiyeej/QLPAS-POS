@@ -473,7 +473,7 @@ class Sales extends Connection
 
             // check inventory here ...
             $Inventory = new InventoryReport();
-            $current_balance = $Inventory->balance($this->inputs['product_id'], $this->inputs['branch_id'], $this->inputs['warehouse_id']);
+            $current_balance = $Inventory->balance_per_warehouse($this->inputs['product_id'], $this->inputs['branch_id'], $this->inputs['warehouse_id']);
             if ($current_balance - $this->inputs['quantity'] >= 0) {
 
                 $reference_number = $this->inputs['reference_number'];
