@@ -39,6 +39,8 @@ class ClaimSlip extends Connection
     {
         $primary_id = $this->inputs[$this->pk];
         $encoded_by = $this->inputs['encoded_by'];
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
         $form = array(
             'status' => 'F',
             'checked_by' => $encoded_by
@@ -61,7 +63,9 @@ class ClaimSlip extends Connection
                 'sales_id' => $sales_id,
                 'withdrawal_date' => date("Y-m-d"), //$this->sales_date($sales_id),
                 'status' => 'F',
-                'encoded_by' => $encoded_by
+                'encoded_by' => $encoded_by,
+                'branch_id'  => $branch_id,
+                'warehouse_id' => $warehouse_id
             );
     
             $withdrawal_id = $this->insert('tbl_stock_withdrawal', $form, 'Y');

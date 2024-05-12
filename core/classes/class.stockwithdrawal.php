@@ -306,6 +306,8 @@ class StockWithdrawal extends Connection
         $settings_data = $Settings->view();
 
         $reference_number = $this->inputs['reference_number'];
+        $branch_id = $this->inputs['branch_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
         $param = "reference_number='$reference_number'";
         $Sales->inputs['sales_id'] = $Sales->getID($param);
 
