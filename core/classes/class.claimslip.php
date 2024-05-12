@@ -18,7 +18,7 @@ class ClaimSlip extends Connection
             $this->name     => $this->clean($this->inputs[$this->name]),
             'sales_id'      => $this->inputs['sales_id'],
             'branch_id'     => isset($this->inputs['branch_id']) ? $this->inputs['branch_id'] : $branch_id,
-            'warehouse_id'      => $this->inputs['warehouse_id'],
+            'warehouse_id'  => $this->inputs['warehouse_id'],
             'withdrawal_id' => isset($this->inputs['withdrawal_id']) ? $this->inputs['withdrawal_id'] :  0,
             'total_amount'  => $this->inputs['total_amount'],
             'status'        => isset($this->inputs['status']) ? $this->inputs['status'] :  'S'
@@ -165,8 +165,7 @@ class ClaimSlip extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
 
-        if($param == "status='F' and checked_by=0 ORDER BY date_added DESC"){
-            // change this for next update
+        if(isset($this->inputs['user'])){
             $user = "warehouse";
         }else{
             $user = "cashier";

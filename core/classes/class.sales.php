@@ -73,7 +73,7 @@ class Sales extends Connection
     }
 
 
-    public function show()
+    public function show_old()
     {
         $Customers = new Customers;
         $Users = new Users;
@@ -94,6 +94,51 @@ class Sales extends Connection
             $row['withdrawal_ref'] = $row['reference_number'] . " (Customer: " . $customer_name . ")";
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    public function show()
+    {
+        $Customers = new Customers;
+        $Users = new Users;
+        $Warehouses = new Warehouses;
+        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $rows = array();
+        $result = $this->select("$this->table s LEFT JOIN tbl_customers c ON s.customer_id=c.customer_id LEFT JOIN tbl_users u ON s.encoded_by=u.user_id LEFT JOIN tbl_warehouses w ON s.warehouse_id=w.warehouse_id", "s.*, c.customer_id, c.customer_name, c.suki_card_number, u.user_fullname, w.warehouse_name", $param);
+        while ($row = $result->fetch_assoc()) {
+            //$customer_name = $row['customer_id'] > 0 ? $Customers->name($row['customer_id']) : 'Walk-in';
+            $customer_name = $row['customer_id'] > 0 ? $row['customer_name'] : 'Walk-in';
+            //$row['suki_card_number'] = $row['customer_id'] > 0 ? $Customers->get_suki_card_number($row['customer_id']) : '';
+            $row['customer'] = $customer_name;
+
+            //$row['customer_id'] = $row['customer_id'];
+            $total = $this->total($row['sales_id']);
+            $row['total'] = number_format($total, 2);
+            $row['total_nonformat'] = $total;
+            $row['inv_ref'] = $row['reference_number'] . " (₱" . number_format($this->dr_balance($row['sales_id']), 2) . ")";
+            $row['withdrawal_ref'] = $row['reference_number'] . " (Customer: " . $customer_name . ")";
+            $row['encoded_name'] = $row['user_fullname'];//$Users->getUser($row['encoded_by']);
+            //$row['warehouse_name'] = $row['warehouse_name'];//$Warehouses->name($row['warehouse_id']);
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    public function show_pos()
+    {
+        $Customers = new Customers;
+        $Users = new Users;
+        $Warehouses = new Warehouses;
+        $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
+        $rows = array();
+        $result = $this->select("$this->table s LEFT JOIN tbl_customers c ON s.customer_id=c.customer_id LEFT JOIN tbl_users u ON s.encoded_by=u.user_id LEFT JOIN tbl_warehouses w ON s.warehouse_id=w.warehouse_id", "s.*, c.customer_id, c.customer_name, c.suki_card_number, u.user_fullname, w.warehouse_name", $param);
+        while ($row = $result->fetch_assoc()) {
+            $customer_name = $row['customer_id'] > 0 ? $row['customer_name'] : 'Walk-in';
+            $row['customer'] = $customer_name;
+            $row['withdrawal_ref'] = $row['reference_number'] . " (Customer: " . $customer_name . ")";
+            $row['encoded_name'] = $row['user_fullname'];
             $rows[] = $row;
         }
         return $rows;
