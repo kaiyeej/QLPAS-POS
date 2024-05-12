@@ -205,6 +205,8 @@ class StockWithdrawal extends Connection
                 $Sales = new Sales;
                 $ClaimSlip2->inputs['reference_number'] = $ClaimSlip2->generate();
                 $ClaimSlip2->inputs['sales_id'] = $sales_id;
+                $ClaimSlip2->inputs['branch_id'] = $this->inputs['branch_id'];
+                $ClaimSlip2->inputs['warehouse_id'] = $this->inputs['warehouse_id'];
                 $ClaimSlip2->inputs['total_amount'] = $Sales->total($sales_id);
                 $ClaimSlip2->add();
             }
