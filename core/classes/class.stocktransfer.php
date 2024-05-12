@@ -99,6 +99,7 @@ class StockTransfer extends Connection
         $row['source_warehouse'] = $Warehouses->name($row['source_warehouse_id']);
         $row['destination_warehouse'] = $Warehouses->name($row['destination_warehouse_id']);
         $row['encoded_name'] = $Users->getUser($row['user_id']);
+        $row['prepared_name'] = $Users->getUser($_SESSION['user']['id']);
         return $row;
     }
 
@@ -229,6 +230,23 @@ class StockTransfer extends Connection
 
         return $row[0];
     }
+
+    public function getPrintDetails()
+    {
+        $id = $_POST['id'];
+        $Products = new Products;
+        $rows = array();
+        $result = $this->select($this->table_detail, "*", "$this->pk='$id'");
+        while ($row = $result->fetch_assoc()) {
+            $amount = ($row['cost'] * $row['qty']);
+            $row['product_name'] = $Products->name($row['product_id']);
+            $row['cost'] = number_format($row['cost'], 2);
+            $row['amount'] = number_format($amount, 2);
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
 
     public function schema()
     {

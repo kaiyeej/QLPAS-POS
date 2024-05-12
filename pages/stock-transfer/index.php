@@ -65,6 +65,7 @@
     </div>
 </div>
 <?php include 'modal_stock_transfer.php' ?>
+<?php include 'modal_print.php' ?>
 <script type="text/javascript">
     function getEntries() {
         var start_date = $("#start_date").val();
@@ -94,7 +95,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getEntryDetails2(" + row.stock_transfer_id + ")' style='padding:15px;height:45px;'><span class='ti ti-menu'></span></button></center>";
+                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-1' onclick='getEntryDetails2(" + row.stock_transfer_id + ")' style='padding:15px;height:45px;'><span class='ti ti-menu'></span></button><button onclick='printRecord(" + row.stock_transfer_id + ")' class='btn btn-warning btn-circle mr-1' style='padding:15px;height:45px;'><span class='ti ti-printer'></span></button></div>";
                     }
                 },
                 {
