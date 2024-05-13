@@ -199,8 +199,11 @@ class Sales extends Connection
         $fetch = $this->select($this->table, "*", "$this->pk='$primary_id'");
         $row = $fetch->fetch_assoc();
 
+        $total_sales_amount = $this->total_sales($primary_id);
+
         $form = array(
             'status' => 'F',
+            'total_sales_amount' => $total_sales_amount
         );
 
         // update inventory qty
@@ -343,6 +346,12 @@ class Sales extends Connection
         $total_sr = $result_sr->fetch_array();
 
         return $total_dr[0] - $total_sr[0];
+    }
+
+    public function total_sales($primary_id){
+        $result_dr = $this->select($this->table_detail, 'sum((quantity*price)-discount)', "$this->pk = '$primary_id'");
+        $total_dr = $result_dr->fetch_array();
+        return $total_dr[0] * 1;
     }
 
     public function cancel_sales_pos()
@@ -717,13 +726,16 @@ class Sales extends Connection
             $CustomerPayment->add_detail();
         }
 
+        // update header
+        $total_sales_amount = $this->total_sales($primary_id);
         $form = array(
             'status' => 'F',
             'for_pick_up' => $this->inputs['for_pickup'],
             'withdrawal_status' => $this->inputs['for_pickup'],
             'encoded_by' => $this->inputs['encoded_by'],
             'reward_points' => $reward_points,
-            'remarks' => $remarks
+            'remarks' => $remarks,
+            'total_sales_amount' => $total_sales_amount
         );
         $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 
