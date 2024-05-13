@@ -342,14 +342,15 @@ class StockWithdrawal extends Connection
         $withdrawal_id = $fetch->fetch_array();
         
         $rows = array();
-        $result = $this->select($this->table_detail, '*', "withdrawal_id = '$withdrawal_id[0]'");
+        $result = $this->select("$this->table_detail w LEFT JOIN tbl_products p ON w.product_id=p.product_id", 'w.*, p.product_name', "withdrawal_id = '$withdrawal_id[0]'");
         while ($row = $result->fetch_assoc()) {
             $remaining_qty = $this->remaining_qty($row['sales_detail_id']);
-            $row['product'] = Products::name($row['product_id']);
+            $row['product'] = $row['product_name'];//Products::name($row['product_id']);
             $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
             $row['remaining_qty'] = $remaining_qty;
             // incluede branch_id and warehouse_id
-            $row['current_qty'] = $Inv->balance_per_warehouse($row['product_id'], $branch_id, $warehouse_id) + $row['qty'] + $remaining_qty;
+            //$row['current_qty'] = $Inv->balance_per_warehouse($row['product_id'], $branch_id, $warehouse_id) + $row['qty'] + $remaining_qty;
+            $row['current_qty'] = $Inv->balance_per_warehouse($row['product_id'], $branch_id, $warehouse_id);
             $row['qty'] = number_format($row['qty']);
             $rows[] = $row;
         }
