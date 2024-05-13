@@ -141,7 +141,7 @@ class Sales extends Connection
             $row['encoded_name'] = $row['user_fullname'];
             //$total = $this->total($row['sales_id']);
             //$row['total'] = number_format($total, 2);
-            $row['total'] = "-";
+            $row['total'] = $row['total_sales_amount']*1;
             $rows[] = $row;
         }
         return $rows;
