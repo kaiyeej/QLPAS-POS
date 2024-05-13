@@ -139,8 +139,9 @@ class Sales extends Connection
             $row['customer'] = $customer_name;
             $row['withdrawal_ref'] = $row['reference_number'] . " (Customer: " . $customer_name . ")";
             $row['encoded_name'] = $row['user_fullname'];
-            $total = $this->total($row['sales_id']);
-            $row['total'] = number_format($total, 2);
+            //$total = $this->total($row['sales_id']);
+            //$row['total'] = number_format($total, 2);
+            $row['total'] = "-";
             $rows[] = $row;
         }
         return $rows;
