@@ -358,15 +358,15 @@ class Sales extends Connection
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 0 AND sales_id <= 1000");
         while($row = $fetch->fetch_assoc()){
-            $total_sales_amount = total_sales($row['sales_id']);
-            // $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
-            // if($res){
-            //     $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
-            // }else{
-            //     $response = "(X) ----> Updated sales id: " . $row['sales_id'];
-            // }
+            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
+            if($res){
+                $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
+            }else{
+                $response = "(X) ----> Updated sales id: " . $row['sales_id'];
+            }
 
-            $result .= $total_sales_amount . "\n";
+            $result .= $response . "\n";
         }
 
         return $result;
