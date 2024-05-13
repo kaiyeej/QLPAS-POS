@@ -356,7 +356,7 @@ class Sales extends Connection
 
     public function script_total_sales_runner(){
         $result = "";
-        $fetch = $this->select($this->table, "sales_id", "sales_id > 7000 AND sales_id <= 7500");
+        $fetch = $this->select($this->table, "sales_id", "sales_id > 9500 AND sales_id <= 10000");
         while($row = $fetch->fetch_assoc()){
             $total_sales_amount = $this->total_sales($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
@@ -374,7 +374,7 @@ class Sales extends Connection
 
     public function script_total_sales_runner2(){
         $result = "";
-        $fetch = $this->select($this->table, "sales_id", "sales_id > 7500 AND sales_id <= 8000");
+        $fetch = $this->select($this->table, "sales_id", "sales_id > 10000 AND sales_id <= 10500");
         while($row = $fetch->fetch_assoc()){
             $total_sales_amount = $this->total_sales($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
@@ -392,7 +392,7 @@ class Sales extends Connection
 
     public function script_total_sales_runner3(){
         $result = "";
-        $fetch = $this->select($this->table, "sales_id", "sales_id > 8000 AND sales_id <= 8500");
+        $fetch = $this->select($this->table, "sales_id", "sales_id > 10500 AND sales_id <= 11000");
         while($row = $fetch->fetch_assoc()){
             $total_sales_amount = $this->total_sales($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
@@ -410,7 +410,7 @@ class Sales extends Connection
 
     public function script_total_sales_runner4(){
         $result = "";
-        $fetch = $this->select($this->table, "sales_id", "sales_id > 8500 AND sales_id <= 9000");
+        $fetch = $this->select($this->table, "sales_id", "sales_id > 11000 AND sales_id <= 11500");
         while($row = $fetch->fetch_assoc()){
             $total_sales_amount = $this->total_sales($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
@@ -428,7 +428,25 @@ class Sales extends Connection
 
     public function script_total_sales_runner5(){
         $result = "";
-        $fetch = $this->select($this->table, "sales_id", "sales_id > 9000 AND sales_id <= 9500");
+        $fetch = $this->select($this->table, "sales_id", "sales_id > 11500 AND sales_id <= 12000");
+        while($row = $fetch->fetch_assoc()){
+            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
+            if($res){
+                $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
+            }else{
+                $response = "(X) ----> Updated sales id: " . $row['sales_id'];
+            }
+
+            $result .= $response . "<br />";
+        }
+
+        return $result;
+    }
+
+    public function script_total_sales_runner6(){
+        $result = "";
+        $fetch = $this->select($this->table, "sales_id", "sales_id > 12000 AND sales_id <= 12500");
         while($row = $fetch->fetch_assoc()){
             $total_sales_amount = $this->total_sales($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
