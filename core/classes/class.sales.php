@@ -390,7 +390,7 @@ class Sales extends Connection
         return $result;
     }
 
-    public function script_total_sales_runner(){
+    public function script_total_sales_runner3(){
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 5000 AND sales_id <= 6000");
         while($row = $fetch->fetch_assoc()){
