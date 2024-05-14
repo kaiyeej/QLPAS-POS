@@ -19,6 +19,7 @@ class StockCard extends Connection
         $InventoryAdjustment = new InventoryAdjustment;
         $SalesReturn = new SalesReturn;
         $PurchaseReturn = new PurchaseReturn;
+        $StockTransfer = new StockTransfer;
 
         $result = $this->select($this->table, "*,IF(type='IN',quantity,0) AS qty_in,IF(type='OUT',quantity,0) AS qty_out", "product_id = '$product_id' AND status = '1' AND branch_id = '$branch_id' AND warehouse_id = '$warehouse_id' AND date_added BETWEEN '$start_date' AND '$end_date' AND quantity > 0 ORDER BY date_modified ASC");
 
@@ -52,6 +53,9 @@ class StockCard extends Connection
             }else if($row['module'] == "PR"){
                 $module = "Purchase Return";
                 $reference_number = $PurchaseReturn->name($row['header_id']);
+            }else if($row['module'] == "STK"){
+                $module = "Stock Transfer";
+                $reference_number = $StockTransfer->name($row['header_id']);
             }
 
             $row['qty_balance'] = number_format($qty_balance,2);
