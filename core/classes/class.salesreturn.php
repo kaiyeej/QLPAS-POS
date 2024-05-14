@@ -135,8 +135,10 @@ class SalesReturn extends Connection
         $sales_qty = $Sales->sales_qty($sRow['sales_id']);
         $qty = $sales_qty-$sr_total;
         if($qty <= 0){
+            $total_sales_amount = $Sales->total($sRow['sales_id']);
             $form_ = array(
                 'status' => 'R',
+                'total_sales_amount' => $total_sales_amount
             );
             $this->update("tbl_sales", $form_, "sales_id = '$sRow[sales_id]'");    
         }
