@@ -20,9 +20,16 @@ class SalesReturn extends Connection
     public function add()
     {
         $Sales = new Sales;
-        $branch_id = $this->getBranch();
+        //$branch_id = $this->getBranch();
+        
         $sales_id = $Sales->pk_by_name($this->inputs['sales_reference_number']);
-        $warehouse_id = $Sales->sales_warehouse($sales_id);
+        
+        $fetch_sales = $this->select("tbl_sales","*","sales_id='$sales_id'");
+        $sRow = $fetch_sales->fetch_assoc();
+        $branch_id = $sRow['branch_id'];
+        $warehouse_id = $sRow['warehouse_id'];
+
+        //$warehouse_id = $Sales->sales_warehouse($sales_id);
         $form = array(
             $this->name     => $this->clean($this->inputs[$this->name]),
             //'branch_id'     => $this->getBranch(),
@@ -59,7 +66,8 @@ class SalesReturn extends Connection
             $this->inputs['param'] = "sales_return_id = '$sales_return_id'";
             return $this->show_detail();
         }else{
-            return "sr = " . $sales_return_id;
+            //return "sr = " . $sales_return_id;
+            return $sales_return_id;
         }
     }
 
