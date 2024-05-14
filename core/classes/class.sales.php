@@ -136,6 +136,7 @@ class Sales extends Connection
         $result = $this->select("$this->table s LEFT JOIN tbl_customers c ON s.customer_id=c.customer_id LEFT JOIN tbl_users u ON s.encoded_by=u.user_id LEFT JOIN tbl_warehouses w ON s.warehouse_id=w.warehouse_id", "s.*, c.customer_id, c.customer_name, c.suki_card_number, u.user_fullname, w.warehouse_name", $param);
         while ($row = $result->fetch_assoc()) {
             $customer_name = $row['customer_id'] > 0 ? $row['customer_name'] : 'Walk-in';
+            $row['suki_card_number'] = $row['customer_id'] > 0 ? $row['suki_card_number'] : "";
             $row['customer'] = $customer_name;
             $row['withdrawal_ref'] = $row['reference_number'] . " (Customer: " . $customer_name . ")";
             $row['encoded_name'] = $row['user_fullname'];
@@ -358,7 +359,7 @@ class Sales extends Connection
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 22000 AND sales_id <= 22500");
         while($row = $fetch->fetch_assoc()){
-            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $total_sales_amount = $this->total($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
             if($res){
                 $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
@@ -376,7 +377,7 @@ class Sales extends Connection
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 49000 AND sales_id <= 49500");
         while($row = $fetch->fetch_assoc()){
-            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $total_sales_amount = $this->total($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
             if($res){
                 $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
@@ -394,7 +395,7 @@ class Sales extends Connection
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 49500 AND sales_id <= 50000");
         while($row = $fetch->fetch_assoc()){
-            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $total_sales_amount = $this->total($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
             if($res){
                 $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
@@ -412,7 +413,7 @@ class Sales extends Connection
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 50000 AND sales_id <= 50500");
         while($row = $fetch->fetch_assoc()){
-            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $total_sales_amount = $this->total($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
             if($res){
                 $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
@@ -430,7 +431,7 @@ class Sales extends Connection
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 50500 AND sales_id <= 51000");
         while($row = $fetch->fetch_assoc()){
-            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $total_sales_amount = $this->total($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
             if($res){
                 $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
@@ -448,7 +449,7 @@ class Sales extends Connection
         $result = "";
         $fetch = $this->select($this->table, "sales_id", "sales_id > 51000 AND sales_id <= 51500");
         while($row = $fetch->fetch_assoc()){
-            $total_sales_amount = $this->total_sales($row['sales_id']);
+            $total_sales_amount = $this->total($row['sales_id']);
             $res = $this->update($this->table, ['total_sales_amount' => $total_sales_amount], "sales_id='$row[sales_id]'");
             if($res){
                 $response = "Updated sales id: " . $row['sales_id'] . " amount = " . $total_sales_amount;
