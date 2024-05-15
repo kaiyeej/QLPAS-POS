@@ -36,6 +36,7 @@ class SalesReport extends Connection
     {
         $year = $this->inputs['sales_year'];
         $item = $this->inputs['product_category_id'];
+        $branch_id = $this->getBranch();
 
         if ($item >= 0) {
             $param = "AND p.product_category_id = '$item'";
@@ -58,7 +59,7 @@ class SalesReport extends Connection
         SUM(CASE WHEN MONTH(h.sales_date) = 9 THEN d.quantity * d.price ELSE 0 END) AS month_9,
         SUM(CASE WHEN MONTH(h.sales_date) = 10 THEN d.quantity * d.price ELSE 0 END) AS month_10,
         SUM(CASE WHEN MONTH(h.sales_date) = 11 THEN d.quantity * d.price ELSE 0 END) AS month_11,
-        SUM(CASE WHEN MONTH(h.sales_date) = 12 THEN d.quantity * d.price ELSE 0 END) AS month_12", "YEAR(h.sales_date) = '$year' AND h.status = 'F' $param GROUP BY p.product_id, p.product_name");
+        SUM(CASE WHEN MONTH(h.sales_date) = 12 THEN d.quantity * d.price ELSE 0 END) AS month_12", "YEAR(h.sales_date) = '$year' AND h.status = 'F' AND h.branch_id = '$branch_id' $param GROUP BY p.product_id, p.product_name");
 
         $rows = array();
         while ($row = $result->fetch_assoc()) {
@@ -80,6 +81,7 @@ class SalesReport extends Connection
     {
         $start_date = $this->inputs['start_date'];
         $end_date = $this->inputs['end_date'];
+        $branch_id = $this->getBranch();
 
         $item = $this->inputs['product_category_id'];
 
@@ -89,7 +91,7 @@ class SalesReport extends Connection
             $param = "";
         }
 
-        $result = $this->select("tbl_products as p INNER JOIN tbl_sales_details as d ON p.product_id = d.product_id INNER JOIN tbl_sales as h ON h.sales_id = d.sales_id", "p.product_id, p.product_name, SUM(d.quantity) as qty, sum(d.discount) as total_discount, SUM(d.quantity * d.price) as amount", "$param h.sales_date >= '$start_date' AND h.sales_date <= '$end_date' AND h.status = 'F' GROUP BY p.product_id, p.product_name");
+        $result = $this->select("tbl_products as p INNER JOIN tbl_sales_details as d ON p.product_id = d.product_id INNER JOIN tbl_sales as h ON h.sales_id = d.sales_id", "p.product_id, p.product_name, SUM(d.quantity) as qty, sum(d.discount) as total_discount, SUM(d.quantity * d.price) as amount", "$param h.sales_date >= '$start_date' AND h.sales_date <= '$end_date' AND h.status = 'F' AND h.branch_id = '$branch_id' GROUP BY p.product_id, p.product_name");
         $rows = array();
         while ($row = $result->fetch_assoc()) {
             $total = $row['amount'] - $row['total_discount'];
@@ -111,6 +113,7 @@ class SalesReport extends Connection
         $start_date = $this->inputs['start_date'];
         $end_date = $this->inputs['end_date'];
         $user_id = $this->inputs['user_id'];
+        $branch_id = $this->getBranch();
 
         if ($user_id >= 0) {
             $param = "AND h.encoded_by = '$user_id'";
@@ -125,7 +128,7 @@ class SalesReport extends Connection
             $row['item'] = Products::name($row['product_id']);
             // $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d, tbl_users as u", "sum((quantity*price)-discount) as amount, sum(quantity) as qty", "d.product_id='$row[product_id]' AND u.user_category='C' AND u.user_id=h.encoded_by $param AND h.sales_id=d.sales_id AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F'");
 
-            $fetchSAles = $this->select("tbl_sales as h INNER JOIN tbl_sales_details as d ON h.sales_id = d.sales_id INNER JOIN tbl_users as u ON u.user_id = h.encoded_by","SUM((d.quantity * d.price) - d.discount) as amount, SUM(d.quantity) as qty","d.product_id='$row[product_id]' AND u.user_category='C' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F'");
+            $fetchSAles = $this->select("tbl_sales as h INNER JOIN tbl_sales_details as d ON h.sales_id = d.sales_id INNER JOIN tbl_users as u ON u.user_id = h.encoded_by","SUM((d.quantity * d.price) - d.discount) as amount, SUM(d.quantity) as qty","d.product_id='$row[product_id]' AND u.user_category='C' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F' AND h.branch_id = '$branch_id'");
 
 
 
@@ -144,6 +147,7 @@ class SalesReport extends Connection
         $start_date = $this->inputs['start_date'];
         $end_date = $this->inputs['end_date'];
         $customer_id = $this->inputs['customer_id'];
+        $branch_id = $this->getBranch();
 
         if ($customer_id >= 0) {
             $param = "AND h.customer_id = '$customer_id'";
@@ -156,7 +160,7 @@ class SalesReport extends Connection
         while ($row = $result->fetch_assoc()) {
 
             $row['item'] = Products::name($row['product_id']);
-            $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d", "sum((quantity*price)-discount) as amount, sum(quantity) as qty", "d.product_id='$row[product_id]' $param AND h.sales_id=d.sales_id AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F'");
+            $fetchSAles = $this->select("tbl_sales as h, tbl_sales_details as d", "sum((quantity*price)-discount) as amount, sum(quantity) as qty", "d.product_id='$row[product_id]' $param AND h.sales_id=d.sales_id AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') AND h.status='F' AND h.branch_id = '$branch_id'");
             $sRow = $fetchSAles->fetch_array();
 
             $row['qty'] = number_format($sRow['qty'], 2);
