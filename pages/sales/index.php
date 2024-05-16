@@ -147,6 +147,9 @@
                 {
                     "data": "date_last_modified"
                 }
+            ],
+                "columnDefs": [
+                { "orderable": false, "targets": [0, 1] }
             ]
         });
     }
