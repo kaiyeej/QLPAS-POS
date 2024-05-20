@@ -67,6 +67,7 @@ class Sales extends Connection
         $rows = array();
         $result = $this->select('tbl_sales AS s,tbl_users AS u,tbl_customers AS c', 's.*,u.user_fullname AS encoded_name,c.customer_name AS customer,c.suki_card_number', $param);
         while ($row = $result->fetch_assoc()) {
+            $row['total'] = number_format($row['total_sales_amount'], 2);
             $rows[] = $row;
         }
         return $rows;
@@ -87,7 +88,7 @@ class Sales extends Connection
             $row['customer'] = $customer_name;
 
             $row['customer_id'] = $row['customer_id'];
-            $total = $this->total($row['sales_id']);
+            $total = $row['total_sales_amount'];
             $row['total'] = number_format($total, 2);
             $row['total_nonformat'] = $total;
             $row['inv_ref'] = $row['reference_number'] . " (₱" . number_format($this->dr_balance($row['sales_id']), 2) . ")";

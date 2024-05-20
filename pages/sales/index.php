@@ -64,6 +64,7 @@
                                     <th>Type</th>
                                     <th>Encoded by</th>
                                     <th>Status</th>
+                                    <th>Total</th>
                                     <th>Date Added</th>
                                     <th>Date Modified</th>
                                 </tr>
@@ -105,7 +106,7 @@
             },
             "columns": [{
                     "mRender": function(data, type, row) {
-                        return row.status == 'F' ? '' : "<input type='checkbox' value=" + row.sales_id + " class='dt_id' style='position: initial; opacity:1;'>";
+                        return row.status != 'S'  ? '' : "<input type='checkbox' value=" + row.sales_id + " class='dt_id' style='position: initial; opacity:1;'>";
                     }
                 },
                 {
@@ -138,8 +139,11 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : "<span class='badge badge-danger'>Saved</span>";
+                        return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : (row.status == "R" ? "<span class='badge badge-warning'>RETURNED</span>" : "<span class='badge badge-danger'>Saved</span>");
                     }
+                },
+                {
+                    "data": "total"
                 },
                 {
                     "data": "date_added"

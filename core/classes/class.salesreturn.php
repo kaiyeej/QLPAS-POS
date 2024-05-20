@@ -132,14 +132,17 @@ class SalesReturn extends Connection
         $primary_id = $this->inputs['id'];
         $Products = new Products();
         $Sales = new Sales();
-        $result = $this->select($this->table_detail, " * ", "$this->pk = '$primary_id'");
-        $sr_total = 0;
-        while ($row = $result->fetch_array()) {
-            $Products->prodAVG($row['product_id'], $row['quantity_return'], $row['cost']);
-            $sr_total += $row['quantity_return'];
-        }
+
+        $form = array(
+            'status' => 'F',
+        );
+        $query = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 
         $sRow = $this->view($primary_id);
+        $result = $this->select("$this->table_detail as d, $this->table as h", "h.warehouse_id, h.branch_id, sum(d.quantity_return) as total", "h.sales_id='$sRow[sales_id]' AND h.status='F' AND h.sales_return_id=d.sales_return_id");
+        $sr_row = $result->fetch_array();
+        $sr_total = $sr_row['total'];
+
         $sales_qty = $Sales->sales_qty($sRow['sales_id']);
         $qty = $sales_qty-$sr_total;
         if($qty <= 0){
@@ -151,17 +154,12 @@ class SalesReturn extends Connection
             $this->update("tbl_sales", $form_, "sales_id = '$sRow[sales_id]'");    
         }
         
-        $form = array(
-            'status' => 'F',
-        );
-        $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
-
-        if($result){
+        if($query){
             $InventoryReport = new InventoryReport;
             $InventoryReport->update_product_qty($this->table_detail, $this->pk, $primary_id, $sRow['branch_id'], $sRow['warehouse_id']);
         }
 
-        return $result;
+        return $query;
     }
 
     public function add_detail()
