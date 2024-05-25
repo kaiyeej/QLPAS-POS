@@ -175,25 +175,26 @@ class ClaimSlip extends Connection
             $user = "cashier";
         }
 
-        $result = $this->select($this->table, '*', $param);
+        $result = $this->select("$this->table c LEFT JOIN tbl_sales s ON c.sales_id=s.sales_id LEFT JOIN tbl_customers cu ON s.customer_id=cu.customer_id", "c.*, s.reference_number AS sales_reference_number, s.sales_type, s.customer_id, s.sales_date, s.for_pick_up, cu.customer_name as customer", $param);
         while ($row = $result->fetch_assoc()) {
 
-            $sales_id = $row['sales_id'];
-            $fetch_sales = $this->select("tbl_sales", "*", "sales_id = '$sales_id'");
-            $sales_row = $fetch_sales->fetch_array();
+            // $sales_id = $row['sales_id'];
+            // $fetch_sales = $this->select("tbl_sales", "*", "sales_id = '$sales_id'");
+            // $sales_row = $fetch_sales->fetch_array();
 
-            $customer_name = $sales_row['customer_id'] > 0 ? $Customers->name($sales_row['customer_id']) : 'Walk-in';
-            $row['customer'] = $customer_name;
+            //$customer_name = $sales_row['customer_id'] > 0 ? $Customers->name($sales_row['customer_id']) : 'Walk-in';
+            //$row['customer'] = $row['customer_name'];
             // $total = $Sales->total($sales_id);
             $total = $row['total_amount'];
             $row['total'] = number_format($total, 2);
             $row['total_nonformat'] = $total;
-            $row['reference_number'] = $user == "warehouse" ? $row['reference_number'] : $sales_row['reference_number'];
-            $row['sales_num'] = $sales_row['reference_number'];
-            $row['sales_type'] = $sales_row['sales_type'];
-            $row['claim_sales_type'] = $sales_row['sales_type'] == "C" ? "Cash" : "Charge";
-            $row['customer_id'] = $sales_row['customer_id'];
-            $row['for_pick_up'] = $sales_row['for_pick_up'];
+            $row['reference_number'] = $user == "warehouse" ? $row['reference_number'] : $row['sales_reference_number'];
+            $row['sales_num'] = $row['sales_reference_number'];
+            $row['sales_type'] = $row['sales_type'];
+            $row['claim_sales_type'] = $row['sales_type'] == "C" ? "Cash" : "Charge";
+            // $row['customer_id'] = $row['customer_id'];
+            // $row['for_pick_up'] = $row['for_pick_up'];
+            $row['date_added'] = $row['sales_date'];
 
             $rows[] = $row;
         }
