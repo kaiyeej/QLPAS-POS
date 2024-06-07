@@ -858,7 +858,7 @@ class Sales extends Connection
         $sales_rows['total_payment'] = $payment_row['total_payment'] * 1;
 
         // sales return
-        $fetch_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details as d", "sum((d.quantity_return*d.price)-d.discount) as total_sr", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' ");
+        $fetch_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details as d", "sum((d.quantity_return*d.price)-d.discount) as total_sr", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' and d.quantity_return > 0");
         $sales_return_row = $fetch_sales_return->fetch_assoc();
         $sales_rows['total_sales_return'] = $sales_return_row['total_sr'] * 1;
 
