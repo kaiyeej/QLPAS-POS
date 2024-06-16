@@ -864,7 +864,7 @@ class Sales extends Connection
 
         // charge sales return
         $fetch_charge_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details AS d,
-        tbl_customer_payment AS cp, tbl_customer_payment_details AS cpd", "sum((d.quantity_return*d.price)-d.discount) as total_charge_sr, SUM(cpd.amount) AS total_cp", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' AND s.sales_summary_id=0 AND s.encoded_by='$user_id' AND cp.cp_id=cpd.cp_id AND cpd.ref_id=s.sales_id AND cpd.`type`='DR' AND cp.`status`='F'");
+        tbl_customer_payment AS cp, tbl_customer_payment_details AS cpd", "sum((d.quantity_return*d.price)-d.discount) as total_charge_sr, SUM(cpd.amount) AS total_cp", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' AND s.sales_summary_id=0 AND s.encoded_by='$user_id' AND cp.cp_id=cpd.cp_id AND cpd.ref_id=s.sales_id AND cpd.`type`='DR' AND cp.`status`='F' and d.quantity_return > 0");
         $charge_sales_return_row = $fetch_charge_sales_return->fetch_assoc();
         $sales_rows['total_charge_sales_return'] =  $charge_sales_return_row['total_charge_sr'] * 1;
         $sales_rows['total_returned_payment'] =  $charge_sales_return_row['total_cp'] * 1;
