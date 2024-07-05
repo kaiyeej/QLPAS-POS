@@ -34,14 +34,11 @@ class ReceivableReport extends Connection
         $get_payment_h = $this->select("tbl_customer_payment AS ch, tbl_customer_payment_details AS cd", "SUM(cd.amount) as total", "ch.customer_id='$customer_id' AND ch.cp_id=cd.cp_id AND cd.type='DR' AND ch.status='F'");
         $payment_h = $get_payment_h->fetch_assoc();
 
-        //$payment_h['total'] = 0;
-
         $get_sales = $this->select("tbl_sales as h, tbl_sales_details AS d", "SUM((d.price*d.quantity)-d.discount) as total", "h.customer_id='$customer_id' AND d.sales_id=h.sales_id AND (h.status='F' OR h.status='P') AND h.sales_type='H'");
         $sales_row = $get_sales->fetch_assoc();
 
-        $get_sr = $this->select("tbl_sales as h, tbl_sales_details AS d, tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "h.customer_id='$customer_id' AND d.sales_id=h.sales_id AND h.status='F' AND h.sales_type='H' AND sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.sales_id=h.sales_id AND d.sales_detail_id=srd.sales_detail_id");
+        $get_sr = $this->select("tbl_sales as h, tbl_sales_details AS d, tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "h.customer_id='$customer_id' AND d.sales_id=h.sales_id AND (h.status='F' OR h.status='P') AND h.sales_type='H' AND sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.sales_id=h.sales_id AND d.sales_detail_id=srd.sales_detail_id");
         $sr_row = $get_sr->fetch_assoc();
-
 
         $get_bb = $this->select("tbl_beginning_balance", "SUM(bb_amount) as total", "bb_ref_id='$customer_id' AND bb_module='AR'");
         $bb_row = $get_bb->fetch_assoc();
@@ -74,12 +71,13 @@ class ReceivableReport extends Connection
             $total_payment = $payment_row['total'] > 0 ? $payment_row['total'] : 0;
 
             // sales return
-            $total_return = 0;
-            if($row['module_code'] == "DR"){
-                $get_sr = $this->select("tbl_sales_return sr LEFT JOIN tbl_sales_return_details srd on sr.sales_return_id=srd.sales_return_id", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.sales_id='$row[ref_id]' AND sr.status='F'");
-                $sr_row = $get_sr->fetch_assoc();
-                $total_return = $sr_row['total'];
-            }
+            // $total_return = 0;
+            // if($row['module_code'] == "DR"){
+            //     $get_sr = $this->select("tbl_sales_return sr LEFT JOIN tbl_sales_return_details srd on sr.sales_return_id=srd.sales_return_id", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity)) as total", "sr.sales_id='$row[ref_id]' AND sr.status='F'");
+            //     $sr_row = $get_sr->fetch_assoc();
+            //     $total_return = $sr_row['total'];
+            //     //sum((d.quantity_return*d.price)-(d.discount/d.quantity))
+            // }
 
             $total_dr = $row['total'] - $total_return;
 
