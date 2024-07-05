@@ -34,6 +34,8 @@ class ReceivableReport extends Connection
         $get_payment_h = $this->select("tbl_customer_payment AS ch, tbl_customer_payment_details AS cd", "SUM(cd.amount) as total", "ch.customer_id='$customer_id' AND ch.cp_id=cd.cp_id AND cd.type='DR' AND ch.status='F'");
         $payment_h = $get_payment_h->fetch_assoc();
 
+        //$payment_h['total'] = 0;
+
         $get_sales = $this->select("tbl_sales as h, tbl_sales_details AS d", "SUM((d.price*d.quantity)-d.discount) as total", "h.customer_id='$customer_id' AND d.sales_id=h.sales_id AND (h.status='F' OR h.status='P') AND h.sales_type='H'");
         $sales_row = $get_sales->fetch_assoc();
 
@@ -53,7 +55,6 @@ class ReceivableReport extends Connection
         $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "h.account_id='$customer_id'  AND memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id");
         $total_dm = $get_debit_memo->fetch_array();
 
-
         return (($sales_row['total'] - $sr_row['total']) + $bb_row['total'] + $total_dm[0]) - ($payment_h['total'] + $payment_bb['total'] + $total_cm[0]);
     }
     
@@ -61,22 +62,38 @@ class ReceivableReport extends Connection
         $customer_id = isset($this->inputs['customer_id']) ? $this->inputs['customer_id'] : null;
         $customer_terms = $this->inputs['customer_terms'];
         $rows = array();
-        $result = $this->select("tbl_sales", "reference_number, total_sales_amount AS debit, 0 as credit, 'Sales' AS module_name, sales_date as transaction_date, date_added", "customer_id='$customer_id' AND sales_type='H' AND (STATUS='F' OR STATUS='P') UNION ALL SELECT reference_number, 0 as debit, cd.amount as credit, 'Payment' AS module_name, payment_date as transaction_date, date_added FROM tbl_customer_payment c LEFT JOIN tbl_customer_payment_details cd ON c.cp_id=cd.cp_id WHERE c.customer_id='$customer_id' AND STATUS='F' UNION ALL SELECT reference_number, bb_amount as debit, 0 as credit, 'Beginning Balance' AS module_name, bb_date as transaction_date, date_added FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
+        //$result = $this->select("tbl_sales", "reference_number, total_sales_amount AS debit, 0 as credit, 'Sales' AS module_name, sales_date as transaction_date, date_added", "customer_id='$customer_id' AND sales_type='H' AND (STATUS='F' OR STATUS='P') UNION ALL SELECT reference_number, 0 as debit, cd.amount as credit, 'Payment' AS module_name, payment_date as transaction_date, date_added FROM tbl_customer_payment c LEFT JOIN tbl_customer_payment_details cd ON c.cp_id=cd.cp_id WHERE c.customer_id='$customer_id' AND STATUS='F' UNION ALL SELECT reference_number, bb_amount as debit, 0 as credit, 'Beginning Balance' AS module_name, bb_date as transaction_date, date_added FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
+
+        $result = $this->select("tbl_sales", "reference_number, total_sales_amount AS total, 'Sales' AS module_name, 'DR' as module_code, sales_date as transaction_date, date_added, sales_id as ref_id", "customer_id='$customer_id' AND sales_type='H' AND (STATUS='F' OR STATUS='P') UNION ALL SELECT reference_number, bb_amount as total, 'Beginning Balance' AS module_name, 'BB' as module_code, bb_date as transaction_date, date_added, bb_id as ref_id FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
 
         $rows = array();
         $balance = 0;
         while($row = $result->fetch_assoc()){
-            $row['debit'] = $row['debit'];
-            $row['credit'] = $row['credit'];
-            $row['label_debit'] = number_format($row['debit'], 2);
-            $row['label_credit'] = number_format($row['credit'], 2);
+            $fetch_payment = $this->select("tbl_customer_payment h LEFT JOIN tbl_customer_payment_details d ON h.cp_id=d.cp_id", "sum(d.amount) as total","h.status='F' AND d.ref_id='$row[ref_id]' AND d.type='$row[module_code]' AND h.customer_id='$customer_id'");
+            $payment_row = $fetch_payment->fetch_assoc();
+            $total_payment = $payment_row['total'] > 0 ? $payment_row['total'] : 0;
+
+            // sales return
+            $total_return = 0;
+            if($row['module_code'] == "DR"){
+                $get_sr = $this->select("tbl_sales_return sr LEFT JOIN tbl_sales_return_details srd on sr.sales_return_id=srd.sales_return_id", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.sales_id='$row[ref_id]' AND sr.status='F'");
+                $sr_row = $get_sr->fetch_assoc();
+                $total_return = $sr_row['total'];
+            }
+
+            $total_dr = $row['total'] - $total_return;
+
+            $row['debit'] = $total_dr;
+            $row['credit'] = $total_payment;
+            $row['label_debit'] = number_format($total_dr, 2);
+            $row['label_credit'] = number_format($total_payment, 2);
             $row['reference_number'] = $row['reference_number'];
             $row['transaction_date'] = $row['transaction_date'];
-            $balance += $row['debit'];
-            $balance -= $row['credit'];
+            $balance += $total_dr;
+            $balance -= $total_payment;
             $row['balance'] = $balance;
             $row['label_balance'] = number_format($balance, 2);
-            $row['due_date'] = $row['module_name'] == "Sales" ? date('Y-m-d', strtotime($row['transaction_date']. ' + '.$customer_terms.' days')) : "";
+            $row['due_date'] = date('Y-m-d', strtotime($row['transaction_date']. ' + '.$customer_terms.' days'));
             $row['remarks'] = $row['module_name'];
             $rows[] = $row;
         }

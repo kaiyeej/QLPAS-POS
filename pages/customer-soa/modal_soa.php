@@ -169,8 +169,11 @@
                 var totalDr = 0;
 
                 while (i < arr_count) {
-                    var amount = parseFloat(json.data[i].debit.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
-                    var payment = parseFloat(json.data[i].credit.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
+                    //var amount = parseFloat(json.data[i].debit.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
+                    //var payment = parseFloat(json.data[i].credit.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
+
+                    var amount = parseFloat(json.data[i].debit);
+                    var payment = parseFloat(json.data[i].credit);
 
                     $("#cs_details").append('<tr>' +
                         '<td>' + json.data[i].transaction_date + '</td>' +
