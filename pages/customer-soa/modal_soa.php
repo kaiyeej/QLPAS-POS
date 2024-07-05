@@ -77,7 +77,7 @@
                                  <table class="table table-bordered">
                                      <thead>
                                          <tr>
-                                             <th>Purchase Date</th>
+                                             <th>Transaction Date</th>
                                              <th>Due</th>
                                              <th>Reference</th>
                                              <th>Remarks</th>
@@ -144,6 +144,14 @@
  </div>
  <script type="text/javascript">
      function unpaid_details(customer_id, customer_terms) {
+
+        const formatter = new Intl.NumberFormat('en-US', {
+            //style: 'currency',
+            //currency: 'PHP',
+            minimumFractionDigits: 2, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+            // maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+        });
+
          $.ajax({
              type: 'POST',
              url: "controllers/sql.php?c=" + route_settings.class_name + "&q=show_unpaid",
@@ -154,37 +162,37 @@
                  }
              },
              success: function(data) {
-                 var json = JSON.parse(data);
-                 var arr_count = json.data.length;
-                 var i = 0;
-                 var totalPayment = 0;
-                 var totalDr = 0;
+                var json = JSON.parse(data);
+                var arr_count = json.data.length;
+                var i = 0;
+                var totalPayment = 0;
+                var totalDr = 0;
 
-                 while (i < arr_count) {
-                     var amount = parseFloat(json.data[i].amount.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
-                     var payment = parseFloat(json.data[i].payment.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
+                while (i < arr_count) {
+                    var amount = parseFloat(json.data[i].debit.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
+                    var payment = parseFloat(json.data[i].credit.replace(/[^0-9.-]+/g, "")); // Remove non-numeric characters
 
-                     $("#cs_details").append('<tr>' +
-                         '<td>' + json.data[i].sales_date + '</td>' +
-                         '<td>' + json.data[i].due_date + '</td>' +
-                         '<td>' + json.data[i].reference_number + '</td>' +
-                         '<td>' + json.data[i].remarks + '</td>' +
-                         '<td>' + json.data[i].amount + '</td>' +
-                         '<td>' + json.data[i].payment + '</td>' +
-                         '<td></td>' +
-                         '<td>' + json.data[i].balance + '</td>' +
-                         '</tr>');
+                    $("#cs_details").append('<tr>' +
+                        '<td>' + json.data[i].transaction_date + '</td>' +
+                        '<td>' + json.data[i].due_date + '</td>' +
+                        '<td>' + json.data[i].reference_number + '</td>' +
+                        '<td>' + json.data[i].remarks + '</td>' +
+                        '<td>' + json.data[i].label_debit + '</td>' +
+                        '<td>' + json.data[i].label_credit + '</td>' +
+                        '<td></td>' +
+                        '<td>' + json.data[i].label_balance + '</td>' +
+                        '</tr>');
 
-                     // Update totalPayment and totalDr
-                     totalPayment += payment;
-                     totalDr += amount;
+                    // Update totalPayment and totalDr
+                    totalPayment += payment;
+                    totalDr += amount;
 
-                     i++;
-                 }
+                    i++;
+                }
 
                  // Display totalPayment and totalDr in the footer
-                 $(".total_payment").text(totalPayment.toFixed(2));
-                 $(".total_dr").text(totalDr.toFixed(2));
+                 $(".total_payment").text(formatter.format(totalPayment));
+                 $(".total_dr").text(formatter.format(totalDr));
              }
          });
      }
@@ -208,12 +216,12 @@
                  console.log(total_day1, total_day2, total_day3, total_day4);
 
                  $('#aging_details').html(
-                     '<tr>' +
-                     '<td style="font-size:10px;">' + total_day1 + '</td>' +
-                     '<td style="font-size:10px;">' + total_day2 + '</td>' +
-                     '<td style="font-size:10px;">' + total_day3 + '</td>' +
-                     '<td style="font-size:10px;">' + total_day4 + '</td>' +
-                     '</tr>'
+                    '<tr>' +
+                    '<td style="font-size:10px;">' + total_day1 + '</td>' +
+                    '<td style="font-size:10px;">' + total_day2 + '</td>' +
+                    '<td style="font-size:10px;">' + total_day3 + '</td>' +
+                    '<td style="font-size:10px;">' + total_day4 + '</td>' +
+                    '</tr>'
                  );
 
              }

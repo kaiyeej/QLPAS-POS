@@ -56,8 +56,36 @@ class ReceivableReport extends Connection
 
         return (($sales_row['total'] - $sr_row['total']) + $bb_row['total'] + $total_dm[0]) - ($payment_h['total'] + $payment_bb['total'] + $total_cm[0]);
     }
+    
+    public function show_unpaid(){
+        $customer_id = isset($this->inputs['customer_id']) ? $this->inputs['customer_id'] : null;
+        $customer_terms = $this->inputs['customer_terms'];
+        $rows = array();
+        $result = $this->select("tbl_sales", "reference_number, total_sales_amount AS debit, 0 as credit, 'Sales' AS module_name, sales_date as transaction_date, date_added", "customer_id='$customer_id' AND sales_type='H' AND (STATUS='F' OR STATUS='P') UNION ALL SELECT reference_number, 0 as debit, cd.amount as credit, 'Payment' AS module_name, payment_date as transaction_date, date_added FROM tbl_customer_payment c LEFT JOIN tbl_customer_payment_details cd ON c.cp_id=cd.cp_id WHERE c.customer_id='$customer_id' AND STATUS='F' UNION ALL SELECT reference_number, bb_amount as debit, 0 as credit, 'Beginning Balance' AS module_name, bb_date as transaction_date, date_added FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
 
-    public function show_unpaid()
+        $rows = array();
+        $balance = 0;
+        while($row = $result->fetch_assoc()){
+            $row['debit'] = $row['debit'];
+            $row['credit'] = $row['credit'];
+            $row['label_debit'] = number_format($row['debit'], 2);
+            $row['label_credit'] = number_format($row['credit'], 2);
+            $row['reference_number'] = $row['reference_number'];
+            $row['transaction_date'] = $row['transaction_date'];
+            $balance += $row['debit'];
+            $balance -= $row['credit'];
+            $row['balance'] = $balance;
+            $row['label_balance'] = number_format($balance, 2);
+            $row['due_date'] = $row['module_name'] == "Sales" ? date('Y-m-d', strtotime($row['transaction_date']. ' + '.$customer_terms.' days')) : "";
+            $row['remarks'] = $row['module_name'];
+            $rows[] = $row;
+        }
+
+        return $rows;
+        
+    }
+
+    public function show_unpaid_old()
     {
         $Sales = new Sales;
         $BeginningBalance = new BeginningBalance;
