@@ -21,15 +21,17 @@ class ReceivableReport extends Connection
 
         $count = 1;
         while ($row = $result->fetch_assoc()) {
-            $row['balance'] = number_format($this->balance($row['customer_id']), 2);
-            $row['total'] = $this->balance($row['customer_id']);
+            $bal = $this->balance($row['customer_id']);
+            $row['balance'] = number_format($bal, 2);
+            $row['total'] = $bal;
             $row['count'] = $count++;
             $rows[] = $row;
         }
         return $rows;
     }
+    
 
-    public function balance($customer_id)
+    public function balance_old($customer_id)
     {
         $get_payment_h = $this->select("tbl_customer_payment AS ch, tbl_customer_payment_details AS cd", "SUM(cd.amount) as total", "ch.customer_id='$customer_id' AND ch.cp_id=cd.cp_id AND cd.type='DR' AND ch.status='F'");
         $payment_h = $get_payment_h->fetch_assoc();
@@ -54,6 +56,25 @@ class ReceivableReport extends Connection
 
         return (($sales_row['total'] - $sr_row['total']) + $bb_row['total'] + $total_dm[0]) - ($payment_h['total'] + $payment_bb['total'] + $total_cm[0]);
     }
+
+    public function balance($customer_id)
+    {
+        $result = $this->select("tbl_sales", "reference_number, total_sales_amount AS total, 'Sales' AS module_name, 'DR' as module_code, sales_date as transaction_date, date_added, sales_id as ref_id", "customer_id='$customer_id' AND sales_type='H' AND (STATUS='F' OR STATUS='P') UNION ALL SELECT reference_number, bb_amount as total, 'Beginning Balance' AS module_name, 'BB' as module_code, bb_date as transaction_date, date_added, bb_id as ref_id FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
+        $balance = 0;
+        while($row = $result->fetch_assoc()){
+            $fetch_payment = $this->select("tbl_customer_payment h LEFT JOIN tbl_customer_payment_details d ON h.cp_id=d.cp_id", "sum(d.amount) as total","h.status='F' AND d.ref_id='$row[ref_id]' AND d.type='$row[module_code]' AND h.customer_id='$customer_id'");
+            $payment_row = $fetch_payment->fetch_assoc();
+            $total_payment = $payment_row['total'] > 0 ? $payment_row['total'] : 0;
+
+            $total_dr = $row['total'];
+            $balance += $total_dr;
+            $balance -= $total_payment;
+        }
+
+        return $balance;
+    }
+
+    
     
     public function show_unpaid(){
         $customer_id = isset($this->inputs['customer_id']) ? $this->inputs['customer_id'] : null;
