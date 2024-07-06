@@ -22,6 +22,7 @@ class ReceivableAging extends Connection
 
             $trans = substr($row['reference_number'], 0, 2);
 
+
             if($trans == "BB"){
                 $trans = "Beginning Balance";
                 $id = $BeginningBalance->pk_by_name($row['reference_number']);

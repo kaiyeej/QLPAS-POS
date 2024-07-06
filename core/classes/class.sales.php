@@ -347,7 +347,14 @@ class Sales extends Connection
         $result_sr = $this->select("tbl_sales_return as sr, tbl_sales_return_details as srd", "SUM((srd.quantity_return*srd.price)-(srd.discount/srd.quantity*srd.quantity_return)) as total", "sr.sales_return_id=srd.sales_return_id AND sr.status='F' AND sr.sales_id='$primary_id'");
         $total_sr = $result_sr->fetch_array();
 
-        return $total_dr[0] - $total_sr[0];
+        
+        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d", "sum(d.amount)", "d.ref_type='DR' AND d.reference_id='$primary_id' AND h.memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id");
+        $total_cm = $get_credit_memo->fetch_array();
+
+        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "d.ref_type='DR' AND d.reference_id='$primary_id' AND memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id");
+        $total_dm = $get_debit_memo->fetch_array();
+
+        return ($total_dr[0]+$total_dm[0]) - ($total_sr[0]+$total_cm[0]);
     }
 
     public function total_sales($primary_id){
@@ -947,13 +954,8 @@ class Sales extends Connection
             $paid_total += $row['total'];
         }
 
-        $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d", "sum(d.amount)", "memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
-        $total_cm = $get_credit_memo->fetch_array();
 
-        $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "h.memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id AND d.reference_id='$primary_id' AND d.ref_type='DR'");
-        $total_dm = $get_debit_memo->fetch_array();
-
-        return ($dr_total + $total_dm[0]) - ($paid_total + $total_cm[0]);
+        return $dr_total - $paid_total;
     }
 
     public function totalSalesDays($days)

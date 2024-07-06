@@ -21,7 +21,7 @@ class ReceivableReport extends Connection
 
         $count = 1;
         while ($row = $result->fetch_assoc()) {
-            $bal = $this->balance($row['customer_id']);
+            $bal = $this->balance_old($row['customer_id']);
             $row['balance'] = number_format($bal, 2);
             $row['total'] = $bal;
             $row['count'] = $count++;
@@ -29,7 +29,7 @@ class ReceivableReport extends Connection
         }
         return $rows;
     }
-    
+
 
     public function balance_old($customer_id)
     {
@@ -61,35 +61,46 @@ class ReceivableReport extends Connection
     {
         $result = $this->select("tbl_sales", "reference_number, total_sales_amount AS total, 'Sales' AS module_name, 'DR' as module_code, sales_date as transaction_date, date_added, sales_id as ref_id", "customer_id='$customer_id' AND sales_type='H' AND (STATUS='F' OR STATUS='P') UNION ALL SELECT reference_number, bb_amount as total, 'Beginning Balance' AS module_name, 'BB' as module_code, bb_date as transaction_date, date_added, bb_id as ref_id FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
         $balance = 0;
-        while($row = $result->fetch_assoc()){
-            $fetch_payment = $this->select("tbl_customer_payment h LEFT JOIN tbl_customer_payment_details d ON h.cp_id=d.cp_id", "sum(d.amount) as total","h.status='F' AND d.ref_id='$row[ref_id]' AND d.type='$row[module_code]' AND h.customer_id='$customer_id'");
+        while ($row = $result->fetch_assoc()) {
+            $fetch_payment = $this->select("tbl_customer_payment h LEFT JOIN tbl_customer_payment_details d ON h.cp_id=d.cp_id", "sum(d.amount) as total", "h.status='F' AND d.ref_id='$row[ref_id]' AND d.type='$row[module_code]' AND h.customer_id='$customer_id'");
             $payment_row = $fetch_payment->fetch_assoc();
             $total_payment = $payment_row['total'] > 0 ? $payment_row['total'] : 0;
 
-            $total_dr = $row['total'];
+            $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d", "sum(d.amount)", "h.account_id='$customer_id' AND d.reference_id='$row[ref_id]' AND h.memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id");
+            $total_cm = $get_credit_memo->fetch_array();
+
+            $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "h.account_id='$customer_id' AND d.reference_id='$row[ref_id]' AND memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id");
+            $total_dm = $get_debit_memo->fetch_array();
+
+            $total_dr = ($row['total']+$total_dm[0])-($total_payment+$total_cm[0]);
             $balance += $total_dr;
-            $balance -= $total_payment;
         }
 
         return $balance;
     }
 
-    
-    
-    public function show_unpaid(){
+
+
+    public function show_unpaid()
+    {
         $customer_id = isset($this->inputs['customer_id']) ? $this->inputs['customer_id'] : null;
         $customer_terms = $this->inputs['customer_terms'];
         $rows = array();
 
         //$result = $this->select("tbl_sales", "reference_number, total_sales_amount AS total, 'Sales' AS module_name, 'DR' as module_code, sales_date as transaction_date, date_added, sales_id as ref_id", "customer_id='$customer_id' AND sales_type='H' AND (STATUS='F' OR STATUS='P') UNION ALL SELECT reference_number, bb_amount as total, 'Beginning Balance' AS module_name, 'BB' as module_code, bb_date as transaction_date, date_added, bb_id as ref_id FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
 
-        $result = $this->select("tbl_sales s LEFT JOIN tbl_customer_payment_details cd ON cd.ref_id=s.sales_id LEFT JOIN tbl_customer_payment c ON c.cp_id=cd.cp_id", "s.reference_number, total_sales_amount AS total, SUM(IF((c.`status`='F' AND cd.`type`='DR'),cd.amount,0)) AS total_payment, total_sales_amount - SUM(IF((c.`status`='F' AND cd.`type`='DR'),cd.amount,0)) AS balance, 'Sales' AS module_name, 'DR' as module_code, s.sales_date as transaction_date, s.date_added, s.sales_id as ref_id", "s.customer_id='$customer_id' AND s.sales_type='H' AND (s.`status`='F' OR s.`status`='P') GROUP BY s.sales_id HAVING balance > 0 UNION ALL SELECT b.reference_number, bb_amount as total, SUM(IF((c.`status`='F' AND cd.`type`='BB'),cd.amount,0)) AS total_payment, bb_amount - SUM(IF((c.`status`='F' AND cd.`type`='BB'),cd.amount,0)) AS balance, 'Beginning Balance' AS module_name, 'BB' as module_code, bb_date as transaction_date, b.date_added, bb_id as ref_id FROM tbl_beginning_balance b LEFT JOIN tbl_customer_payment_details cd ON cd.ref_id=b.bb_id LEFT JOIN tbl_customer_payment c ON c.cp_id=cd.cp_id WHERE bb_ref_id='1' AND bb_module='AR' AND bb_paid_status=0 GROUP BY b.bb_id HAVING balance > 0 ORDER BY date_added ASC");
+        $result = $this->select("tbl_sales s LEFT JOIN tbl_customer_payment_details cd ON cd.ref_id=s.sales_id LEFT JOIN tbl_customer_payment c ON c.cp_id=cd.cp_id", "s.sales_id as id, s.reference_number, total_sales_amount AS total, SUM(IF((c.`status`='F' AND cd.`type`='DR'),cd.amount,0)) AS total_payment, total_sales_amount - SUM(IF((c.`status`='F' AND cd.`type`='DR'),cd.amount,0)) AS balance, 'Sales' AS module_name, 'DR' as module_code, s.sales_date as transaction_date, s.date_added, s.sales_id as ref_id", "s.customer_id='$customer_id' AND s.sales_type='H' AND (s.`status`='F' OR s.`status`='P') GROUP BY s.sales_id HAVING balance > 0 UNION ALL SELECT b.bb_id as id, b.reference_number, bb_amount as total, SUM(IF((c.`status`='F' AND cd.`type`='BB'),cd.amount,0)) AS total_payment, bb_amount - SUM(IF((c.`status`='F' AND cd.`type`='BB'),cd.amount,0)) AS balance, 'Beginning Balance' AS module_name, 'BB' as module_code, bb_date as transaction_date, b.date_added, bb_id as ref_id FROM tbl_beginning_balance b LEFT JOIN tbl_customer_payment_details cd ON cd.ref_id=b.bb_id LEFT JOIN tbl_customer_payment c ON c.cp_id=cd.cp_id WHERE bb_ref_id='1' AND bb_module='AR' AND bb_paid_status=0 GROUP BY b.bb_id HAVING balance > 0 ORDER BY date_added ASC");
 
         $rows = array();
         $balance = 0;
-        while($row = $result->fetch_assoc()){
+        while ($row = $result->fetch_assoc()) {
+            $get_credit_memo = $this->select("tbl_credit_memo as h, tbl_credit_memo_details as d", "sum(d.amount)", "h.account_id='$customer_id' AND d.reference_id='$row[id]' AND h.memo_type='AR' AND h.status='F' AND h.cm_id=d.cm_id");
+            $total_cm = $get_credit_memo->fetch_array();
 
-            $total_dr = $row['total'];
+            $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "h.account_id='$customer_id' AND d.reference_id='$row[id]' AND memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id");
+            $total_dm = $get_debit_memo->fetch_array();
+
+            $total_dr = ($row['total']+$total_dm[0])-$total_cm[0];
             $total_payment = $row['total_payment'];
 
             $row['debit'] = $total_dr;
@@ -102,13 +113,12 @@ class ReceivableReport extends Connection
             $balance -= $total_payment;
             $row['balance'] = $balance;
             $row['label_balance'] = number_format($balance, 2);
-            $row['due_date'] = date('Y-m-d', strtotime($row['transaction_date']. ' + '.$customer_terms.' days'));
+            $row['due_date'] = date('Y-m-d', strtotime($row['transaction_date'] . ' + ' . $customer_terms . ' days'));
             $row['remarks'] = $row['module_name'];
             $rows[] = $row;
         }
 
         return $rows;
-        
     }
 
     public function show_unpaid_old()
@@ -128,11 +138,11 @@ class ReceivableReport extends Connection
                 $row = $BeginningBalance->rows($row['reference_number']);
                 $bb_id = $row['bb_id'];
 
-                
+
                 $terms = $customer_terms;
                 $sales_date = $row['bb_date'];
                 $sales_date = $row['sales_date'];
-                $due = date('Y-m-d', strtotime($sales_date. ' + '.$terms.' days'));
+                $due = date('Y-m-d', strtotime($sales_date . ' + ' . $terms . ' days'));
 
                 $row['payment'] =  number_format($CustomerPayment->total_paid($bb_id, "BB"), 2);
                 $row['balance'] = number_format($BeginningBalance->bb_balance_ar($bb_id), 2);
@@ -149,7 +159,7 @@ class ReceivableReport extends Connection
                 if ($bal > 0) {
                     $terms = $row['terms'] > 0 ? $row['terms'] : $customer_terms;
                     $sales_date = $row['sales_date'];
-                    $due = date('Y-m-d', strtotime($sales_date. ' + '.$terms.' days'));
+                    $due = date('Y-m-d', strtotime($sales_date . ' + ' . $terms . ' days'));
 
                     $row['payment'] = number_format($CustomerPayment->total_paid($sales_id, "DR"), 2);
                     $row['balance'] = number_format($bal, 2);
@@ -171,9 +181,9 @@ class ReceivableReport extends Connection
         $total = $_POST['total'];
         $row = $Customers->view($id);
         $terms = $row['customer_terms'];
-        $row['terms'] = $terms > 1 ? $terms." days" : $terms." day";
+        $row['terms'] = $terms > 1 ? $terms . " days" : $terms . " day";
         $row['total'] = number_format($total, 2);
-        $row['amount_to_words'] = "<i>".strtoupper($this->convertNumberToWord($total))." ONLY</i>";
+        $row['amount_to_words'] = "<i>" . strtoupper($this->convertNumberToWord($total)) . " ONLY</i>";
         $row['today'] = date('M d, Y', strtotime($this->getCurrentDate()));
         $rows[] = $row;
         return $rows;
