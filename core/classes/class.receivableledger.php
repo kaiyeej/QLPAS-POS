@@ -112,8 +112,8 @@ class ReceivableLedger extends Connection
         $fetch_total_sales = $this->select("tbl_sales","total_sales_amount","customer_id='$customer_id' AND sales_date < '$start_date' AND sales_type='H' AND (status='F' OR status='P')");
         $total_sales_row = $fetch_total_sales->fetch_array();
         
-        $fetch_total_return = $this->select("tbl_sales_return h LEFT JOIN tbl_sales_return_details d ON h.sales_return_id=d.sales_return_id","sum((d.quantity_return*d.price)-(d.discount/d.quantity))","h.status='F' AND h.sales_id IN (SELECT sales_id FROM tbl_sales where customer_id='$customer_id' AND sales_date < '$start_date' AND sales_type='H' AND (status='F' OR status='P'))");
-        $total_return_row = $fetch_total_return->fetch_array();
+        //$fetch_total_return = $this->select("tbl_sales_return h LEFT JOIN tbl_sales_return_details d ON h.sales_return_id=d.sales_return_id","sum((d.quantity_return*d.price)-(d.discount/d.quantity))","h.status='F' AND h.sales_id IN (SELECT sales_id FROM tbl_sales where customer_id='$customer_id' AND sales_date < '$start_date' AND sales_type='H' AND (status='F' OR status='P'))");
+        //$total_return_row = $fetch_total_return->fetch_array();
 
         $get_payment = $this->select("tbl_customer_payment as h, tbl_customer_payment_details as d","sum(d.amount)","h.customer_id='$customer_id' AND h.payment_date < '$start_date' AND h.status='F' AND h.cp_id=d.cp_id");
         $total_payment = $get_payment->fetch_array();
@@ -127,7 +127,7 @@ class ReceivableLedger extends Connection
         $get_bb = $this->select("tbl_beginning_balance","sum(bb_amount)","bb_ref_id='$customer_id' AND bb_date < '$start_date' AND bb_module='AR'");
         $total_bb = $get_bb->fetch_array();
         
-        $total_sr = $total_return_row[0];
+        $total_sr = 0;
 
         $bf = ($total_sales_row[0]+$total_bb[0]+$total_dm[0])-($total_payment[0]+$total_sr+$total_cm[0]);
         $total = "";
