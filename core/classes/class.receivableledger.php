@@ -109,9 +109,8 @@ class ReceivableLedger extends Connection
         $customer_id = $this->inputs['customer_id'];
         $start_date = $this->inputs['start_date'];
 
-        $fetch_total_sales = $this->select("tbl_sales","total_sales_amount","customer_id='$customer_id' AND sales_date < '$start_date' AND sales_type='H' AND (status='F' OR status='P')");
+        $fetch_total_sales = $this->select("tbl_sales","SUM(total_sales_amount)","customer_id='$customer_id' AND sales_date < '$start_date' AND sales_type='H' AND (status='F' OR status='P')");
         $total_sales_row = $fetch_total_sales->fetch_array();
-        
         //$fetch_total_return = $this->select("tbl_sales_return h LEFT JOIN tbl_sales_return_details d ON h.sales_return_id=d.sales_return_id","sum((d.quantity_return*d.price)-(d.discount/d.quantity))","h.status='F' AND h.sales_id IN (SELECT sales_id FROM tbl_sales where customer_id='$customer_id' AND sales_date < '$start_date' AND sales_type='H' AND (status='F' OR status='P'))");
         //$total_return_row = $fetch_total_return->fetch_array();
 
