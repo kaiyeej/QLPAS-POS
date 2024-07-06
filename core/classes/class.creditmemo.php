@@ -138,10 +138,29 @@ class CreditMemo extends Connection
     public function finish()
     {
         $primary_id = $this->inputs['id'];
-        $Products = new Products();
-        $result = $this->select($this->table_detail, " * ", "$this->pk = '$primary_id'");
+        $result = $this->select("$this->table_detail as d LEFT JOIN $this->table as h ON h.cm_id=d.cm_id", "*, sum(amount) as total", "h.cm_id = '$primary_id' GROUP BY d.reference_id");
         while ($row = $result->fetch_array()) {
-            $Products->prodAVG($row['product_id'], $row['qty'], $row['supplier_price']);
+            if($row['memo_type'] == "AR"){
+                if ($row['ref_type'] == "BB") {
+                    $BeginningBalance = new BeginningBalance;
+                    $bb_paid = $BeginningBalance->bb_balance_ar($row['reference_id']) - $row['amount'];
+                    if ($bb_paid <= 0) {
+                        $form_ = array(
+                            'bb_paid_status' => 1,
+                        );
+                        $this->update('tbl_beginning_balance', $form_, "bb_id=" . $row['reference_id'] . " AND bb_module='AR'");
+                    }
+                } else {
+                    $Sales = new Sales;
+                    $dr_paid = $Sales->dr_balance($row['reference_id']) - $row['amount'];
+                    if ($dr_paid <= 0) {
+                        $form_ = array(
+                            'paid_status'   => 1,
+                        );
+                        $this->update('tbl_sales', $form_, 'sales_id=' . $row['reference_id'] . '');
+                    }
+                }
+            }
         }
 
         $form = array(

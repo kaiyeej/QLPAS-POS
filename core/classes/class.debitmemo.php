@@ -138,10 +138,15 @@ class DebitMemo extends Connection
     public function finish()
     {
         $primary_id = $this->inputs['id'];
-        $Products = new Products();
-        $result = $this->select($this->table_detail, " * ", "$this->pk = '$primary_id'");
+        $result = $this->select("$this->table_detail as d LEFT JOIN $this->table as h ON h.dm_id=d.dm_id", "*", "h.dm_id = '$primary_id' GROUP BY d.reference_id");
         while ($row = $result->fetch_array()) {
-            $Products->prodAVG($row['product_id'], $row['qty'], $row['supplier_price']);
+            if($row['memo_type'] == "AR"){
+                if ($row['type'] == "BB") {
+                    $this->update('tbl_beginning_balance', ['bb_paid_status' => 0], "bb_id=" . $row['reference_id'] . " AND bb_module='AR'");
+                } else {
+                    $this->update('tbl_sales',['paid_status' => 0], 'sales_id=' . $row['reference_id'] . '');
+                }
+            }
         }
 
         $form = array(
