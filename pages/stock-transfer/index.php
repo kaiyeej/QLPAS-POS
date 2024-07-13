@@ -11,23 +11,32 @@
             <div class="col-12 col-xl-12 card shadow mb-4">
                 <div class="card-body">
                     <div class="form-group row">
-                        <div class="col-3 col-xl-3">
+                        <div class="col">
                             <label><strong>Start Date</strong></label>
                             <div>
                                 <input type="date" required class="form-control form-control-sm" id="start_date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" name="input[start_date]">
                             </div>
                         </div>
-                        <div class="col-3 col-xl-3">
+                        <div class="col">
                             <label><strong>End Date</strong></label>
                             <div>
                                 <input type="date" required class="form-control form-control-sm" id="end_date" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" name="input[end_date]">
                             </div>
                         </div>
-                        <div class="col-6 col-xl-6">
+
+                        <div class="col">
+                            <label><strong>Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm input-item select2" name="input[warehouse_id]" id="warehouse_id" required>
+                                </select>
+                            </div>
+                        </div>
+                 
+                        <div class="col-5">
                             <label>&nbsp;</label>
                             <div>
                                 <button type="button" class="btn btn-warning btn-icon-text" onclick="getEntries()">
-                                    <i class="ti-reload mr-1"></i> Generate Entry
+                                    <i class="ti-reload mr-1"></i> Generate
                                 </button>  
                                 <button type="button" class="btn btn-primary btn-icon-text" onclick="addModal()">
                                     <i class="ti-plus mr-1"></i> Add Entry
@@ -70,7 +79,8 @@
     function getEntries() {
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var param = "AND (stock_transfer_date >= '" + start_date + "' AND stock_transfer_date <= '" + end_date + "')";
+        var warehouse_id = $("#warehouse_id").val();
+        var param = "AND (stock_transfer_date >= '" + start_date + "' AND stock_transfer_date <= '" + end_date + "') AND source_warehouse_id = '"+ warehouse_id + "'";
 
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
@@ -206,6 +216,7 @@
         schema();
         getEntries();
         getSelectOption('Warehouses', 'source_warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
+        getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
         getSelectOption('Products', 'product_id', 'product_name');
     });
 </script>
