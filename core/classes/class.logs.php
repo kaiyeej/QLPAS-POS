@@ -50,7 +50,7 @@ class Logs extends Connection
 						$list['count']  = $counter++;
 						$list['action'] = $row[1];
 						$list['module'] = $row[2];
-						$list['date']   = date("F d, Y H:m:i A", strtotime(substr($row[3], 0, -1)));
+						$list['date']   = date("F d, Y h:i:s A", strtotime(substr($row[3], 0, -1)));
 						$list['user']   = substr($row[0], 1);
 
 						array_push($response, $list);

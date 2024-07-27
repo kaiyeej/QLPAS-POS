@@ -865,13 +865,13 @@ class Sales extends Connection
         $sales_rows['total_payment'] = $payment_row['total_payment'] * 1;
 
         // sales return
-        $fetch_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details as d", "sum((d.quantity_return*d.price)-(d.discount/d.quantity)) as total_sr", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' and d.quantity_return > 0");
+        $fetch_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details as d", "sum((d.quantity_return*d.price)-((d.discount/d.quantity) * d.quantity_return)) as total_sr", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' and s.sales_summary_id=0 and s.encoded_by='$user_id' and d.quantity_return > 0");
         $sales_return_row = $fetch_sales_return->fetch_assoc();
         $sales_rows['total_sales_return'] = $sales_return_row['total_sr'] * 1;
 
         // charge sales return
         $fetch_charge_sales_return = $this->select("tbl_sales_return as s, tbl_sales_return_details AS d,
-        tbl_customer_payment AS cp, tbl_customer_payment_details AS cpd", "sum((d.quantity_return*d.price)-(d.discount/d.quantity)) as total_charge_sr, SUM(cpd.amount) AS total_cp", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' AND s.sales_summary_id=0 AND s.encoded_by='$user_id' AND cp.cp_id=cpd.cp_id AND cpd.ref_id=s.sales_id AND cpd.`type`='DR' AND cp.`status`='F' and d.quantity_return > 0");
+        tbl_customer_payment AS cp, tbl_customer_payment_details AS cpd", "sum((d.quantity_return*d.price)-((d.discount/d.quantity) * d.quantity_return)) as total_charge_sr, SUM(cpd.amount) AS total_cp", "s.branch_id = '$branch_id' AND s.warehouse_id = '$warehouse_id' AND s.sales_return_id=d.sales_return_id AND s.status='F' AND s.sales_summary_id=0 AND s.encoded_by='$user_id' AND cp.cp_id=cpd.cp_id AND cpd.ref_id=s.sales_id AND cpd.`type`='DR' AND cp.`status`='F' and d.quantity_return > 0");
         $charge_sales_return_row = $fetch_charge_sales_return->fetch_assoc();
         $sales_rows['total_charge_sales_return'] =  $charge_sales_return_row['total_charge_sr'] * 1;
         $sales_rows['total_returned_payment'] =  $charge_sales_return_row['total_cp'] * 1;
