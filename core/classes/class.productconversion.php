@@ -53,6 +53,7 @@ class ProductConversion extends Connection
             // $row['original_product'] = Products::name($row['original_product_id']);
             // $row['converted_product'] = Products::name($row['converted_product_id']);
             $row['warehouse_name'] = $Warehouse->name($row['warehouse_id']);
+            $row['last_date_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

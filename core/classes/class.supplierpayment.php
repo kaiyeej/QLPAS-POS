@@ -64,6 +64,7 @@ class SupplierPayment extends Connection
             $row['bank'] = $Banks->name($row['bank_id']);
             $row['total'] = $this->total($row['sp_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

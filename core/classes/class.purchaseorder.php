@@ -108,6 +108,7 @@ class PurchaseOrder extends Connection
             $row['total'] = $this->total($row['po_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $row['po_ref'] = $row['po_invoice']." (₱".number_format($this->po_balance($row['po_id']),2).")";
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

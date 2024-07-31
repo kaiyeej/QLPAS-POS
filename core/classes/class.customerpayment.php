@@ -63,6 +63,7 @@ class CustomerPayment extends Connection
             $row['customer'] = $Customers->name($row['customer_id']);
             $row['total'] = number_format($this->total($row['cp_id']), 2);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

@@ -94,6 +94,7 @@ class JobOrder extends Connection
         while ($row = $result->fetch_assoc()) {
             $row['product'] = Products::name($row['product_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $row['date_last_modified'] = ($row['date_last_modified'] == "0000-00-00 00:00:00") ? "" : date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

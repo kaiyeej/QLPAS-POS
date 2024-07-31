@@ -94,6 +94,7 @@ class SalesReturn extends Connection
         while ($row = $result->fetch_assoc()) {
             $row['sales_reference_number'] = $Sales->name($row['sales_id']);
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

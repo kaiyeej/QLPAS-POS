@@ -68,6 +68,7 @@ class Sales extends Connection
         $result = $this->select('tbl_sales s LEFT JOIN tbl_customers c ON s.customer_id=c.customer_id LEFT JOIN tbl_users u ON s.encoded_by=u.user_id', 's.*,u.user_fullname AS encoded_name,c.customer_name AS customer,c.suki_card_number', $param);
         while ($row = $result->fetch_assoc()) {
             $row['total'] = number_format($row['total_sales_amount'], 2);
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

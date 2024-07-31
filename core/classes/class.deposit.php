@@ -53,6 +53,7 @@ class Deposit extends Connection
         while ($row = $result->fetch_assoc()) {
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $row['total'] = number_format($this->total($row['deposit_id']),2);
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

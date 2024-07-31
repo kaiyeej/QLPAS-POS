@@ -91,6 +91,7 @@ class StockWithdrawal extends Connection
             $row['product'] = Products::name($row['product_id']);
             $row['sales_qty'] = $Sales->detailsRow($row['sales_detail_id'], "quantity");
             $row['remaining_qty'] = $this->remaining_qty($row['sales_detail_id']);
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;

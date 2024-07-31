@@ -84,6 +84,7 @@ class StockTransfer extends Connection
             $row['source_warehouse'] = $Warehouses->name($row['source_warehouse_id']);
             $row['destination_warehouse'] = $Warehouses->name($row['destination_warehouse_id']);
             $row['encoded_name'] = $Users->getUser($row['user_id']);
+            $row['date_last_modified'] = date('Y-m-d H:i:s', strtotime($row['date_last_modified'] . ' + 8 hours'));
             $rows[] = $row;
         }
         return $rows;
