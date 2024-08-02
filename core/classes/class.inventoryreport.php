@@ -71,10 +71,11 @@ class InventoryReport extends Connection
     }
 
     public function current_qty()
-    {
+    {   
+        $branch_id = $this->getBranch();
         $product_id = $this->inputs['product_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
-        $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND status = 1 AND warehouse_id='$warehouse_id'");
+        $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND status = 1 AND warehouse_id='$warehouse_id' AND branch_id = '$branch_id'");
         $row = $result->fetch_assoc();
         return (float) $row['qty'];
     }
