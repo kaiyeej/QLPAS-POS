@@ -277,7 +277,6 @@
                 "footerCallback": function(row, data, start, end, display) {
                     var api = this.api();
 
-
                 },
                 "columns": [{
                         "data": "item"
