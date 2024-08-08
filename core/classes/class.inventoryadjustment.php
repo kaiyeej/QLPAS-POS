@@ -134,6 +134,13 @@ class InventoryAdjustment extends Connection
         return $result;
     }
 
+    public function rows($primary_id)
+    {
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
     public function schema()
     {
         $default['date_added'] = $this->metadata('date_added', 'datetime', '', 'NOT NULL', 'CURRENT_TIMESTAMP');

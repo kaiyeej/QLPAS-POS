@@ -100,6 +100,13 @@ class JobOrder extends Connection
         return $rows;
     }
 
+    public function rows($primary_id)
+    {
+        $result = $this->select($this->table, "*", "$this->pk = '$primary_id'");
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+
     public function view()
     {
         $primary_id = $this->inputs['id'];
