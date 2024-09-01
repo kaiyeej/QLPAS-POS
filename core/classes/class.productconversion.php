@@ -12,7 +12,7 @@ class ProductConversion extends Connection
 
     public $module_name = "Product Conversion";
     public $inputs = [];
-    public $searchable = ['reference_number','remarks'];
+    public $searchable = ['reference_number', 'remarks'];
     public $uri = "product-conversion";
     public function add()
     {
@@ -102,6 +102,31 @@ class ProductConversion extends Connection
         return $rows;
     }
 
+    public function getHeader()
+    {
+        $Warehouses = new Warehouses;
+        $id = $_POST['id'];
+        $result = $this->select($this->table, "*", "$this->pk='$id'");
+        $row = $result->fetch_assoc();
+        $row['warehouse_name'] = $Warehouses->name($row['warehouse_id']);
+        $row['conversion_date'] = date("F j, Y", strtotime($row['conversion_date']));
+        $rows[] = $row;
+        return $rows;
+    }
+
+    public function getPrintDetails()
+    {
+        $id = $_POST['id'];
+        $rows = array();
+        $result = $this->select($this->table_detail, "*", "$this->pk='$id'");
+        while ($row = $result->fetch_assoc()) {
+            $row['original_product'] = Products::name($row['original_product_id']);
+            $row['converted_product'] = Products::name($row['converted_product_id']);
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     public function add_detail()
     {
         if ($this->inputs['original_product_id'] == $this->inputs['converted_product_id']) {
@@ -131,11 +156,9 @@ class ProductConversion extends Connection
                 'converted_price'       => $Products->productPrice($this->inputs['converted_product_id']),
             );
             return $this->insert($this->table_detail, $form);
-
-        }else{
+        } else {
             return -3;
         }
- 
     }
 
     public function dataRow($primary_id, $field)
@@ -169,7 +192,7 @@ class ProductConversion extends Connection
         );
 
         $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
-        if($result){
+        if ($result) {
             $hRows = $this->rows($primary_id);
             $InventoryReport = new InventoryReport;
             $InventoryReport->update_product_qty($this->table_detail, $this->pk, $primary_id, $hRows['branch_id'], $hRows['warehouse_id'], "converted_product_id");
@@ -269,21 +292,21 @@ class ProductConversion extends Connection
         return $this->triggerCreator($triggers);
     }
 
-    public static function search($words,&$rows)
+    public static function search($words, &$rows)
     {
         $self = new self;
-        if(count($self->searchable) > 0 ){
-            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+        if (count($self->searchable) > 0) {
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable) . " LIKE '%$words%'";
             $result = $self->select($self->table, '*', $where);
             while ($row = $result->fetch_assoc()) {
                 $names = [];
-                foreach($self->searchable as $f){
+                foreach ($self->searchable as $f) {
                     $names[] = $row[$f];
                 }
                 $rows[] = array(
                     'name' => implode(" ", $names),
                     'module' => $self->module_name,
-                    'slug' => $self->uri."?id=".$row[$self->pk]
+                    'slug' => $self->uri . "?id=" . $row[$self->pk]
                 );
             }
         }

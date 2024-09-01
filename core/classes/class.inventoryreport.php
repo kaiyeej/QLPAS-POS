@@ -36,6 +36,7 @@ class InventoryReport extends Connection
             $row['product_code'] =  $row['product_code'];
             $row['for_pickup'] = number_format($for_pickup, 2);
             $row['in_stock'] = $row['product_qty'] + $for_pickup;
+            // $row['product_qty'] = $row['product_qty'] + $for_pickup;
             $row['amount'] =  number_format($row['product_qty'] * $row['product_cost'], 2);
             $rows[] = $row;
         }

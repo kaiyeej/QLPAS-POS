@@ -42,7 +42,9 @@
         </div>
     </div>
 </div>
-<?php include 'modal_product_conversion.php' ?>
+<?php require_once 'modal_product_conversion.php' ?>
+<?php require_once 'modal_print.php'; ?>
+
 <script type="text/javascript">
     function getEntries() {
         var branch_id = "<?=$_SESSION['branch_id']?>";
@@ -68,7 +70,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle' onclick='getEntryDetails2(" + row.conversion_id + ")' style='padding:15px;height:45px'><span class='ti ti-menu'></span></button></center>";
+                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-1' onclick='getEntryDetails2(" + row.conversion_id + ")' style='padding:15px';height='45px;'><span class='ti ti-menu'></span></button><button onclick='printRecord("+ row.conversion_id +")' class='btn btn-warning btn-circle' style='padding:15px';height='45px;'><span class='ti ti-printer'></span></button></div>";
                     }
                 },
                 {

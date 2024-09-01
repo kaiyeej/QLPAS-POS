@@ -212,6 +212,7 @@
             var start_date = $("#start_date").val();
             var end_date = $("#end_date").val();
 
+
             $("#dt_entries").html("<center><h3><span class='fa fa-spinner fa-spin'></span> Loading ...</h3></center>");
 
             $.ajax({
@@ -303,6 +304,6 @@
             $(".company_address_label").html(company_profile.company_address);
             getSelectOption('Products', 'product_id', 'product_name', '', [], -1, 'All', 1);
             getSelectOption('Products', 'product_id_2', 'product_name', '', [], -1, 'All', 1);
-            getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All', 1);
+            getSelectOption('Customers', 'customer_id', 'customer_name', '', [], -1, 'All', 0);
         });
     </script>

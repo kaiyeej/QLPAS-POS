@@ -84,6 +84,11 @@ class Branches extends Connection
         return $_SESSION['branch_id'];
     }
 
+    public function session_branch(){
+        $branch_id = $this->clean($this->inputs['branch_id']);
+       $_SESSION['branch_id'] = $branch_id;
+    }
+
 
     public function view()
     {

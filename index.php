@@ -97,10 +97,12 @@ include 'core/config.php';
         <!-- partial -->
         <div class="main-panel">
           <!-- routes -->
-          <?php $_SESSION['branch_id'] == "" ?
-            // require '404/index.php'
-            :
-            require 'routes/routes.php'
+          <?php
+          if (isset($_SESSION['branch_id']) && $_SESSION['branch_id'] > 0) {
+            require 'routes/routes.php';
+          } else {
+            require 'no_branch.php';
+          }
           ?>
           <!-- end routes -->
           <?php require 'components/footer.php'; ?>
@@ -118,10 +120,13 @@ include 'core/config.php';
     </script>
     <script type="text/javascript">
       var modal_detail_status = 0;
-
-      var current_branch_id = "<?= $_SESSION['branch_id'] ?>";
+      var current_branch_id = $("#pos_branch_id").val();
 
       $(document).ready(function() {
+        // var branch_id = $("#pos_branch_id").val();
+
+        getSelectOption('Branches', 'branch_id', 'branch_name', '', [], current_branch_id, 'Please Select Branch', '', '', current_branch_id);
+
         $(".select2").select2();
 
         $(".select2").css({
@@ -129,82 +134,100 @@ include 'core/config.php';
         });
         checkPriceNotice();
 
-        getBranchesSession();
+
+        // getBranchesSession();
       });
 
-      function getBranchesSession() {
+      function AuthBranch() {
+        var branch_id = $("#branch_id").val();
         $.ajax({
-          url: "controllers/sql.php?c=Branches&q=select_branch",
-          dataType: 'json',
-          success: function(response) {
-            var data = response.data;
-            var branches = data.branches;
-            var sessionBranchId = sessionStorage.getItem('session_branch_id');
-
-            $('#session_branch_id').empty();
-
-            // Append options excluding the placeholder if a branch is selected
-            if (sessionBranchId && data.session_branch_id) {
-              // A branch is already selected, don't include the placeholder
-              $.each(branches, function(index, branch) {
-                $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
-              });
-            } else {
-              // No branch selected yet, include the placeholder option
-              $('#session_branch_id').append('<option value="" disabled selected>&mdash; Please Select Branch &mdash;</option>');
-              $.each(branches, function(index, branch) {
-                $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
-              });
-            }
-
-            if (data.session_branch_id) {
-              $('#session_branch_id').val(data.session_branch_id);
-            }
-
-            $('#session_branch_id').select2();
-          },
-          error: function(xhr, status, error) {
-            console.error('Error fetching branches: ' + error);
-          }
-        });
-      }
-
-      // Call getBranchesSession() to populate the dropdown initially
-      getBranchesSession();
-
-
-      $('#session_branch_id').on('change', function() {
-        var selectedBranchId = $(this).val();
-        var currentSessionBranchId = sessionStorage.getItem('session_branch_id');
-
-        // location.reload();
-
-        if (selectedBranchId != currentSessionBranchId) {
-          updateSessionBranch(selectedBranchId);
-          sessionStorage.setItem('session_branch_id', selectedBranchId);
-          location.reload();
-        }
-
-      });
-
-      function updateSessionBranch(branch_id) {
-        $.ajax({
-          url: "controllers/sql.php?c=Branches&q=update_session_branch",
-          type: 'POST',
+          type: "POST",
+          url: "controllers/sql.php?c=Branches&q=session_branch",
           data: {
             input: {
               branch_id: branch_id
             }
           },
-          success: function(response) {
-            if (response.status === 'success') {
-              console.log('Session branch updated successfully.');
-            } else {
-              console.error('Error updating session branch: ' + response.message);
-            }
+          success: function(data) {
+            var json = JSON.parse(data);
+            location.reload();
           }
         });
       }
+
+      // function getBranchesSession() {
+      //   $.ajax({
+      //     url: "controllers/sql.php?c=Branches&q=select_branch",
+      //     dataType: 'json',
+      //     success: function(response) {
+      //       var data = response.data;
+      //       var branches = data.branches;
+      //       var sessionBranchId = sessionStorage.getItem('session_branch_id');
+
+      //       $('#session_branch_id').empty();
+
+      //       // Append options excluding the placeholder if a branch is selected
+      //       if (sessionBranchId && data.session_branch_id) {
+      //         // A branch is already selected, don't include the placeholder
+      //         $.each(branches, function(index, branch) {
+      //           $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
+      //         });
+      //       } else {
+      //         // No branch selected yet, include the placeholder option
+      //         $('#session_branch_id').append('<option value="" disabled selected>&mdash; Please Select Branch &mdash;</option>');
+      //         $.each(branches, function(index, branch) {
+      //           $('#session_branch_id').append('<option value="' + branch.branch_id + '">' + branch.branch_name + '</option>');
+      //         });
+      //       }
+
+      //       if (data.session_branch_id) {
+      //         $('#session_branch_id').val(data.session_branch_id);
+      //       }
+
+      //       $('#session_branch_id').select2();
+      //     },
+      //     error: function(xhr, status, error) {
+      //       console.error('Error fetching branches: ' + error);
+      //     }
+      //   });
+      // }
+
+      // // Call getBranchesSession() to populate the dropdown initially
+      // getBranchesSession();
+
+
+      // $('#session_branch_id').on('change', function() {
+      //   var selectedBranchId = $(this).val();
+      //   var currentSessionBranchId = sessionStorage.getItem('session_branch_id');
+
+      //   // location.reload();
+
+      //   if (selectedBranchId != currentSessionBranchId) {
+      //     updateSessionBranch(selectedBranchId);
+      //     sessionStorage.setItem('session_branch_id', selectedBranchId);
+      //     location.reload();
+      //   }
+
+      // });
+
+      // function updateSessionBranch(branch_id) {
+      //   $.ajax({
+      //     url: "controllers/sql.php?c=Branches&q=update_session_branch",
+      //     type: 'POST',
+      //     data: {
+      //       input: {
+      //         branch_id: branch_id
+      //       }
+      //     },
+      //     success: function(response) {
+      //       if (response.status === 'success') {
+      //         console.log('Session branch updated successfully.');
+      //       } else {
+      //         console.error('Error updating session branch: ' + response.message);
+      //       }
+      //     }
+      //   });
+      // }
 
 
       function checkPriceNotice() {
@@ -633,7 +656,7 @@ include 'core/config.php';
             var col_list = document.getElementById("col-list");
             var col_item = document.getElementById("col-item");
 
-            if (json.status == 'F' || json.status == 'C'  || json.status == 'R') {
+            if (json.status == 'F' || json.status == 'C' || json.status == 'R') {
               transaction_edit.classList.add('disabled');
               (typeof(transaction_delete_items) != 'undefined' && transaction_delete_items != null) ? transaction_delete_items.classList.add('disabled'): '';
               transaction_finish.classList.add('disabled');
@@ -821,8 +844,7 @@ include 'core/config.php';
         }
       }
       // END MODULE
-
-      function getSelectOption(class_name, primary_id, label, param = '', attributes = [], pre_value = '', pre_label = 'Please Select', sub_option = '') {
+      function getSelectOption(class_name, primary_id, label, param = '', attributes = [], pre_value = '', pre_label = 'Please Select', sub_option = '', is_class = '', selected = 0) {
 
         var fnc = (class_name == "SupplierPayment" || class_name == "CustomerPayment" || class_name == "Deposit" ? "show_ref" : "show");
 
@@ -836,7 +858,13 @@ include 'core/config.php';
           },
           success: function(data) {
             var json = JSON.parse(data);
-            $("#" + primary_id).html("<option value='" + pre_value + "'>" + pre_label + "</option>");
+            if (pre_value != "remove") {
+              if (is_class == '') {
+                $("#" + primary_id).html("<option value='" + pre_value + "'> &mdash; " + pre_label + " &mdash; </option>");
+              } else {
+                $("." + primary_id).html("<option value='" + pre_value + "'> &mdash; " + pre_label + " &mdash; </option>");
+              }
+            }
 
             for (list_index = 0; list_index < json.data.length; list_index++) {
               const list = json.data[list_index];
@@ -846,11 +874,19 @@ include 'core/config.php';
               } else {
                 data_attributes['value'] = list[primary_id];
               }
+              if (data_attributes['value'] == selected) {
+                data_attributes['selected'] = true;
+              }
               for (var attr_index in attributes) {
                 const attr = attributes[attr_index];
                 data_attributes[attr] = list[attr];
               }
-              $('#' + primary_id).append($("<option></option>").attr(data_attributes).text(list[label]));
+
+              if (is_class == '') {
+                $('#' + primary_id).append($("<option></option>").attr(data_attributes).text(list[label]));
+              } else {
+                $('.' + primary_id).append($("<option></option>").attr(data_attributes).text(list[label]));
+              }
             }
           },
           error: function(jqXHR, textStatus, errorThrown) {
