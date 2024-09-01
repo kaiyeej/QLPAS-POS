@@ -11,7 +11,7 @@ class StockReleasal extends Connection
         $start_date = $this->inputs['start_date'];
         $end_date = $this->inputs['end_date'];
 
-        if ($customer_id == "-1") {
+        if ($customer_id <= 0) {
             $cust_param = "";
         } else {
             $cust_param = "AND c.customer_id='$customer_id'";
