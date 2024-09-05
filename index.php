@@ -656,7 +656,7 @@ include 'core/config.php';
             var col_list = document.getElementById("col-list");
             var col_item = document.getElementById("col-item");
 
-            if (json.status == 'F' || json.status == 'C' || json.status == 'R') {
+            if (json.status == 'F' || json.status == 'C' || json.status == 'R' || json.status == 'P') {
               transaction_edit.classList.add('disabled');
               (typeof(transaction_delete_items) != 'undefined' && transaction_delete_items != null) ? transaction_delete_items.classList.add('disabled'): '';
               transaction_finish.classList.add('disabled');
