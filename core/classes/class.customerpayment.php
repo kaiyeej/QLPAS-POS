@@ -100,7 +100,7 @@ class CustomerPayment extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
         $rows = array();
 
-        $result = $this->select("tbl_sales", "reference_number", "customer_id='$param' AND status='F' AND paid_status='0' AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$param' AND bb_module='AR' AND bb_paid_status= 0");
+        $result = $this->select("tbl_sales", "reference_number", "customer_id='$param' AND (status='F' OR status='P') AND paid_status='0' AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$param' AND bb_module='AR' AND bb_paid_status= 0");
 
         while ($row = $result->fetch_assoc()) {
             $trans = substr($row['reference_number'], 0, 2);
