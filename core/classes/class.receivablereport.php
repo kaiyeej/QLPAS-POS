@@ -21,7 +21,7 @@ class ReceivableReport extends Connection
 
         $count = 1;
         while ($row = $result->fetch_assoc()) {
-            $bal = $this->balance_old($row['customer_id']);
+            $bal = $this->balance($row['customer_id']);
             $row['balance'] = number_format($bal, 2);
             $row['total'] = $bal;
             $row['count'] = $count++;
