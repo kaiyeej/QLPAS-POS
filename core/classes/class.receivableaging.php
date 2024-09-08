@@ -10,7 +10,7 @@ class ReceivableAging extends Connection
         
         $rows = array();
 
-        $result = $this->select("tbl_sales","reference_number","customer_id='$customer_id' AND (status='F' OR status='P') AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR'");
+        $result = $this->select("tbl_sales","reference_number","customer_id='$customer_id' AND status='F' AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR'");
         
         $Sales = new Sales;
         $CustomerPayment = new CustomerPayment;
@@ -161,7 +161,7 @@ class ReceivableAging extends Connection
         
         $rows = array();
 
-        $result = $this->select("tbl_sales","reference_number","customer_id='$customer_id' AND (status='F' OR status='P') AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR'");
+        $result = $this->select("tbl_sales","reference_number","customer_id='$customer_id' AND status='F' AND sales_type='H' UNION ALL SELECT reference_number FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR'");
         
         $Sales = new Sales;
         $CustomerPayment = new CustomerPayment;
