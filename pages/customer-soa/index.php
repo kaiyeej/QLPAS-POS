@@ -13,8 +13,10 @@
         .left-column,
         .right-column {
             display: inline-block;
-            width: 48%; /* Adjust the width as needed */
-            vertical-align: top; /* Align columns to the top */
+            width: 48%;
+            /* Adjust the width as needed */
+            vertical-align: top;
+            /* Align columns to the top */
         }
     }
 </style>
@@ -51,12 +53,16 @@
                                             </span>
                                             <span class="text"> Generate</span>
                                         </button>
+                                        <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Customer-Statement-of-Accounts')">
+                                            <i class="ti-cloud-down"></i> Export
+                                        </button>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </form>
-                
+
                     <div id="report_container">
                         <center>
                             <h4 class="report-header"><span id="company_name_label"></span></h4>
@@ -150,13 +156,13 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button onclick=printRecord(" + row.customer_id + ",'"+row.total+"') class='btn btn-lg btn-warning'><span class='ti ti-printer'></span></button></center>";
+                        return "<center><button onclick=printRecord(" + row.customer_id + ",'" + row.total + "') class='btn btn-lg btn-warning'><span class='ti ti-printer'></span></button></center>";
                     }
                 },
             ]
         });
     }
-    
+
 
     function printRecord(id, total) {
         $("#modalSoaSlip").modal("show");
@@ -167,7 +173,7 @@
             url: "controllers/sql.php?c=" + route_settings.class_name + "&q=getSoa",
             data: {
                 id: id,
-                total:total
+                total: total
             },
             success: function(data) {
                 var json = JSON.parse(data);

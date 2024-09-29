@@ -1,5 +1,11 @@
 <?php
 include 'core/config.php';
+
+ini_set('date.timezone', 'UTC');
+//error_reporting(E_ALL);
+date_default_timezone_set('UTC');
+$today = date('H:i:s');
+$currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
 ?>
 <!DOCTYPE html>
 <html lang="en">

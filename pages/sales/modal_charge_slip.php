@@ -75,7 +75,7 @@
                      </div>
                      <br style="clear: both;" />
                      <p><strong>PROMISORY NOTE</strong></p>
-                     <p>&emsp;&emsp;&emsp; The undersigned hereby promise to pay  <span class="company_name_label"></span> the above items purchased, the total amount of which is indicated above, for ____ month(s) from the date hereof at five percent (5%) per month as liquidated damages. The demand to pay is hereby waived.</p>
+                     <p>&emsp;&emsp;&emsp; The undersigned hereby promise to pay  <span class="company_name_label"></span> the above items purchased, the total amount of which is indicated above, for ____ month(s) from the date hereof at seven percent (7%) per month as liquidated damages. The demand to pay is hereby waived.</p>
                      <div class="row" style="padding-top: 30px;">
                          <div class="col-md-6"></div>
                          <div class="col-md-6">

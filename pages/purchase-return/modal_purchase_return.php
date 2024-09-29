@@ -68,7 +68,7 @@
                 <div class="row" style="font-size: small;">
                     <div class="col-sm-4">
                         <div><b>Reference:</b> <span id="reference_number_label" class="label-item"></span></div>
-                        <div><b>Sales Reference:</b> <span id="po_reference_number_label" class="label-item"></span></div>
+                        <div><b>PO Reference:</b> <span id="po_reference_number_label" class="label-item"></span></div>
                         <div><b>Date:</b> <span id="return_date_label" class="label-item"></span></div>
                         <span style="display: none;" id="status_label" class="label-item"></span>
                     </div>

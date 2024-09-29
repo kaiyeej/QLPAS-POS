@@ -246,6 +246,7 @@ class PurchaseOrder extends Connection
         $rows[] = $row;
         return $rows;
     }
+    
     public function getPrintDetails()
     {
         $id = $_POST['id'];
