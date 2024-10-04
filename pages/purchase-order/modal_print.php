@@ -32,6 +32,12 @@
                              </thead>
                              <tbody id="tb_id">
                              </tbody>
+                             <tfoot>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+                                    <td id="total_amount">0.00</td>
+                                </tr>
+                            </tfoot>
                          </table>
                      </div>
                      <br/>
@@ -90,16 +96,21 @@
                 var json = JSON.parse(data);
                 var arr_count = json.data.length;
                 var i = 0;
+                var total = 0;
                 while (i < arr_count) {
                     console.log(json.data[i]);
+                    var subtotal = json.data[i].qty * json.data[i].supplier_price;
                     $("#tb_id").append('<tr>' +
                         '<td>' + json.data[i].product_name + '</td>' +
                         '<td>' + json.data[i].qty + '</td>' +
                         '<td>' + json.data[i].supplier_price + '</td>' +
-                        '<td>' + json.data[i].qty * json.data[i].supplier_price + '</td>' +
+                        '<td>' + subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
                         '</tr>');
                     i++;
+                    total += subtotal;
                 }
+
+                $("#total_amount").html(total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
             }
         });
     }

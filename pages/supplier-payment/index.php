@@ -96,7 +96,8 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getDetails(" + row.sp_id + "," + row.supplier_id + ")'><span class='ti ti-list'></span></button><button onclick='printRecord("+ row.sp_id +")' class='btn btn-secondary btn-circle btn-sm'><span class='ti ti-printer'></span></button></center>";
+                        var print_stat = row.status != "F" ? "display:none;" : "";
+                        return "<center><button class='btn btn-primary btn-circle btn-sm' onclick='getDetails(" + row.sp_id + "," + row.supplier_id + ")'><span class='ti ti-list'></span></button><button style='"+print_stat+"' onclick='printRecord("+ row.sp_id +")' class='btn btn-secondary btn-circle btn-sm'><span class='ti ti-printer'></span></button></center>";
                     }
                 },
                 {

@@ -29,8 +29,10 @@
                              <tbody id="tb_id">
                              </tbody>
                          </table>
-                     </div>
-                     <br style="clear: both;" />
+                     </div><br/>
+                     <br/>
+                     <strong>Prepared By: </strong><span style="text-decoration: underline;"><?= $_SESSION['user']['fullname'] ?></span><br> 
+                     <strong>Prepared Date: </strong><span id="" style="text-decoration: underline;"><?=  date("F j, Y", strtotime($currentDate)); ?></span><br>
                  </div>
              </div>
              <div class="modal-footer">
@@ -70,7 +72,6 @@
     }
 
     function getPrintDetails(id) {
-
         $.ajax({
             type: 'POST',
             url: "controllers/sql.php?c=" + route_settings.class_name + "&q=getPrintDetails",

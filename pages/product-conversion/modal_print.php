@@ -24,8 +24,8 @@
                                  <tr>
                                      <th>ORIGINAL ITEM</th>
                                      <th>ORIGINAL QUANTITY</th>
-                                     <th>ORIGINAL ITEM</th>
-                                     <th>ORIGINAL QUANTITY</th>
+                                     <th>CONVERTED ITEM</th>
+                                     <th>CONVERTED QUANTITY</th>
 
                                  </tr>
                              </thead>
@@ -33,7 +33,10 @@
                              </tbody>
                          </table>
                      </div>
-                     <br style="clear: both;" />
+                     <br/>
+                     <br/>
+                     <strong>Prepared By: </strong><span style="text-decoration: underline;"><?= $_SESSION['user']['fullname'] ?></span><br> 
+                     <strong>Prepared Date: </strong><span id="" style="text-decoration: underline;"><?=  date("F j, Y", strtotime($currentDate)); ?></span><br>
                  </div>
              </div>
              <div class="modal-footer">
@@ -91,7 +94,7 @@
                         '<td>' + json.data[i].original_product + '</td>' +
                         '<td>' + json.data[i].original_qty + '</td>' +
                         '<td>' + json.data[i].converted_product + '</td>' +
-                        '<td>' + json.data[i].converted_product + '</td>' +
+                        '<td>' + json.data[i].converted_qty + '</td>' +
                         '</tr>');
                     i++;
                 }
