@@ -47,11 +47,16 @@ class InventoryReport extends Connection
     {   
         $param = ($warehouse_id != -1)? "AND h.warehouse_id = '$warehouse_id' AND h.branch_id = '$branch_id'" : "";
 
-        $fetchCS = $this->select("tbl_sales as h, tbl_sales_details as d", "sales_detail_id,customer_id", "h.sales_id=d.sales_id AND h.withdrawal_status=1  AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$product_id' $param GROUP BY d.sales_detail_id");
+        $fetchCS = $this->select("tbl_sales h LEFT JOIN tbl_sales_details d ON h.sales_id=d.sales_id", "sum(d.quantity) as total_qty, sales_detail_id,customer_id", "h.withdrawal_status=1  AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$product_id' $param GROUP BY d.sales_detail_id");
         $total = 0;
         $StockWithdrawal = new StockWithdrawal;
+        $SalesReturn = new SalesReturn;
         while ($row = $fetchCS->fetch_assoc()) {
-            $total += $StockWithdrawal->remaining_qty($row['sales_detail_id']);
+            // $total += $StockWithdrawal->remaining_qty($row['sales_detail_id']);
+            $return_qty = $SalesReturn->return_by_sd_id($row['sales_detail_id']);
+            $total_release = $StockWithdrawal->pickup_out($row['sales_detail_id']);
+            $remaining_qty = $row['total_qty'] - $total_release - $return_qty;
+            $total += $remaining_qty;
         }
 
         return $total;

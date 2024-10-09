@@ -13,6 +13,7 @@ class StockWithdrawal extends Connection
     public $inputs = [];
     public $searchable = ['reference_number', 'remarks'];
     public $uri = "stock-withdrawal";
+    
     public function add()
     {
         $sales_id = $this->inputs['sales_id'];
@@ -132,15 +133,24 @@ class StockWithdrawal extends Connection
         $sum_released = $this->select('tbl_stock_withdrawal_details', "sum(qty)", "status='F' AND sales_detail_id='$primary_id'");
         $total_released = $sum_released->fetch_array();
 
-        if($total_released[0] - $total_sales_return[0] >= 0){
-            $total = $total_sales[0] - $total_released[0];
-        }else{
-            $total = $total_sales[0] - $total_sales_return[0];
-        }
+        // if($total_released[0] - $total_sales_return[0] >= 0){
+        //     $total = $total_sales[0] - $total_released[0];
+        // }else{
+        //     $total = $total_sales[0] - $total_sales_return[0];
+        // }
 
-        // $total = $total_sales[0] - ($total_sales_return[0] - $total_released[0]);
+        $total = $total_sales[0] - $total_sales_return[0] - $total_released[0];
 
         return $total;
+    }
+
+    
+    public function pickup_out($primary_id)
+    {
+        $sum_released = $this->select('tbl_stock_withdrawal_details', "sum(qty)", "status='F' AND sales_detail_id='$primary_id'");
+        $total_released = $sum_released->fetch_array();
+
+        return $total_released[0];
     }
 
     public function show()
@@ -155,7 +165,7 @@ class StockWithdrawal extends Connection
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['sales_ref'] = $Sales->dataRow($row['sales_id'], "reference_number");
-            $row['customer'] = $Customers->name($Sales->dataRow($row['sales_id'], "customer_id"));
+            $row['customer'] = 1;//$Customers->name($Sales->dataRow($row['sales_id'], "customer_id"));
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $rows[] = $row;
         }

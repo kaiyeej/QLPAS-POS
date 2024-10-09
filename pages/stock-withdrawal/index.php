@@ -207,7 +207,7 @@
 
     $(document).ready(function() {
         getEntries();
-        getSelectOption('Sales', 'sales_id', 'withdrawal_ref', "withdrawal_status = 1 AND status='F'");
+        getSelectOption('StockReleasal', 'sales_id', 'withdrawal_ref', "withdrawal_status = 1 AND status='F'");
     });
 
 </script>

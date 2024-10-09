@@ -245,6 +245,14 @@ class SalesReturn extends Connection
         return $row[0];
     }
 
+    public function return_by_sd_id($primary_id)
+    {
+        $result = $this->select("tbl_sales_return_details d LEFT JOIN tbl_sales_return h ON d.sales_return_id=h.sales_return_id", 'sum(d.quantity_return)', "h.status='F' AND d.sales_detail_id='$primary_id'");
+        $row = $result->fetch_array();
+
+        return $row[0];
+    }
+
     public function total_return_by_product($product_id)
     {
         $result = $this->select("tbl_sales_return_details as d, tbl_sales_return as p", 'sum((quantity_return*price)-discount) as total', "p.sales_return_id=d.sales_return_id AND p.status='F' AND d.product_id='$product_id'");
