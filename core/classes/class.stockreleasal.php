@@ -158,7 +158,8 @@ class StockReleasal extends Connection
             while ($row2 = $fetchCS->fetch_assoc()) {
                 $return_qty = $SalesReturn->return_by_sd_id($row2['sales_detail_id']);
                 $total_release = $StockWithdrawal->pickup_out($row2['sales_detail_id']);
-                $remaining_qty = $row2['total_qty'] - $total_release - $return_qty;
+                $remainingqty = $row2['total_qty'] - $total_release - $return_qty;
+                $remaining_qty = $remainingqty < 0 ? 0 : $remainingqty;
 
                 $for_withdrawal += $remaining_qty;
                 $count .= $remaining_qty > 0 ? $remaining_qty . " (" . $row2['sales_detail_id'] . ") - " : "";
