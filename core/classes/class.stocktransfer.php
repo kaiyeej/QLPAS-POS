@@ -183,7 +183,7 @@ class StockTransfer extends Connection
                     'status'                => 1,
                 );
 
-                $this->insert('tbl_product_transactions', $form_inv_in);
+                $this->insertIfNotExist('tbl_product_transactions', $form_inv_in, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='IN' AND warehouse_id='$row[source_warehouse_id]'");
 
                 $Warehouses = new Warehouses;
                 $destination_branch_id = $Warehouses->warehouse_branch_id($row['destination_warehouse_id']);
@@ -200,8 +200,8 @@ class StockTransfer extends Connection
                     'type'                  => 'IN',
                     'status'                => 1,
                 );
-
-                $this->insert('tbl_product_transactions', $form_inv_out);
+                // insertIfNotExist($table, $form, $param = '', $last_id = 'N')
+                $this->insertIfNotExist('tbl_product_transactions', $form_inv_out, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='OUT' AND warehouse_id='$row[destination_warehouse_id]'");
             }
 
             // update inv
