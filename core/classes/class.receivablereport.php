@@ -62,7 +62,7 @@ class ReceivableReport extends Connection
         $result = $this->select("tbl_sales", "reference_number, total_sales_amount AS total, 'Sales' AS module_name, 'DR' as module_code, sales_date as transaction_date, date_added, sales_id as ref_id", "customer_id='$customer_id' AND sales_type='H' AND status='F' UNION ALL SELECT reference_number, bb_amount as total, 'Beginning Balance' AS module_name, 'BB' as module_code, bb_date as transaction_date, date_added, bb_id as ref_id FROM tbl_beginning_balance WHERE bb_ref_id='$customer_id' AND bb_module='AR' AND bb_paid_status=0 ORDER BY date_added ASC");
         $balance = 0;
         while ($row = $result->fetch_assoc()) {
-            $fetch_total_return = $this->select("tbl_sales_return h LEFT JOIN tbl_sales_return_details d ON h.sales_return_id=d.sales_return_id", "sum((d.quantity_return*d.price)-(d.discount/d.quantity))", "h.status='F' AND h.sales_id='$row[id]'");
+            $fetch_total_return = $this->select("tbl_sales_return h LEFT JOIN tbl_sales_return_details d ON h.sales_return_id=d.sales_return_id", "sum((d.quantity_return*d.price)-(d.discount/d.quantity))", "h.status='F' AND h.sales_id='$row[ref_id]'");
             $total_return = $fetch_total_return->fetch_array();
 
 
