@@ -72,7 +72,7 @@ class ReceivableReport extends Connection
             $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "h.account_id='$customer_id' AND d.reference_id='$row[ref_id]' AND memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id");
             $total_dm = $get_debit_memo->fetch_array();
 
-            $total_dr = ($row['total']+$total_dm[0])-($total_payment+$total_cm[0]);
+            $total_dr = ($row['total'] + $total_dm[0]) - ($total_payment + $total_cm[0]);
             $balance += $total_dr;
         }
 
@@ -100,7 +100,10 @@ class ReceivableReport extends Connection
             $get_debit_memo = $this->select("tbl_debit_memo as h, tbl_debit_memo_details as d", "sum(d.amount)", "h.account_id='$customer_id' AND d.reference_id='$row[id]' AND memo_type='AR' AND h.status='F' AND h.dm_id=d.dm_id");
             $total_dm = $get_debit_memo->fetch_array();
 
-            $total_dr = ($row['total']+$total_dm[0])-$total_cm[0];
+            $fetch_total_return = $this->select("tbl_sales_return h LEFT JOIN tbl_sales_return_details d ON h.sales_return_id=d.sales_return_id", "sum((d.quantity_return*d.price)-(d.discount/d.quantity))", "h.status='F' AND h.sales_id='$row[id]'");
+            $total_return = $fetch_total_return->fetch_array();
+
+            $total_dr = ($row['total'] + $total_dm[0]) - ($total_cm[0]+$total_return[0]);
             $total_payment = $row['total_payment'];
 
             $row['debit'] = $total_dr;
@@ -199,14 +202,51 @@ class ReceivableReport extends Connection
         $num = (int) $num;
         $words = array();
         $list1 = array(
-            '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
-            'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
+            '',
+            'one',
+            'two',
+            'three',
+            'four',
+            'five',
+            'six',
+            'seven',
+            'eight',
+            'nine',
+            'ten',
+            'eleven',
+            'twelve',
+            'thirteen',
+            'fourteen',
+            'fifteen',
+            'sixteen',
+            'seventeen',
+            'eighteen',
+            'nineteen'
         );
         $list2 = array('', 'ten', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety', 'hundred');
         $list3 = array(
-            '', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion',
-            'octillion', 'nonillion', 'decillion', 'undecillion', 'duodecillion', 'tredecillion', 'quattuordecillion',
-            'quindecillion', 'sexdecillion', 'septendecillion', 'octodecillion', 'novemdecillion', 'vigintillion'
+            '',
+            'thousand',
+            'million',
+            'billion',
+            'trillion',
+            'quadrillion',
+            'quintillion',
+            'sextillion',
+            'septillion',
+            'octillion',
+            'nonillion',
+            'decillion',
+            'undecillion',
+            'duodecillion',
+            'tredecillion',
+            'quattuordecillion',
+            'quindecillion',
+            'sexdecillion',
+            'septendecillion',
+            'octodecillion',
+            'novemdecillion',
+            'vigintillion'
         );
         $num_length = strlen($num);
         $levels = (int) (($num_length + 2) / 3);
