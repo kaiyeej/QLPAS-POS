@@ -103,7 +103,7 @@ class ReceivableReport extends Connection
             $fetch_total_return = $this->select("tbl_sales_return h LEFT JOIN tbl_sales_return_details d ON h.sales_return_id=d.sales_return_id", "sum((d.quantity_return*d.price)-(d.discount/d.quantity))", "h.status='F' AND h.sales_id='$row[id]'");
             $total_return = $fetch_total_return->fetch_array();
 
-            $total_dr = ($row['total'] + $total_dm[0]) - ($total_cm[0]);
+            $total_dr = ($row['total'] + $total_dm[0]) - ($total_cm[0]+$total_return[0]);
             $total_payment = $row['total_payment'];
 
             $row['debit'] = $total_dr;
