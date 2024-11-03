@@ -58,6 +58,7 @@ class Menus extends Connection
                 array('url' => 'statement-of-accounts', 'name' => 'Statement of Accounts', 'class_name' => 'StatementOfAccounts', 'has_detail' => 0),
             ),
             'admin' => array(
+                array('url' => 'admin-controls', 'name' => 'Admin Controls', 'class_name' => 'Settings', 'has_detail' => 0),
                 array('url' => 'users', 'name' => 'User Account', 'class_name' => 'Users', 'has_detail' => 0),
                 array('url' => 'settings', 'name' => 'Settings', 'class_name' => 'Settings', 'has_detail' => 0),
                 array('url' => 'log', 'name' => 'Logs', 'class_name' => 'Logs', 'has_detail' => 0),

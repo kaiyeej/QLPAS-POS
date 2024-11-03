@@ -88,6 +88,7 @@ class InventoryReport extends Connection
             $fetch_cost = $this->select("tbl_product_transactions", "SUM(quantity*cost)/SUM(quantity) as average_cost", "product_id = '$product_id' AND STATUS = 1 AND TYPE='IN' AND module='PO'");
             $cost_row = $fetch_cost->fetch_assoc();
             $this->update("tbl_products", ['product_cost' => $cost_row['average_cost']], "product_id='$product_id'");
+            return 1;
         }else{
             return -1;
         }
