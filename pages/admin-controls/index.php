@@ -30,7 +30,7 @@
                                 <label><strong>Branch</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="branch_id_2" name="input[branch_id]" required>
-                                        <option class="">&mdash; Please Select &mdash; </option>
+                                        <option value="" disabled selected>&mdash; Please Select &mdash;</option>
                                     </select>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                 <label><strong>Warehouse</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]" required>
-                                        <option class="">&mdash; Please Select &mdash; </option>
+                                        <option value="" disabled selected>&mdash; Please Select &mdash;</option>
                                     </select>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                                 <label><strong>Product</strong></label>
                                 <div>
                                     <select class="form-control form-control-sm select2" id="product_id" name="input[product_id]" required>
-                                        <option class="">&mdash; Please Select &mdash; </option>
+                                        <option value="" disabled selected>&mdash; Please Select &mdash;</option>
                                     </select>
                                 </div>
                             </div>
@@ -68,7 +68,7 @@
 </div>
 <script>
      $(document).ready(function() {
-        getSelectOption('Branches', 'branch_id_2', 'branch_name', "", [], -1, 'Please Select', 1);
+        getSelectOption('Branches', 'branch_id_2', 'branch_name', "", [], '', 'Please Select', 1);
         // getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
         getSelectOption('Products', 'product_id', 'product_name');
     });
@@ -82,29 +82,7 @@
         getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + branch_id + "'");
     }
 
-    function fixInventory() {
-        $("#btn_submit_inv").prop("disabled", true);
-        $("#btn_submit_inv").html("<span class='fa fa-spin fa-spinner'></span>");
-        $.ajax({
-          type: "POST",
-          url: "controllers/sql.php?c=InventoryReport&q=inventory_fixer",
-          data: $("#frm_submit").serialize(),
-          success: function(data) {
-            var json = JSON.parse(data);
-            if (json.data == 1) {
-                success_update();
-              } else {  
-                failed_query(json);
-              }
-
-            $("#btn_submit_inv").prop('disabled', false);
-            $("#btn_submit_inv").html("<span class='fa fa-check-circle'></span> Submit");
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            errorLogger('Error:', textStatus, errorThrown);
-          }
-        });
-    }
+    
 
     $("#frm_inv_fixer").submit(function(e) {
         e.preventDefault();
