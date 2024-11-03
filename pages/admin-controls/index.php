@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12 col-xl-12 mb-4 mb-xl-0">
             <h3 class="font-weight-bold">Admin Controls</h3>
-            <h6 class="font-weight-normal mb-3">Review and adjust company data settings here.</h6>
+            <h6 class="font-weight-normal mb-3">Fix inventory cost and quantity.</h6>
         </div>
     </div>
     <br>
