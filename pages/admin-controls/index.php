@@ -29,7 +29,7 @@
                             <div class="form-group">
                                 <label><strong>Branch</strong></label>
                                 <div>
-                                    <select class="form-control form-control-sm select2" id="branch_id_2" name="input[branch_id]">
+                                    <select class="form-control form-control-sm select2" id="branch_id_2" name="input[branch_id]" required>
                                         <option class="">&mdash; Please Select &mdash; </option>
                                     </select>
                                 </div>
@@ -39,7 +39,7 @@
                             <div class="form-group">
                                 <label><strong>Warehouse</strong></label>
                                 <div>
-                                    <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]">
+                                    <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]" required>
                                         <option class="">&mdash; Please Select &mdash; </option>
                                     </select>
                                 </div>
@@ -49,7 +49,7 @@
                             <div class="form-group">
                                 <label><strong>Product</strong></label>
                                 <div>
-                                    <select class="form-control form-control-sm select2" id="product_id" name="input[product_id]">
+                                    <select class="form-control form-control-sm select2" id="product_id" name="input[product_id]" required>
                                         <option class="">&mdash; Please Select &mdash; </option>
                                     </select>
                                 </div>
@@ -93,7 +93,7 @@
             var json = JSON.parse(data);
             if (json.data == 1) {
                 success_update();
-              } else {
+              } else {  
                 failed_query(json);
               }
 
