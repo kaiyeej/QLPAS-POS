@@ -77,6 +77,22 @@ class InventoryReport extends Connection
         return (float) $row['qty'];
     }
 
+    public function inventory_fixer(){
+        $branch_id = $this->clean($this->inputs['branch_id']);
+        $warehouse_id = $this->clean($this->inputs['warehouse_id']);
+        $product_id = $this->clean($this->inputs['product_id']);
+        $inv_qty = $this->balance_per_warehouse($product_id, $branch_id, $warehouse_id);
+        $result = $this->update("tbl_product_warehouses", ['product_qty' => $inv_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+        if($result){
+            // get cost
+            $fetch_cost = $this->select("tbl_product_transactions", "SUM(quantity*cost)/SUM(quantity) as average_cost", "product_id = '$product_id' AND STATUS = 1 AND TYPE='IN' AND module='PO'");
+            $cost_row = $fetch_cost->fetch_assoc();
+            $this->update("tbl_products", ['product_cost' => $cost_row['average_cost']], "product_id='$product_id'");
+        }else{
+            return -1;
+        }
+    }
+
     public function current_qty()
     {
         $Warehouses = new Warehouses;
