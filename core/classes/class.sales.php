@@ -770,7 +770,8 @@ class Sales extends Connection
             'encoded_by' => $this->inputs['encoded_by'],
             'reward_points' => $reward_points,
             'remarks' => $remarks,
-            'total_sales_amount' => $total_sales_amount
+            'total_sales_amount' => $total_sales_amount,
+            'release_warehouse_id' => $this->inputs['release_warehouse_id']
         );
         $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 
