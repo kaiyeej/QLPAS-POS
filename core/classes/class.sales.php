@@ -794,7 +794,7 @@ class Sales extends Connection
 
             // update inventory qty
             //$this->update_product_qty($primary_id, $branch_id, $warehouse_id);
-            $InventoryReport->update_product_qty("tbl_sales_details", "sales_id", $primary_id, $branch_id, $warehouse_id);
+            $InventoryReport->update_product_qty("tbl_sales_details", "sales_id", $primary_id, $branch_id, $this->inputs['release_warehouse_id']);
 
             // finish all related customer payment
             return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
