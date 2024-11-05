@@ -721,7 +721,7 @@ class Sales extends Connection
         $sales_type = $this->inputs['sales_type'];
         $branch_id = $this->inputs['branch_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
-        $release_warehouse_id = $this->inputs['release_warehouse_id'];
+        $release_warehouse_id = $this->inputs['for_pickup'] == 1 ? $this->inputs['release_warehouse_id'] : $warehouse_id;
 
         $param = "reference_number='$reference_number'";
 
@@ -771,7 +771,7 @@ class Sales extends Connection
             'reward_points' => $reward_points,
             'remarks' => $remarks,
             'total_sales_amount' => $total_sales_amount,
-            'release_warehouse_id' => $this->inputs['release_warehouse_id']
+            'release_warehouse_id' => $release_warehouse_id
         );
         $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 
@@ -794,7 +794,7 @@ class Sales extends Connection
 
             // update inventory qty
             //$this->update_product_qty($primary_id, $branch_id, $warehouse_id);
-            $InventoryReport->update_product_qty("tbl_sales_details", "sales_id", $primary_id, $branch_id, $this->inputs['release_warehouse_id']);
+            $InventoryReport->update_product_qty("tbl_sales_details", "sales_id", $primary_id, $branch_id, $release_warehouse_id);
 
             // finish all related customer payment
             return $CustomerPayment->finishCustomerPaymentOfDRPOS($primary_id, $this->inputs['customer_id']);
