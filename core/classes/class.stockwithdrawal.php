@@ -214,10 +214,14 @@ class StockWithdrawal extends Connection
             } else {
                 $ClaimSlip2 = new ClaimSlip;
                 $Sales = new Sales;
+                // get warehouse id of previous claim slip
+                $fetch_claim_slip = $this->select("tbl_claim_slips", "warehouse_id", "sales_id='$sales_id'");
+                $claim_slip_row = $fetch_claim_slip->fetch_assoc();
+
                 $ClaimSlip2->inputs['reference_number'] = $ClaimSlip2->generate();
                 $ClaimSlip2->inputs['sales_id'] = $sales_id;
                 $ClaimSlip2->inputs['branch_id'] = $this->inputs['branch_id'];
-                $ClaimSlip2->inputs['warehouse_id'] = $this->inputs['warehouse_id'];
+                $ClaimSlip2->inputs['warehouse_id'] = $claim_slip_row['warehouse_id'];
                 $ClaimSlip2->inputs['total_amount'] = $Sales->total($sales_id);
                 $ClaimSlip2->add();
             }

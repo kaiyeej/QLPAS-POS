@@ -667,7 +667,6 @@ class Sales extends Connection
 
         $Withdrawal = new StockWithdrawal();
 
-
         $rows = array();
         $count = 1;
         $result = $this->select($this->table_detail, '*', "sales_id = '$sales_id' ORDER BY date_added DESC");
@@ -774,7 +773,6 @@ class Sales extends Connection
             'total_sales_amount' => $total_sales_amount
         );
         $res = $this->update($this->table, $form, "$this->pk = '$primary_id'");
-
 
         if ($res == 1) {
 
