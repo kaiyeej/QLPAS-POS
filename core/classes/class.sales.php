@@ -620,7 +620,7 @@ class Sales extends Connection
                 $res = $this->insertIfNotExist($this->table_detail, $form, "sales_id='$primary_id' AND product_id='$fk_det'", 'Y');
                 if ($res == -2) {
                     $qty = $this->inputs['quantity'];
-                    $this->inputs['param'] = "sales_id='$primary_id' AND product_id='$fk_det' ";
+                    $this->inputs['param'] = "d.sales_id='$primary_id' AND d.product_id='$fk_det' ";
                     $detail_row = $this->show_detail();
 
                     if (sizeof($detail_row) > 0) {

@@ -27,7 +27,7 @@ class SalesReturn extends Connection
         $fetch_sales = $this->select("tbl_sales","*","sales_id='$sales_id'");
         $sRow = $fetch_sales->fetch_assoc();
         $branch_id = $sRow['branch_id'];
-        $warehouse_id = $sRow['warehouse_id'];
+        $warehouse_id = $sRow['release_warehouse_id'] > 0 ? $sRow['release_warehouse_id'] : $sRow['warehouse_id'];
 
         //$warehouse_id = $Sales->sales_warehouse($sales_id);
         $form = array(
