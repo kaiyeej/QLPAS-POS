@@ -123,12 +123,9 @@
             year: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
             hour12: true
-        }).replace(',', ''); 
-
+        }).replace(' at ', ' ');
         $("#con_date").html(formattedDate);
-
 
         var product_category_id = $("#product_category_id").val();
         var warehouse_id = $("#warehouse_id").val();
