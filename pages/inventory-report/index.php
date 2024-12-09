@@ -32,15 +32,15 @@
                                 <label>&nbsp;</label>
                                 <div>
 
-                                <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
-                                    <i class="ti-reload mr-1"></i> Generate
-                                </button>  
-                                <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Inventroy-Report')">
-                                    <i class="ti-cloud-down mr-1"></i> Export
-                                </button>
-                                <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container')" id="btn_delete">
-                                    <i class="ti-printer mr-1"></i> Print
-                                </button>
+                                    <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                        <i class="ti-reload mr-1"></i> Generate
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Inventroy-Report')">
+                                        <i class="ti-cloud-down mr-1"></i> Export
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container')" id="btn_delete">
+                                        <i class="ti-printer mr-1"></i> Print
+                                    </button>
 
 
                                     <!-- <div class="btn-group pull-right">
@@ -69,13 +69,14 @@
                             </div>
                         </div>
                     </form>
-                
+
                     <div id="report_container" class="card-body">
                         <div class="table-responsive">
                             <center>
                                 <h4 class="report-header"><span id="company_name_label"></span></h4>
                                 <h6 class="report-header"><span id="company_address_label" style="word-wrap: break-word;"></span></h6>
-                                <h5 class="report-header">Inventory Report</h5><br>
+                                <h5 class="report-header">Inventory Report</h5>
+                                <h6><span id="con_date"></span></h6><br>
                             </center>
                             <table class="display expandable-table" id="dt_entries" width="100%" cellspacing="0">
                                 <thead>
@@ -115,6 +116,20 @@
     });
 
     function getReport() {
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleString('en-US', {
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        }).replace(',', ''); 
+
+        $("#con_date").html(formattedDate);
+
+
         var product_category_id = $("#product_category_id").val();
         var warehouse_id = $("#warehouse_id").val();
         $("#dt_entries").DataTable().destroy();
@@ -131,7 +146,7 @@
                 "data": {
                     input: {
                         product_category_id: product_category_id,
-                        warehouse_id:warehouse_id
+                        warehouse_id: warehouse_id
                     }
                 },
             },
@@ -161,7 +176,7 @@
 
                 // Update footer
                 $(api.column(4).footer()).html(
-                     this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total_qty).toFixed(2)))
+                    this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total_qty).toFixed(2)))
                 );
 
                 // in stock over all pages
@@ -179,7 +194,7 @@
                     this.fnSettings().fnFormatNumber(parseFloat(parseFloat(stock_qty).toFixed(2)))
                 );
 
-                
+
                 // in stock over all pages
                 pickup_qty = api
                     .column(3, {
