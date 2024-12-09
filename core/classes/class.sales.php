@@ -887,6 +887,7 @@ class Sales extends Connection
         $fetch_redeemed_points = $this->select("tbl_redeemed_points", "sum(redeem_points) as total_points", "status='F' and sales_summary_id=0 and encoded_by='$user_id' ");
         $redeemed_points_row = $fetch_redeemed_points->fetch_assoc();
         $sales_rows['total_redeemed_points'] = $redeemed_points_row['total_points'] * 1;
+        $sales_rows['sales_summary_date'] = date('F d, Y', strtotime($this->getCurrentDate()));
 
         return $sales_rows;
     }
