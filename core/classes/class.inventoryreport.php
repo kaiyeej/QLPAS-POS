@@ -77,6 +77,9 @@ class InventoryReport extends Connection
             $return_qty = $SalesReturn->return_by_sd_id($row['sales_detail_id']);
             $total_release = $StockWithdrawal->pickup_out($row['sales_detail_id']);
             $remaining_qty = $row['total_qty'] - $total_release - $return_qty;
+            if($remaining_qty <= 0){
+                continue;
+            }
             $row['amount'] =  number_format($row['product_qty'] * $row['product_cost'], 2);
             $row['qty'] = $row['total_qty'];
             $row['customer_name'] = $row['customer_id'] == 0 ? "Walk-in" : $Customers->name($row['customer_id']);
