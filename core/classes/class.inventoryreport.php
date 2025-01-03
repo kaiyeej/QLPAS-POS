@@ -63,6 +63,32 @@ class InventoryReport extends Connection
         return $total;
     }
 
+    public function show_pickup(){
+        $branch_id = $this->getBranch();
+        $product_id = $this->inputs['product_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
+
+        $fetchCS = $this->select("tbl_sales h LEFT JOIN tbl_sales_details d ON h.sales_id=d.sales_id", "sum(d.quantity) as total_qty, sales_detail_id,customer_id, reference_number", "h.withdrawal_status=1 AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$product_id' AND h.branch_id='$branch_id' AND h.warehouse_id='$warehouse_id' GROUP BY d.sales_detail_id");
+        $StockWithdrawal = new StockWithdrawal;
+        $SalesReturn = new SalesReturn;
+        $Customers = new Customers;
+        while ($row = $fetchCS->fetch_assoc()) {
+            // $total += $StockWithdrawal->remaining_qty($row['sales_detail_id']);
+            $return_qty = $SalesReturn->return_by_sd_id($row['sales_detail_id']);
+            $total_release = $StockWithdrawal->pickup_out($row['sales_detail_id']);
+            $remaining_qty = $row['total_qty'] - $total_release - $return_qty;
+            $row['amount'] =  number_format($row['product_qty'] * $row['product_cost'], 2);
+            $row['qty'] = $row['total_qty'];
+            $row['customer_name'] = $row['customer_id'] == 0 ? "Walk-in" : $Customers->name($row['customer_id']);
+            $row['remaining_qty'] = $remaining_qty;
+            $row['released_qty'] = $total_release > 0 ? $total_release : 0;
+
+            $rows[] = $row;
+        }
+        return $rows;
+
+    }
+
     public function balance($product_id)
     {
         $result = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND status = 1");

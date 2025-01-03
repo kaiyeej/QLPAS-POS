@@ -108,6 +108,8 @@
         </div>
     </div>
 </div>
+
+<?php include 'modal_pickup.php' ?>
 <script type="text/javascript">
     $("#frm_generate").submit(function(e) {
         e.preventDefault();
@@ -217,7 +219,11 @@
                     "data": "in_stock"
                 },
                 {
-                    "data": "for_pickup"
+                    "data": "for_pickup",
+                    "render": function(data, type, row) {
+                        return `<a href="#" title="Click to view details" class="show-modal" data-name="${row.product_name}" onclick="pickupDetails('${row.product_id}','${row.product_name}')">${data}</a>
+`;
+                    }
                 },
                 {
                     "data": "product_qty"
@@ -228,6 +234,89 @@
                 {
                     "data": "amount"
                 },
+            ]
+        });
+    }
+
+    function pickupDetails(product_id, product_name) {
+        $('#pickupModal').modal('show');
+        $("#product_name_label").text(product_name);
+        getPickupEntries(product_id);
+    }
+
+    function getPickupEntries(product_id) {
+        var product_id = product_id;
+        var warehouse_id = $("#warehouse_id").val();
+
+        $("#dt_entries_2").DataTable().destroy();
+        $("#dt_entries_2").DataTable({
+            "processing": true,
+            "ajax": {
+                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show_pickup",
+                "dataSrc": "data",
+                "method": "POST",
+                "data": {
+                    input: {
+                        product_id: product_id,
+                        warehouse_id: warehouse_id
+                    }
+                }
+            },
+            "columnDefs": [{
+                "targets": [2, 3, 4],
+                "render": $.fn.dataTable.render.number(',', '.', 2, ''),
+                "className": 'dt-body-right'
+            }],
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api();
+
+                // Remove the formatting to get integer data for summation
+                var intVal = function(i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+
+                // Total over all pages
+                total = api
+                    .column(4)
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Total over this page
+                pageTotal = api
+                    .column(4, {
+                        page: 'current'
+                    })
+                    .data()
+                    .reduce(function(a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // Update footer
+                $(api.column(4).footer()).html(
+                    "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total).toFixed(2)))
+                );
+            },
+            "columns": [
+            {
+                "data": "reference_number"
+            },
+            {
+                "data": "customer_name"
+            },
+            {
+                "data": "qty"
+            },
+            {
+                "data": "released_qty"
+            },
+            {
+                "data": "remaining_qty"
+            },
             ]
         });
     }
