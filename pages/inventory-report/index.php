@@ -253,7 +253,9 @@
             "processing": true,
             "ajax": {
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show_pickup",
-                "dataSrc": "data",
+                "dataSrc": function(json) {
+                    return json.data ? json.data : [];
+                },
                 "method": "POST",
                 "data": {
                     input: {
@@ -275,7 +277,7 @@
                     return typeof i === 'string' ?
                         i.replace(/[\$,]/g, '') * 1 :
                         typeof i === 'number' ?
-                            i : 0;
+                        i : 0;
                 };
 
                 // Total over all pages
@@ -301,22 +303,21 @@
                     "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total).toFixed(2)))
                 );
             },
-            "columns": [
-            {
-                "data": "reference_number"
-            },
-            {
-                "data": "customer_name"
-            },
-            {
-                "data": "qty"
-            },
-            {
-                "data": "released_qty"
-            },
-            {
-                "data": "remaining_qty"
-            },
+            "columns": [{
+                    "data": "reference_number"
+                },
+                {
+                    "data": "customer_name"
+                },
+                {
+                    "data": "qty"
+                },
+                {
+                    "data": "released_qty"
+                },
+                {
+                    "data": "remaining_qty"
+                },
             ]
         });
     }
