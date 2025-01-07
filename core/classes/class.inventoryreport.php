@@ -46,7 +46,7 @@ class InventoryReport extends Connection
 
     public function pick_up_balance($product_id, $branch_id, $warehouse_id)
     {   
-        $param = ($warehouse_id != -1)? "AND h.warehouse_id = '$warehouse_id' AND h.branch_id = '$branch_id'" : "";
+        $param = ($warehouse_id != -1)? "AND h.release_warehouse_id = '$warehouse_id'" : "";
 
         $fetchCS = $this->select("tbl_sales h LEFT JOIN tbl_sales_details d ON h.sales_id=d.sales_id", "sum(d.quantity) as total_qty, sales_detail_id,customer_id", "h.withdrawal_status=1  AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$product_id' $param GROUP BY d.sales_detail_id");
         $total = 0;
@@ -67,9 +67,9 @@ class InventoryReport extends Connection
         $branch_id = $this->getBranch();
         $product_id = $this->inputs['product_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
-        $warehouse_query = $warehouse_id == -1 ? "" : "AND h.warehouse_id = '$warehouse_id'";
+        $warehouse_query = $warehouse_id == -1 ? "" : "AND h.release_warehouse_id = '$warehouse_id'";
 
-        $fetchCS = $this->select("tbl_sales h LEFT JOIN tbl_sales_details d ON h.sales_id=d.sales_id", "sum(d.quantity) as total_qty, sales_detail_id,customer_id, reference_number", "h.withdrawal_status=1 AND h.for_pick_up=1 AND h.status='F' AND h.branch_id='$branch_id' AND d.product_id = '$product_id' $warehouse_query GROUP BY d.sales_detail_id");
+        $fetchCS = $this->select("tbl_sales h LEFT JOIN tbl_sales_details d ON h.sales_id=d.sales_id", "sum(d.quantity) as total_qty, sales_detail_id,customer_id, reference_number, sales_date", "h.withdrawal_status=1 AND h.for_pick_up=1 AND h.status='F' AND d.product_id = '$product_id' $warehouse_query GROUP BY d.sales_detail_id");
         $StockWithdrawal = new StockWithdrawal;
         $SalesReturn = new SalesReturn;
         $Customers = new Customers;

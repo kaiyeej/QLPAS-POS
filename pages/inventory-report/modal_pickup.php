@@ -23,6 +23,7 @@
                                 <thead>
                                     <tr>
                                         <th>Reference #</th>
+                                        <th>Sales Date</th>
                                         <th>Customer</th>
                                         <th>Qty</th>
                                         <th>Released Qty</th>
@@ -33,7 +34,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="4" style="text-align:right">Total:</th>
+                                        <th colspan="5" style="text-align:right">Total:</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>

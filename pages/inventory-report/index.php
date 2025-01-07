@@ -282,7 +282,7 @@
 
                 // Total over all pages
                 total = api
-                    .column(4)
+                    .column(5)
                     .data()
                     .reduce(function(a, b) {
                         return intVal(a) + intVal(b);
@@ -290,7 +290,7 @@
 
                 // Total over this page
                 pageTotal = api
-                    .column(4, {
+                    .column(5, {
                         page: 'current'
                     })
                     .data()
@@ -299,12 +299,15 @@
                     }, 0);
 
                 // Update footer
-                $(api.column(4).footer()).html(
+                $(api.column(5).footer()).html(
                     "&#x20B1; " + this.fnSettings().fnFormatNumber(parseFloat(parseFloat(total).toFixed(2)))
                 );
             },
             "columns": [{
                     "data": "reference_number"
+                },
+                {
+                    "data": "sales_date"
                 },
                 {
                     "data": "customer_name"
