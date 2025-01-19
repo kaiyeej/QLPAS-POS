@@ -366,7 +366,7 @@ class StockWithdrawal extends Connection
             // incluede branch_id and warehouse_id
             //$row['current_qty'] = $Inv->balance_per_warehouse($row['product_id'], $branch_id, $warehouse_id) + $row['qty'] + $remaining_qty;
             $row['current_qty'] = $Inv->balance_per_warehouse($row['product_id'], $branch_id, $warehouse_id);
-            $row['qty'] = number_format($row['qty']);
+            $row['qty'] = $remaining_qty;//number_format($row['qty']);
             $rows[] = $row;
         }
         return $rows;

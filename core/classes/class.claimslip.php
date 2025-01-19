@@ -222,6 +222,13 @@ class ClaimSlip extends Connection
         return $row[$this->name];
     }
 
+    public function sales_claim_slip($sales_id)
+    {
+        $result = $this->select($this->table, $this->name, "sales_id = '$sales_id' ORDER BY claim_slip_id DESC LIMIT 1");
+        $row = $result->fetch_assoc();
+        return $row[$this->name];
+    }
+
     public function get_row($primary_id, $field)
     {
         $result = $this->select($this->table, $field, "$this->pk = '$primary_id'");
