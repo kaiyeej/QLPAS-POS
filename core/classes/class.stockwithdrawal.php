@@ -330,7 +330,7 @@ class StockWithdrawal extends Connection
         $Sales->inputs['r_id'] = $this->inputs['r_id'];
         $Sales->inputs['p_id'] = $this->inputs['p_id'];
         $Sales->inputs['encoded_by'] = $this->inputs['encoded_by'];
-        $withdrawal_id = $Sales->released();
+        $withdrawal_id = $Sales->released(); // set to pending status
 
         $ClaimSlip->inputs['withdrawal_id'] = $withdrawal_id;
         $ClaimSlip->inputs['claim_slip_id'] = $this->inputs['claim_slip_id'];
