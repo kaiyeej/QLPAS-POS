@@ -162,57 +162,64 @@ class StockTransfer extends Connection
     public function finish()
     {
         $primary_id = $this->inputs['id'];
-        $form = array(
-            'status' => 'F',
-        );
-        $query = $this->update($this->table, $form, "$this->pk = '$primary_id'");
-        if ($query) {
-            $fetch = $this->select('tbl_stock_transfer as h, tbl_stock_transfer_details as d', "*", "h.stock_transfer_id='$primary_id' AND h.stock_transfer_id=d.stock_transfer_id");
-            while ($row = $fetch->fetch_assoc()) {
-                $form_inv_in = array(
-                    'branch_id'             => $row['branch_id'],
-                    'warehouse_id'          => $row['source_warehouse_id'],
-                    'product_id'            => $row['product_id'],
-                    'quantity'              => $row['qty'],
-                    'cost'                  => $row['cost'],
-                    'price'                 => $row['price'],
-                    'header_id'             => $primary_id,
-                    'detail_id'             => $row['stock_transfer_detail_id'],
-                    'module'                => 'STK',
-                    'type'                  => 'OUT',
-                    'status'                => 1,
-                );
+        $counter = $this->select($this->table, 'status', "$this->pk = '$primary_id'");
+        $crow = $counter->fetch_assoc();
+        if($crow['status'] != 'F'){
+            $form = array(
+                'status' => 'F',
+            );
+            $query = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 
-                $this->insertIfNotExist('tbl_product_transactions', $form_inv_in, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='IN' AND warehouse_id='$row[source_warehouse_id]'");
+            if ($query) {
+                $fetch = $this->select('tbl_stock_transfer as h, tbl_stock_transfer_details as d', "*", "h.stock_transfer_id='$primary_id' AND h.stock_transfer_id=d.stock_transfer_id");
+                while ($row = $fetch->fetch_assoc()) {
+                    $form_inv_in = array(
+                        'branch_id'             => $row['branch_id'],
+                        'warehouse_id'          => $row['source_warehouse_id'],
+                        'product_id'            => $row['product_id'],
+                        'quantity'              => $row['qty'],
+                        'cost'                  => $row['cost'],
+                        'price'                 => $row['price'],
+                        'header_id'             => $primary_id,
+                        'detail_id'             => $row['stock_transfer_detail_id'],
+                        'module'                => 'STK',
+                        'type'                  => 'OUT',
+                        'status'                => 1,
+                    );
+                    $this->insertIfNotExist('tbl_product_transactions', $form_inv_in, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='OUT' AND warehouse_id='$row[source_warehouse_id]' AND product_id = '$row[product_id]'");
+                
 
-                $Warehouses = new Warehouses;
-                $destination_branch_id = $Warehouses->warehouse_branch_id($row['destination_warehouse_id']);
-                $form_inv_out = array(
-                    'branch_id'             => $destination_branch_id,
-                    'warehouse_id'          => $row['destination_warehouse_id'],
-                    'quantity'              => $row['qty'],
-                    'product_id'            => $row['product_id'],
-                    'cost'                  => $row['cost'],
-                    'price'                 => $row['price'],
-                    'header_id'             => $primary_id,
-                    'detail_id'             => $row['stock_transfer_detail_id'],
-                    'module'                => 'STK',
-                    'type'                  => 'IN',
-                    'status'                => 1,
-                );
-                // insertIfNotExist($table, $form, $param = '', $last_id = 'N')
-                $this->insertIfNotExist('tbl_product_transactions', $form_inv_out, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='OUT' AND warehouse_id='$row[destination_warehouse_id]'");
+                    $Warehouses = new Warehouses;
+                    $destination_branch_id = $Warehouses->warehouse_branch_id($row['destination_warehouse_id']);
+                    $form_inv_out = array(
+                        'branch_id'             => $destination_branch_id,
+                        'warehouse_id'          => $row['destination_warehouse_id'],
+                        'quantity'              => $row['qty'],
+                        'product_id'            => $row['product_id'],
+                        'cost'                  => $row['cost'],
+                        'price'                 => $row['price'],
+                        'header_id'             => $primary_id,
+                        'detail_id'             => $row['stock_transfer_detail_id'],
+                        'module'                => 'STK',
+                        'type'                  => 'IN',
+                        'status'                => 1,
+                    );
+                    // insertIfNotExist($table, $form, $param = '', $last_id = 'N')
+
+                    $this->insertIfNotExist('tbl_product_transactions', $form_inv_out, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='IN' AND warehouse_id='$row[destination_warehouse_id]' AND product_id = '$row[product_id]'");
+
+                }
+
+                // update inv
+                $InventoryReport = new InventoryReport;
+                $hRows = $this->rows($primary_id);
+                $InventoryReport->update_product_qty("tbl_stock_transfer_details", $this->pk, $primary_id, $hRows['branch_id'], $hRows['source_warehouse_id'], "product_id");
+                $InventoryReport->update_product_qty("tbl_stock_transfer_details", $this->pk, $primary_id, $hRows['destination_branch_id'], $hRows['destination_warehouse_id'], "product_id");
             }
 
-            // update inv
-            $InventoryReport = new InventoryReport;
-            $hRows = $this->rows($primary_id);
-            $InventoryReport->update_product_qty("tbl_stock_transfer_details", $this->pk, $primary_id, $hRows['branch_id'], $hRows['source_warehouse_id'], "product_id");
-            $InventoryReport->update_product_qty("tbl_stock_transfer_details", $this->pk, $primary_id, $hRows['destination_branch_id'], $hRows['destination_warehouse_id'], "product_id");
+
+            return $query;
         }
-
-
-        return $query;
     }
 
     

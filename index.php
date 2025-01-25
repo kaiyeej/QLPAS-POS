@@ -814,6 +814,8 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
             },
             function(isConfirm) {
               if (isConfirm) {
+                
+                $(".confirm").attr('disabled', 'disabled');
                 $.ajax({
                   type: "POST",
                   url: "controllers/sql.php?c=" + route_settings.class_name + "&q=finish",
@@ -836,6 +838,8 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
                     } else {
                       failed_query(json);
                     }
+                    // swal.enableConfirmButton();
+                    
                   },
                   error: function(jqXHR, textStatus, errorThrown) {
                     errorLogger('Error:', textStatus, errorThrown);
