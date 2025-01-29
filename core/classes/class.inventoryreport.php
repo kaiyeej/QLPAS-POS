@@ -4,7 +4,7 @@ class InventoryReport extends Connection
 {
     public $table = "tbl_product_transactions";
     public function view()
-    {   
+    {
         $branch_id = $this->getBranch();
         $product_category_id = $this->inputs['product_category_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
@@ -45,8 +45,8 @@ class InventoryReport extends Connection
     }
 
     public function pick_up_balance($product_id, $branch_id, $warehouse_id)
-    {   
-        $param = ($warehouse_id != -1)? "AND h.release_warehouse_id = '$warehouse_id'" : "";
+    {
+        $param = ($warehouse_id != -1) ? "AND h.release_warehouse_id = '$warehouse_id'" : "";
 
         $fetchCS = $this->select("tbl_sales h LEFT JOIN tbl_sales_details d ON h.sales_id=d.sales_id", "sum(d.quantity) as total_qty, sales_detail_id,customer_id", "h.withdrawal_status=1  AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$product_id' $param GROUP BY d.sales_detail_id");
         $total = 0;
@@ -63,7 +63,8 @@ class InventoryReport extends Connection
         return $total;
     }
 
-    public function show_pickup(){
+    public function show_pickup()
+    {
         $branch_id = $this->getBranch();
         $product_id = $this->inputs['product_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
@@ -78,7 +79,7 @@ class InventoryReport extends Connection
             $return_qty = $SalesReturn->return_by_sd_id($row['sales_detail_id']);
             $total_release = $StockWithdrawal->pickup_out($row['sales_detail_id']);
             $remaining_qty = $row['total_qty'] - $total_release - $return_qty;
-            if($remaining_qty <= 0){
+            if ($remaining_qty <= 0) {
                 continue;
             }
             $row['amount'] =  number_format($row['product_qty'] * $row['product_cost'], 2);
@@ -90,7 +91,6 @@ class InventoryReport extends Connection
             $rows[] = $row;
         }
         return $rows;
-
     }
 
     public function balance($product_id)
@@ -107,21 +107,49 @@ class InventoryReport extends Connection
         return (float) $row['qty'];
     }
 
-    public function inventory_fixer(){
+    public function inventory_fixer()
+    {
         $branch_id = $this->clean($this->inputs['branch_id']);
         $warehouse_id = $this->clean($this->inputs['warehouse_id']);
         $product_id = $this->clean($this->inputs['product_id']);
         $inv_qty = $this->balance_per_warehouse($product_id, $branch_id, $warehouse_id);
         $result = $this->update("tbl_product_warehouses", ['product_qty' => $inv_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
-        if($result){
+        if ($result) {
             // get cost
             $fetch_cost = $this->select("tbl_product_transactions", "SUM(quantity*cost)/SUM(quantity) as average_cost", "product_id = '$product_id' AND STATUS = 1 AND TYPE='IN' AND module='PO'");
             $cost_row = $fetch_cost->fetch_assoc();
             $this->update("tbl_products", ['product_cost' => $cost_row['average_cost']], "product_id='$product_id'");
             return 1;
-        }else{
+        } else {
             return -1;
         }
+    }
+
+    public function inventory_fixer_category()
+    {
+        $branch_id = $this->clean($this->inputs['branch_id']);
+        $warehouse_id = $this->clean($this->inputs['warehouse_id']);
+        $product_category_id = $this->clean($this->inputs['product_category_id']);
+        $counter = 0;
+        $fetch = $this->select("tbl_product_warehouses w LEFT JOIN tbl_products p ON w.product_id=p.product_id", "w.product_id", "w.branch_id='$branch_id' AND w.warehouse_id='$warehouse_id' AND p.product_category_id='$product_category_id'");
+        // $fetch = $this->select("tbl_products", "product_id", "product_category_id='$product_category_id'");
+        while ($row = $fetch->fetch_assoc()) {
+            $product_id = $row['product_id'];
+
+            $inv_qty = $this->balance_per_warehouse($product_id, $branch_id, $warehouse_id);
+            $result = $this->update("tbl_product_warehouses", ['product_qty' => $inv_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+            if ($result) {
+                // get cost
+                $fetch_cost = $this->select("tbl_product_transactions", "SUM(quantity*cost)/SUM(quantity) as average_cost", "product_id = '$product_id' AND STATUS = 1 AND TYPE='IN' AND module='PO'");
+                $cost_row = $fetch_cost->fetch_assoc();
+                $this->update("tbl_products", ['product_cost' => $cost_row['average_cost']], "product_id='$product_id'");
+                $counter = 1;
+            } else {
+                $counter = 0;
+            }
+        }
+
+        return $counter;
     }
 
     public function current_qty()
@@ -145,22 +173,23 @@ class InventoryReport extends Connection
         return (float) $row['total'];
     }
 
-    public function update_product_qty($table_detail, $primary_key, $primary_id, $branch_id, $warehouse_id, $product_field = "product_id"){
+    public function update_product_qty($table_detail, $primary_key, $primary_id, $branch_id, $warehouse_id, $product_field = "product_id")
+    {
 
         $fetch = $this->select($table_detail, $product_field, "$primary_key='$primary_id'");
-        while($row = $fetch->fetch_assoc()){
+        while ($row = $fetch->fetch_assoc()) {
             $product_id = $row[$product_field];
 
             $fetch_inv = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id' AND status = 1");
             $inv_row = $fetch_inv->fetch_assoc();
-            $current_qty =  $inv_row['qty']*1;
-            
+            $current_qty =  $inv_row['qty'] * 1;
+
             $fetch_count = $this->select("tbl_product_warehouses", "product_warehouse_id", "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
             $count_row = $fetch_count->fetch_assoc();
 
-            if($count_row['product_warehouse_id'] > 0){
-                $this->update("tbl_product_warehouses",["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
-            }else{
+            if ($count_row['product_warehouse_id'] > 0) {
+                $this->update("tbl_product_warehouses", ["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+            } else {
                 $form = array(
                     "product_id" => $product_id,
                     "branch_id" => $branch_id,
@@ -173,32 +202,33 @@ class InventoryReport extends Connection
         }
     }
 
-    public function inventory_script_runner(){
-        $fetch = $this->select("tbl_products","*","product_id > 0");
-        while($row = $fetch->fetch_assoc()){
+    public function inventory_script_runner()
+    {
+        $fetch = $this->select("tbl_products", "*", "product_id > 0");
+        while ($row = $fetch->fetch_assoc()) {
             $product_id = $row['product_id'];
             // fetch branch
-            $fetch_branches = $this->select("tbl_branch","branch_id","branch_id = 1");
-            while($row_branches = $fetch_branches->fetch_assoc()){
+            $fetch_branches = $this->select("tbl_branch", "branch_id", "branch_id = 1");
+            while ($row_branches = $fetch_branches->fetch_assoc()) {
                 $branch_id = $row_branches['branch_id'];
                 $fetch_warehouse = $this->select("tbl_warehouses", "warehouse_id", "warehouse_id = 1");
-                while($warehouse_row = $fetch_warehouse->fetch_assoc()){
+                while ($warehouse_row = $fetch_warehouse->fetch_assoc()) {
                     $warehouse_id = $warehouse_row['warehouse_id'];
 
                     // current inv
 
                     $fetch_inv = $this->select($this->table, "SUM(IF(type='IN',quantity,-quantity)) AS qty", "product_id = '$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id' AND status = 1");
                     $inv_row = $fetch_inv->fetch_assoc();
-                    $current_qty =  $inv_row['qty']*1;
+                    $current_qty =  $inv_row['qty'] * 1;
 
 
                     // insert or update
                     $fetch_count = $this->select("tbl_product_warehouses", "product_warehouse_id", "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
                     $count_row = $fetch_count->fetch_assoc();
 
-                    if($count_row['product_warehouse_id'] > 0){
-                        $this->update("tbl_product_warehouses",["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
-                    }else{
+                    if ($count_row['product_warehouse_id'] > 0) {
+                        $this->update("tbl_product_warehouses", ["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+                    } else {
                         $form = array(
                             "product_id" => $product_id,
                             "branch_id" => $branch_id,
