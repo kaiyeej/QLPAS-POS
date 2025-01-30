@@ -51,10 +51,15 @@ class ClaimSlip extends Connection
             // check stock withdrawal
             $StockWithdrawal = new StockWithdrawal;
             $Sales = new Sales;
-            $fetch = $this->select($this->table, 'sales_id', "$this->pk = '$primary_id'");
+            $fetch = $this->select($this->table, 'sales_id, withdrawal_id', "$this->pk = '$primary_id'");
             $row = $fetch->fetch_assoc();
 
             $sales_id = $row['sales_id'];
+
+            // update stock withdrawal
+            $this->update("tbl_stock_withdrawal", ['status' => 'F'], "withdrawal_id='$row[withdrawal_id]'");
+            
+            // fetch sales details
             $fetch_sales_details = $this->select("tbl_sales_details", '*', "sales_id = '$sales_id'");
 
             // add withdrawal entry

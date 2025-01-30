@@ -940,10 +940,10 @@ class Sales extends Connection
             // }
         }, $r_id, $r_qty, $p_id);
 
-        $StockWithdrawal->inputs['branch_id'] = $branch_id;
-        $StockWithdrawal->inputs['warehouse_id'] = $warehouse_id;
-        $StockWithdrawal->finish($withdrawal_id);
-        // $this->update("tbl_stock_withdrawal", ['status' => 'P', "withdrawal_id='$withdrawal_id'"]);
+        // $StockWithdrawal->inputs['branch_id'] = $branch_id;
+        // $StockWithdrawal->inputs['warehouse_id'] = $warehouse_id;
+        // $StockWithdrawal->finish($withdrawal_id);
+        $this->update("tbl_stock_withdrawal", ['status' => 'P'], "withdrawal_id='$withdrawal_id'");
         return $withdrawal_id;
     }
 
