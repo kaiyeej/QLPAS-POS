@@ -96,8 +96,8 @@ class ClaimSlip extends Connection
                 $this->inputs['total_amount'] = $Sales->total($sales_id);
                 $this->inputs[$this->name] = $this->generate();
                 $this->inputs['withdrawal_id'] = $withdrawal_id;
-                // $this->inputs['status'] = 'P';
-                $this->inputs['status'] = 'F';
+                $this->inputs['status'] = 'P';
+                // $this->inputs['status'] = 'F';
                 $this->add();
 
                 // update sales withdrawal status
@@ -206,8 +206,8 @@ class ClaimSlip extends Connection
     {
         $form = array(
             'withdrawal_id'   => $this->inputs['withdrawal_id'],
-            // 'status' => 'P',
-            'status' => 'F',
+            'status' => 'P',
+            // 'status' => 'F',
             'checked_by' => $this->inputs['checked_by']
         );
         $primary_id = $this->inputs[$this->pk];

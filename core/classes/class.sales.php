@@ -920,8 +920,8 @@ class Sales extends Connection
             'warehouse_id'         => $warehouse_id,
             'sales_id'          => $sales_id,
             'withdrawal_date'   => date("Y-m-d"), //$this->sales_date($sales_id),
-            // 'status'            => 'P',
-            'status'            => 'S',
+            'status'            => 'P',
+            // 'status'            => 'S',
             'encoded_by'        => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
         );
 
