@@ -57,7 +57,8 @@ class ClaimSlip extends Connection
             $sales_id = $row['sales_id'];
 
             // update stock withdrawal
-            $this->update("tbl_stock_withdrawal", ['status' => 'F'], "withdrawal_id='$row[withdrawal_id]'");
+            // $this->update("tbl_stock_withdrawal", ['status' => 'F'], "withdrawal_id='$row[withdrawal_id]'");
+            // $this->update("tbl_stock_withdrawal_details", ['status' => 'F'], "withdrawal_id='$row[withdrawal_id]'");
             
             // fetch sales details
             $fetch_sales_details = $this->select("tbl_sales_details", '*', "sales_id = '$sales_id'");

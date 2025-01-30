@@ -920,8 +920,8 @@ class Sales extends Connection
             'warehouse_id'         => $warehouse_id,
             'sales_id'          => $sales_id,
             'withdrawal_date'   => date("Y-m-d"), //$this->sales_date($sales_id),
-            'status'            => 'P',
-            // 'status'            => 'S',
+            // 'status'            => 'P',
+            'status'            => 'S',
             'encoded_by'        => isset($this->inputs['encoded_by']) ? $this->inputs['encoded_by'] :  $_SESSION['user']['id']
         );
 
@@ -940,10 +940,10 @@ class Sales extends Connection
             // }
         }, $r_id, $r_qty, $p_id);
 
-        // $StockWithdrawal->inputs['branch_id'] = $branch_id;
-        // $StockWithdrawal->inputs['warehouse_id'] = $warehouse_id;
-        // $StockWithdrawal->finish($withdrawal_id);
-        $this->update("tbl_stock_withdrawal", ['status' => 'P'], "withdrawal_id='$withdrawal_id'");
+        $StockWithdrawal->inputs['branch_id'] = $branch_id;
+        $StockWithdrawal->inputs['warehouse_id'] = $warehouse_id;
+        $StockWithdrawal->finish($withdrawal_id);
+        //$this->update("tbl_stock_withdrawal", ['status' => 'P'], "withdrawal_id='$withdrawal_id'");
         return $withdrawal_id;
     }
 
