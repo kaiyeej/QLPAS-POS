@@ -46,7 +46,31 @@
 <?php require_once 'modal_print.php'; ?>
 
 <script type="text/javascript">
-  
+    function handleBarcodeScan2() {
+        var product_barcode = $("#product_barcode").val();
+        $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=Products&q=view_by_barcode",
+            data: {
+                input: {
+                    product_barcode: product_barcode
+                }
+            },
+            success: function(data) {
+                var json = JSON.parse(data);
+                if (json.data && json.data.product_id) {
+                    $("#original_product_id").val(json.data.product_id).trigger('change');
+                    console.log("Product", json.data);
+                    $("#converted_product_id").focus();
+                } else {
+                    $("#original_product_id").val('').trigger('change');
+                    console.log("Product not found");
+                    $("#product_barcode").focus();
+                }
+            }
+        });
+    }
+    
     function getEntries() {
         var branch_id = "<?=$_SESSION['branch_id']?>";
 

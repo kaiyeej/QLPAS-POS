@@ -89,9 +89,9 @@
                     <div class="col-4" id="col-item">
                         <div class="form-group row">
                             <div class="col">
-                                <label><strong>Barcode</strong></label>
+                                <label><strong>Original Item Barcode</strong></label>
                                 <div>
-                                    <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScan()">
+                                    <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScan2()">
                                 </div>
                             </div>
                         </div>
