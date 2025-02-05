@@ -691,8 +691,12 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
               (typeof(col_list) != 'undefined' && col_list != null) ? col_list.classList.remove('col-12'): '';
               (typeof(col_list) != 'undefined' && col_list != null) ? col_list.classList.add('col-8'): '';
             }
+            setTimeout(function() {
+              $("#product_barcode").focus();
+            }, 500);
             getEntries2();
             $("#modalEntry2").modal('show');
+
           },
           error: function(jqXHR, textStatus, errorThrown) {
             errorLogger('Error:', textStatus, errorThrown);
@@ -717,6 +721,8 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
               //success_add();
               document.getElementById("frm_submit_2").reset();
               $('.select2').select2().trigger('change');
+
+              $(".product_barcode").focus();
             } else if (json.data == 2) {
               entry_already_exists();
             } else if (json.data == 3) {
@@ -814,7 +820,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
             },
             function(isConfirm) {
               if (isConfirm) {
-                
+
                 $(".confirm").attr('disabled', 'disabled');
                 $.ajax({
                   type: "POST",
@@ -839,7 +845,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
                       failed_query(json);
                     }
                     // swal.enableConfirmButton();
-                    
+
                   },
                   error: function(jqXHR, textStatus, errorThrown) {
                     errorLogger('Error:', textStatus, errorThrown);
@@ -901,6 +907,32 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
           },
           error: function(jqXHR, textStatus, errorThrown) {
             errorLogger('Error:', textStatus, errorThrown);
+          }
+        });
+      }
+
+
+      function handleBarcodeScan() {
+        var product_barcode = $("#product_barcode").val();
+        $.ajax({
+          type: "POST",
+          url: "controllers/sql.php?c=Products&q=view_by_barcode",
+          data: {
+            input: {
+              product_barcode: product_barcode
+            }
+          },
+          success: function(data) {
+            var json = JSON.parse(data);
+            if (json.data && json.data.product_id) {
+              $("#product_id").val(json.data.product_id).trigger('change');
+              console.log("Product", json.data);
+              $("#qty").focus();
+            } else {
+              $("#product_id").val('').trigger('change');
+              console.log("Product not found");
+              $("#product_barcode").focus();
+            }
           }
         });
       }

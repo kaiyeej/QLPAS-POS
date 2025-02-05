@@ -87,6 +87,14 @@
             <div class="modal-body" style="padding: 15px;">
                 <div class="row">
                     <div class="col-4" id="col-item">
+                        <div class="form-group row">
+                            <div class="col">
+                                <label><strong>Barcode</strong></label>
+                                <div>
+                                    <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScan()">
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group row" style="display: none;">
                             <div class="col">
                                 <label><strong>Original Item Hidden</strong></label>

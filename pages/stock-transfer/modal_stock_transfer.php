@@ -1,4 +1,4 @@
-<form method='POST' id='frm_submit' class="jobOrder">
+<form method='POST' id='frm_submit' class="stockTransfer">
     <div class="modal fade" id="modalEntry" aria-labelledby="myModalLabel">
         <div class="modal-dialog" style="margin-top: 50px;" role="document">
             <div class="modal-content">
@@ -99,6 +99,15 @@
 
                             <div class="form-group row">
                                 <div class="col">
+                                    <label><strong>Barcode</strong></label>
+                                    <div>
+                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScan()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col">
                                     <label><strong>Product</strong></label>
                                     <div>
                                         <select onchange="getCurrentQty()" class="form-control form-control-sm select2" name="input[product_id]" id="product_id" required></select>
@@ -109,7 +118,7 @@
                                 <div class="col">
                                     <label><strong>Inventory Qty</strong></label>
                                     <div>
-                                        <input type="number" class="form-control form-control-sm input-item" readonly  name="input[current_qty]" autocomplete="off" id="current_qty" required>
+                                        <input type="number" class="form-control form-control-sm input-item" readonly name="input[current_qty]" autocomplete="off" id="current_qty" required>
                                     </div>
                                 </div>
                                 <div class="col">
