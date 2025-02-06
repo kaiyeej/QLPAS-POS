@@ -722,7 +722,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
               document.getElementById("frm_submit_2").reset();
               $('.select2').select2().trigger('change');
 
-              $(".product_barcode").focus();
+              $("#product_barcode").focus();
             } else if (json.data == 2) {
               entry_already_exists();
             } else if (json.data == 3) {
@@ -927,7 +927,11 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
             if (json.data && json.data.product_id) {
               $("#product_id").val(json.data.product_id).trigger('change');
               console.log("Product", json.data);
-              $("#qty").focus();
+              if (route_settings.class_name == "InventoryAdjustment") {
+                $("#quantity").focus();
+              } else {
+                $("#qty").focus();
+              }
             } else {
               $("#product_id").val('').trigger('change');
               console.log("Product not found");

@@ -87,14 +87,6 @@
             <div class="modal-body" style="padding: 15px;">
                 <div class="row">
                     <div class="col-4" id="col-item">
-                        <div class="form-group row">
-                            <div class="col">
-                                <label><strong>Original Item Barcode</strong></label>
-                                <div>
-                                    <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScan2()">
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group row" style="display: none;">
                             <div class="col">
                                 <label><strong>Original Item Hidden</strong></label>
@@ -105,6 +97,14 @@
                             </div>
                         </div>
                         <form method='POST' id='frm_submit_2'>
+                            <div class="form-group row">
+                                <div class="col">
+                                    <label><strong>Original Item Barcode</strong></label>
+                                    <div>
+                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScanOriginal()">
+                                    </div>
+                                </div>
+                            </div>
                             <input type="hidden" id="hidden_id_2" name="input[conversion_id]">
                             <div class="form-group row">
                                 <div class="col">
@@ -112,6 +112,14 @@
                                     <div>
                                         <select class="form-control input-item select2" name="input[original_product_id]" id="original_product_id" required>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col">
+                                    <label><strong>Converted Item Barcode</strong></label>
+                                    <div>
+                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode_2" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScanConverted()">
                                     </div>
                                 </div>
                             </div>
