@@ -101,7 +101,7 @@
                                 <div class="col">
                                     <label><strong>Original Item Barcode</strong></label>
                                     <div>
-                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScanOriginal()">
+                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" onchange="handleBarcodeScanOriginal()">
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +119,7 @@
                                 <div class="col">
                                     <label><strong>Converted Item Barcode</strong></label>
                                     <div>
-                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode_2" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScanConverted()">
+                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode_2" autocomplete="off" placeholder="Scan barcode" onchange="handleBarcodeScanConverted()">
                                     </div>
                                 </div>
                             </div>

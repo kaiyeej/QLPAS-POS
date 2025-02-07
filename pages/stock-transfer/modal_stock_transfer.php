@@ -101,7 +101,7 @@
                                 <div class="col">
                                     <label><strong>Barcode</strong></label>
                                     <div>
-                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" oninput="handleBarcodeScan()">
+                                        <input type="text" class="form-control form-control-sm" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" onchange="handleBarcodeScan()">
                                     </div>
                                 </div>
                             </div>
