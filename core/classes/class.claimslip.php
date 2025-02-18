@@ -107,10 +107,10 @@ class ClaimSlip extends Connection
                 $this->add();
 
                 // update sales withdrawal status
-                $form_ = array(
-                    'withdrawal_status' => 1,
-                );
-                $this->update("tbl_sales", $form_, "sales_id = '$sales_id'");
+                // $form_ = array(
+                //     'withdrawal_status' => 1,
+                // );
+                // $this->update("tbl_sales", $form_, "sales_id = '$sales_id'");
 
                 return 1; // finished with new claim slip
             }else{
@@ -118,10 +118,10 @@ class ClaimSlip extends Connection
                 //$this->delete($this->table, "sales_id = '$sales_id' AND status='S' AND checked_by = 0");
 
                 // update sales withdrawal status
-                $form_ = array(
-                    'withdrawal_status' => 0,
-                );
-                $this->update("tbl_sales", $form_, "sales_id = '$sales_id'");
+                // $form_ = array(
+                //     'withdrawal_status' => 0,
+                // );
+                // $this->update("tbl_sales", $form_, "sales_id = '$sales_id'");
 
                 return 2; // fully served
             }
@@ -216,6 +216,7 @@ class ClaimSlip extends Connection
             // 'status' => 'F',
             'checked_by' => $this->inputs['checked_by']
         );
+        
         $primary_id = $this->inputs[$this->pk];
         $result = $this->update($this->table, $form, "$this->pk = '$primary_id'");
         return $result;

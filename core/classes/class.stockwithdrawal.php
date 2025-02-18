@@ -147,7 +147,8 @@ class StockWithdrawal extends Connection
     
     public function pickup_out($primary_id)
     {
-        $sum_released = $this->select('tbl_stock_withdrawal_details', "sum(qty)", "status='F' AND sales_detail_id='$primary_id'");
+        // $sum_released = $this->select('tbl_stock_withdrawal_details', "sum(qty)", "status='F' AND sales_detail_id='$primary_id'");
+        $sum_released = $this->select('tbl_stock_withdrawal_details wd LEFT JOIN tbl_stock_withdrawal wh ON wd.withdrawal_id=wh.withdrawal_id LEFT JOIN tbl_claim_slips c ON c.withdrawal_id=wh.withdrawal_id', "sum(wd.qty)", "wh.status='F' AND wd.sales_detail_id='$primary_id' AND c.checked_by != 0 AND c.status='F'");
         $total_released = $sum_released->fetch_array();
 
         return $total_released[0];
@@ -324,7 +325,8 @@ class StockWithdrawal extends Connection
         $branch_id = $this->inputs['branch_id'];
         $warehouse_id = $this->inputs['warehouse_id'];
         $param = "reference_number='$reference_number'";
-        $Sales->inputs['sales_id'] = $Sales->getID($param);
+        $sales_id_ = $Sales->getID($param);
+        $Sales->inputs['sales_id'] = $sales_id_;
 
         $Sales->inputs['r_qty'] = $this->inputs['r_qty'];
         $Sales->inputs['r_id'] = $this->inputs['r_id'];
@@ -336,6 +338,8 @@ class StockWithdrawal extends Connection
         $ClaimSlip->inputs['claim_slip_id'] = $this->inputs['claim_slip_id'];
         $ClaimSlip->inputs['checked_by'] = $settings_data['has_warehouse_checker'] == 1 ? 0 : $this->inputs['encoded_by'];
         $ClaimSlip->update_claim_slip();
+
+        $this->update("tbl_sales", ['withdrawal_status' => 1 ], "sales_id = '$sales_id_'");
 
         $response = [
             'has_warehouse_checker' => (int) $settings_data['has_warehouse_checker'],
