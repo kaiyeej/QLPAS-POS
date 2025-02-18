@@ -229,7 +229,7 @@ class InventoryReport extends Connection
             $count_row = $fetch_count->fetch_assoc();
 
             if ($count_row['product_warehouse_id'] > 0) {
-                $this->update("tbl_product_warehouses", ["product_qty" => $current_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+                $this->update("tbl_product_warehouses", ["product_qty" => $current_qty,"in_stock_qty" => $in_stock_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
                 // $this->update("tbl_product_warehouses", ["product_qty" => $current_qty,"in_stock_qty" => $in_stock_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
             } else {
                 $form = array(
@@ -237,7 +237,7 @@ class InventoryReport extends Connection
                     "branch_id" => $branch_id,
                     "warehouse_id" => $warehouse_id,
                     "product_qty" => $current_qty,
-                    // "in_stock_qty" => $in_stock_qty,
+                    "in_stock_qty" => $in_stock_qty,
                 );
 
                 $this->insert("tbl_product_warehouses", $form);
