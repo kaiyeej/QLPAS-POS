@@ -176,7 +176,7 @@ class ClaimSlip extends Connection
         $param = isset($this->inputs['param']) ? $this->inputs['param'] : null;
 
         // temporary checking for stock releasal
-        if(strpos(strtolower($param), strtolower("AND c.status='P' AND checked_by=0 ORDER BY c.date_added DESC")) !== false){
+        if(strpos(strtolower($param), strtolower("AND c.status='F' AND checked_by=0 ORDER BY c.date_added DESC")) !== false){
             $param = str_replace("c.status='F'", "c.status='P'", $param);
         }
         
