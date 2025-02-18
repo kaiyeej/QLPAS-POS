@@ -25,13 +25,13 @@
                                         <div class="col">
                                             <label><strong>Start Date</strong></label>
                                             <div>
-                                                <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="start_date" name="input[start_date]">
+                                                <input type="date" value="<?php echo date('Y-m-d'); ?>" required class="form-control" id="start_date" name="input[start_date]">
                                             </div>
                                         </div>
                                         <div class="col">
                                             <label><strong>End Date</strong></label>
                                             <div>
-                                                <input type="date" required class="form-control" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" id="end_date" name="input[end_date]">
+                                                <input type="date" required class="form-control" value="<?php echo date('Y-m-d'); ?>" id="end_date" name="input[end_date]">
                                             </div>
                                         </div>
                                         <div class="col">
@@ -90,13 +90,13 @@
                                         <div class="col">
                                             <label><strong>Start Date</strong></label>
                                             <div>
-                                                <input type="date" value="<?php echo date('Y-m-01', strtotime(date("Y-m-d"))); ?>" required class="form-control" id="i_start_date" name="input[start_date]">
+                                                <input type="date" value="<?php echo date('Y-m-d'); ?>" required class="form-control" id="i_start_date" name="input[start_date]">
                                             </div>
                                         </div>
                                         <div class="col">
                                             <label><strong>End Date</strong></label>
                                             <div>
-                                                <input type="date" required class="form-control" id="i_end_date" value="<?php echo date('Y-m-t', strtotime(date("Y-m-d"))) ?>" name="input[end_date]">
+                                                <input type="date" required class="form-control" id="i_end_date" value="<?php echo date('Y-m-d'); ?>" name="input[end_date]">
                                             </div>
                                         </div>
                                         <div class="col">
@@ -138,6 +138,7 @@
                                                 <th>ITEM</th>
                                                 <th style="text-align:right">ON HAND</th>
                                                 <th style="text-align:right">FOR WITHDRAWAL</th>
+                                                <th style="text-align:right">TOTAL RELEASED</th>
                                                 <th style="text-align:right">AVAILABLE</th>
                                             </tr>
                                         </thead>
@@ -345,6 +346,10 @@
                 },
                 {
                     "data": "for_withdrawal",
+                    className: "text-right"
+                },
+                {
+                    "data": "total_released",
                     className: "text-right"
                 },
                 {

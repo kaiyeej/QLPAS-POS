@@ -154,6 +154,7 @@ class StockReleasal extends Connection
         while ($row = $result->fetch_assoc()) {
             $fetchCS = $this->select("tbl_sales as h, tbl_sales_details as d", "sum(d.quantity) as total_qty, sales_detail_id,customer_id", "h.sales_id=d.sales_id AND h.withdrawal_status=1 AND h.for_pick_up=1 AND h.status='F' AND d.product_id='$row[product_id]' AND (h.sales_date >= '$start_date' AND h.sales_date <= '$end_date') GROUP BY d.sales_detail_id");
             $for_withdrawal = 0;
+            $total_released = 0;
             $count = "";
             while ($row2 = $fetchCS->fetch_assoc()) {
                 $return_qty = $SalesReturn->return_by_sd_id($row2['sales_detail_id']);
@@ -161,6 +162,7 @@ class StockReleasal extends Connection
                 $remainingqty = $row2['total_qty'] - $total_release - $return_qty;
                 $remaining_qty = $remainingqty < 0 ? 0 : $remainingqty;
 
+                $total_released += $total_release;
                 $for_withdrawal += $remaining_qty;
                 $count .= $remaining_qty > 0 ? $remaining_qty . " (" . $row2['sales_detail_id'] . ") - " : "";
             }
@@ -178,6 +180,7 @@ class StockReleasal extends Connection
                 'item' => $row['product_name'],
                 'on_hand' => number_format(($on_hand + $for_withdrawal), 2),
                 'for_withdrawal' => number_format($for_withdrawal, 2),
+                'total_released' => number_format($total_released, 2),
                 'available' => number_format($on_hand, 2)
             ];
             // }
