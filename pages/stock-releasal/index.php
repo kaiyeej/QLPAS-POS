@@ -12,6 +12,7 @@
                     <ul id="tabs" class="nav nav-tabs">
                         <li class="nav-item"><a href="" data-target="#per_transaction" data-toggle="tab" class="nav-link small text-uppercase active">Per Transaction</a></li>
                         <li class="nav-item"><a href="" data-target="#per_item" data-toggle="tab" class="nav-link small text-uppercase">Per Item</a></li>
+                        <li class="nav-item"><a href="" data-target="#daily_released" data-toggle="tab" class="nav-link small text-uppercase">Daily Report</a></li>
                     </ul>
                     <br>
                     <div id="tabsContent" class="tab-content">
@@ -113,7 +114,7 @@
                                             <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
                                                 <i class="ti-reload mr-1"></i> Generate
                                             </button>
-                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_item','Stock-Releasal-Report')">
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_item','Per-Item-Stock-Releasal-Report')">
                                                 <i class="ti-cloud-down mr-1"></i> Export
                                             </button>
                                             <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container_item')">
@@ -153,6 +154,55 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div id="daily_released" class="tab-pane fade">
+                            <h5>Daily Releasal Report</h5>
+                            <div class="card-body">
+                                <form id='frm_generate_daily'>
+                                    <div class="col-0">
+                                        <label>&nbsp;</label>
+                                        <div  style="display: flex; justify-content: flex-end;">
+                                            <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
+                                                <i class="ti-reload mr-1"></i> Generate
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries_daily','Daily-Stock-Releasal-Report')">
+                                                <i class="ti-cloud-down mr-1"></i> Export
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-icon-text" onclick="print_report('report_container_item')">
+                                                <i class="ti-printer mr-1"></i> Print
+                                            </button>
+                                        </div>
+                                    </div>
+                            </div>
+                            </form>
+
+                            <div id="report_container_daily">
+                                <center>
+                                    <h4 class="report-header"><span class="company_name_label"></span></h4>
+                                    <h6 class="report-header"><span class="company_address_label" style="word-wrap: break-word;"></span></h6>
+                                    <h5 class="report-header">Daily Stock Releasal Report</h5><br>
+                                </center>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dt_entries_daily" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>ITEM</th>
+                                                <th style="text-align:right">Released Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <!-- <tr>
+                                                    <th colspan="1" style="text-align:right">Total:</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr> -->
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -172,6 +222,12 @@
         e.preventDefault();
 
         getReportItem();
+    });
+
+    $("#frm_generate_daily").submit(function(e) {
+        e.preventDefault();
+
+        getReportDaily();
     });
 
     function print_report(container, title) {
@@ -293,6 +349,43 @@
                 },
                 {
                     "data": "available",
+                    className: "text-right"
+                },
+            ]
+
+        });
+    }
+
+    function getReportDaily() {
+
+        $("#dt_entries_daily").DataTable().destroy();
+        $("#dt_entries_daily").DataTable({
+            "processing": true,
+            "searching": false,
+            "paging": false,
+            "ordering": false,
+            "info": false,
+            "ajax": {
+                "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=per_day",
+                "dataSrc": "data",
+                "method": "POST",
+                "data": {
+                    // input: {
+                    //     product_id: product_id,
+                    //     start_date: start_date,
+                    //     end_date: end_date
+                    // }
+                },
+            },
+            "footerCallback": function(row, data, start, end, display) {
+                var api = this.api();
+
+            },
+            "columns": [{
+                    "data": "item"
+                },
+                {
+                    "data": "qty",
                     className: "text-right"
                 },
             ]

@@ -189,6 +189,15 @@ class Products extends Connection
             }
         }
     }
+    
+    public function view_by_barcode()
+    {
+        $product_barcode = $this->inputs['product_barcode'];
+        $result = $this->select($this->table, "*", "product_barcode = '$product_barcode'");
+        $row = $result->fetch_assoc();
+        return $row;
+    }
+    
 
     public function schema()
     {

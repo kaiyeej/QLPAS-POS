@@ -167,23 +167,44 @@ class StockReleasal extends Connection
 
             // if ($for_withdrawal > 0) {
 
-                $on_hand = $Inventory->balance($row['product_id']);
+            $on_hand = $Inventory->balance($row['product_id']);
 
-                // $row['item'] = $row['product_name'];
-                // $row['on_hand'] = number_format(($on_hand + $for_withdrawal), 2);
-                // $row['for_withdrawal'] = number_format($for_withdrawal, 2);
-                // $row['available'] = number_format(($on_hand), 2);
+            // $row['item'] = $row['product_name'];
+            // $row['on_hand'] = number_format(($on_hand + $for_withdrawal), 2);
+            // $row['for_withdrawal'] = number_format($for_withdrawal, 2);
+            // $row['available'] = number_format(($on_hand), 2);
 
-                $rows[] = [
-                    'item' => $row['product_name'],
-                    'on_hand' => number_format(($on_hand + $for_withdrawal), 2),
-                    'for_withdrawal' => number_format($for_withdrawal, 2),
-                    'available' => number_format($on_hand, 2)
-                ];
+            $rows[] = [
+                'item' => $row['product_name'],
+                'on_hand' => number_format(($on_hand + $for_withdrawal), 2),
+                'for_withdrawal' => number_format($for_withdrawal, 2),
+                'available' => number_format($on_hand, 2)
+            ];
             // }
             // $rows[] = $row;
         }
 
+        return $rows;
+    }
+
+    public function per_day()
+    {
+
+        $branch_id = $this->getBranch();
+        $today_date = date('Y-m-d', strtotime($this->getCurrentDate()));
+        $result = $this->select("tbl_products p LEFT JOIN tbl_stock_withdrawal_details d ON p.product_id=d.product_id LEFT JOIN tbl_stock_withdrawal h ON h.withdrawal_id=d.withdrawal_id LEFT JOIN tbl_claim_slips c ON c.withdrawal_id=h.withdrawal_id", "p.product_name, sum(d.qty) as total", "h.branch_id='$branch_id' AND h.status='F' AND h.withdrawal_date = '$today_date' AND c.sales_id=h.sales_id AND c.status='F' AND c.checked_by > 0 GROUP BY p.product_id");
+
+
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+
+            // $on_hand = $Inventory->balance($row['product_id']);
+
+            $rows[] = [
+                'item' => $row['product_name'],
+                'qty' => number_format($row['total'], 2),
+            ];
+        }
         return $rows;
     }
 }

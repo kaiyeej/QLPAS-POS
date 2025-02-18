@@ -28,7 +28,7 @@
                             <div>
                                 <button type="button" class="btn btn-warning btn-icon-text" onclick="getEntries()">
                                     <i class="ti-reload mr-1"></i> Generate Entry
-                                </button>  
+                                </button>
                                 <button type="button" class="btn btn-primary btn-icon-text" onclick="addModal()">
                                     <i class="ti-plus mr-1"></i> Add Entry
                                 </button>
@@ -66,7 +66,6 @@
 <?php require_once 'modal_po.php'; ?>
 <?php require_once 'modal_print.php'; ?>
 <script type="text/javascript">
-    
     function addModalPO() {
         document.getElementById("frm_submit").reset();
 
@@ -77,22 +76,24 @@
         $("#modalEntry").modal('show');
     }
 
-   
+
     function getEntries() {
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var param = "AND (po_date >= '"+start_date+"' AND po_date <= '"+end_date+"')";
+        var param = "AND (po_date >= '" + start_date + "' AND po_date <= '" + end_date + "')";
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({
             "processing": true,
-            "order": [[ 2, 'desc' ]],
+            "order": [
+                [2, 'desc']
+            ],
             "ajax": {
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show",
                 "dataSrc": "data",
                 "type": "POST",
                 "data": {
                     input: {
-                        param:param
+                        param: param
                     }
                 }
             },
@@ -103,7 +104,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-1' onclick='getEntryDetails2(" + row.po_id + ")' style='padding:15px';height='45px;'><span class='ti ti-menu'></span></button><button onclick='printRecord("+ row.po_id +")' class='btn btn-warning btn-circle' style='padding:15px';height='45px;'><span class='ti ti-printer'></span></button></div>";
+                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-1' onclick='getEntryDetails2(" + row.po_id + ")' style='padding:15px';height='45px;'><span class='ti ti-menu'></span></button><button onclick='printRecord(" + row.po_id + ")' class='btn btn-warning btn-circle' style='padding:15px';height='45px;'><span class='ti ti-printer'></span></button></div>";
                     }
                 },
                 {
@@ -113,7 +114,7 @@
                     "data": "supplier_id"
                 },
                 {
-                    "data":"warehouse_name"
+                    "data": "warehouse_name"
                 },
                 {
                     "data": "encoded_name"
@@ -121,7 +122,7 @@
                 {
                     "mRender": function(data, type, row) {
                         return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : "<span class='badge badge-danger'>Saved</span>";
-                    }   
+                    }
                 },
                 {
                     "data": "po_date"
@@ -140,7 +141,9 @@
         $("#dt_entries_2").DataTable().destroy();
         $("#dt_entries_2").DataTable({
             "processing": true,
-            "order": [[ 3, 'desc' ]],
+            "order": [
+                [3, 'desc']
+            ],
             "ajax": {
                 "url": "controllers/sql.php?c=" + route_settings.class_name + "&q=show_detail",
                 "dataSrc": "data",
@@ -211,5 +214,4 @@
         getSelectOption('Suppliers', 'supplier_id', 'supplier_name');
         getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + current_branch_id + "'");
     });
-
 </script>

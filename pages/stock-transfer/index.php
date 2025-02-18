@@ -31,13 +31,13 @@
                                 </select>
                             </div>
                         </div>
-                 
+
                         <div class="col-5">
                             <label>&nbsp;</label>
                             <div>
                                 <button type="button" class="btn btn-warning btn-icon-text" onclick="getEntries()">
                                     <i class="ti-reload mr-1"></i> Generate
-                                </button>  
+                                </button>
                                 <button type="button" class="btn btn-primary btn-icon-text" onclick="addModal()">
                                     <i class="ti-plus mr-1"></i> Add Entry
                                 </button>
@@ -76,11 +76,12 @@
 <?php include 'modal_stock_transfer.php' ?>
 <?php include 'modal_print.php' ?>
 <script type="text/javascript">
+
     function getEntries() {
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
         var warehouse_id = $("#warehouse_id").val();
-        var param = "AND (stock_transfer_date >= '" + start_date + "' AND stock_transfer_date <= '" + end_date + "') AND source_warehouse_id = '"+ warehouse_id + "'";
+        var param = "AND (stock_transfer_date >= '" + start_date + "' AND stock_transfer_date <= '" + end_date + "') AND source_warehouse_id = '" + warehouse_id + "'";
 
         $("#dt_entries").DataTable().destroy();
         $("#dt_entries").DataTable({

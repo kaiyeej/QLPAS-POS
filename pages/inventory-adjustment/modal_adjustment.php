@@ -90,6 +90,14 @@
                             <input type="hidden" id="hidden_id_2" name="input[adjustment_id]">
                             <div class="form-group row">
                                 <div class="col">
+                                    <label><strong>Barcode</strong></label>
+                                    <div>
+                                        <input type="text" class="form-control form-control-sm product_barcode" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" onchange="handleBarcodeScan()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col">
                                     <label><strong>Item</strong></label>
                                     <div>
                                         <select class="form-control input-item select2" name="input[product_id]" id="product_id" required>

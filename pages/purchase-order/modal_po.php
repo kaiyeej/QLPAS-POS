@@ -25,11 +25,11 @@
                         <div class="col">
                             <label><strong>Supplier</strong></label>
                             <div>
-                                <select class="form-control form-control-sm select2" name="input[supplier_id]" id="supplier_id" required></select >
+                                <select class="form-control form-control-sm select2" name="input[supplier_id]" id="supplier_id" required></select>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group row">
                         <div class="col">
                             <label><strong>Warehouse</strong></label>
@@ -48,17 +48,17 @@
                         <div class="col">
                             <label><strong>Type</strong></label>
                             <div>
-                            <select class="form-control input-item select2" name="input[po_type]" id="po_type" required>
-                                <option value=''> &mdash; Please Select &mdash; </option>
-                                <option value='C'>Cash</option>
-                                <option value='H'>Charge</option>
-                            </select>
+                                <select class="form-control input-item select2" name="input[po_type]" id="po_type" required>
+                                    <option value=''> &mdash; Please Select &mdash; </option>
+                                    <option value='C'>Cash</option>
+                                    <option value='H'>Charge</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col">
                             <label><strong>Date</strong></label>
                             <div>
-                            <input type="date" class="form-control input-item" name="input[po_date]" id="po_date" required>
+                                <input type="date" class="form-control input-item" name="input[po_date]" id="po_date" required>
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                         <div class="col">
                             <label><strong>Remarks</strong></label>
                             <div>
-                            <textarea class="form-control input-item" name="input[po_remarks]" id="po_remarks" placeholder="Remarks" maxlength="255"></textarea>
+                                <textarea class="form-control input-item" name="input[po_remarks]" id="po_remarks" placeholder="Remarks" maxlength="255"></textarea>
                             </div>
                         </div>
                     </div>
@@ -91,14 +91,15 @@
                     <div class="col-sm-3">
                         <div><b>Supplier:</b> <span id="supplier_name_label" class="label-item"></span></div>
                         <div><b>Invoice #:</b> <span id="po_invoice_label" class="label-item"></span></div>
-                        <div><b>Date:</b> <span id="po_date_label" class="label-item"></span></div><div><b>Warehouse:</b> <span id="warehouse_name_label" class="label-item"></span></div>
-                        <div><b>Reference:</b> <span id="reference_number_label" class="label-item"></span></div> 
+                        <div><b>Date:</b> <span id="po_date_label" class="label-item"></span></div>
+                        <div><b>Warehouse:</b> <span id="warehouse_name_label" class="label-item"></span></div>
+                        <div><b>Reference:</b> <span id="reference_number_label" class="label-item"></span></div>
                     </div>
                     <div class="col-sm-3">
                         <div><b>Type:</b> <span id="po_type_name_label" class="label-item"></span></div>
                         <div><b>Terms:</b> <span id="po_terms_label" class="label-item"></span></div>
                         <div><b>Remarks:</b> <span id="po_remarks_label" class="label-item"></span></div>
-                    </div>    
+                    </div>
                     <div class="col-sm-6">
                         <ul class="nav justify-content-end">
                             <li class="nav-item">
@@ -128,9 +129,18 @@
 
                             <div class="form-group row">
                                 <div class="col">
+                                    <label><strong>Barcode</strong></label>
+                                    <div>
+                                        <input type="text" class="form-control form-control-sm product_barcode" name="input[barcode]" id="product_barcode" autocomplete="off" placeholder="Scan barcode" onchange="handleBarcodeScan()">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col">
                                     <label><strong>Product</strong></label>
                                     <div>
-                                    <select class="form-control form-control-sm select2" name="input[product_id]" id="product_id" required></select>
+                                        <select class="form-control form-control-sm select2" name="input[product_id]" id="product_id" required></select>
                                     </div>
                                 </div>
                             </div>
