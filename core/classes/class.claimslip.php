@@ -178,7 +178,7 @@ class ClaimSlip extends Connection
         // temporary checking for stock releasal
         if(strpos(strtolower($param), strtolower("AND c.status='F' AND checked_by=0 ORDER BY c.date_added DESC")) !== false){
             $param = str_replace("c.status='F'", "c.status='P'", $param);
-        }else if(strpos(strtolower($param), strtolower("AND c.status='F' AND checked_by=0 ORDER BY date_added DESC")) !== false){
+        }else if(strpos(strtolower($param), strtolower("c.status='F' AND checked_by=0 ORDER BY date_added DESC")) !== false){
             $param = str_replace("c.status='F' AND checked_by=0 ORDER BY date_added DESC", "c.status='P' AND checked_by=0 ORDER BY c.date_added DESC", $param);
         }
         
