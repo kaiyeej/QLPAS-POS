@@ -8,7 +8,6 @@
                 <div class="modal-body">
                     <input type="hidden" id="product_price_id" name="input[product_price_id]">
                     
-
                     <div class="table-responsive">
                         <table class="display expandable-table" id="dt_prices" width="100%" cellspacing="0">
                             <thead>
@@ -60,12 +59,12 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<input type='number' class='form-control' value='"+row.price_retail+"' name='warehouse_id["+row.warehouse_id+"][price_retail]' min='0'>";
+                        return "<input type='number' class='form-control' value='"+row.price_retail+"' name='warehouse_id["+row.warehouse_id+"][price_retail]' min='0' onchange='this.value = Math.max(0, this.value);' >";
                     }
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<input type='number' class='form-control' value='"+row.price_wholesale+"' name='warehouse_id["+row.warehouse_id+"][price_wholesale]' min='0'>";
+                        return "<input type='number' class='form-control' value='"+row.price_wholesale+"' name='warehouse_id["+row.warehouse_id+"][price_wholesale]' min='0' onchange='this.value = Math.max(0, this.value);' >";
                     }
                 }
             ]

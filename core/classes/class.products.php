@@ -238,10 +238,7 @@ class Products extends Connection
             return 1;
         }
     }
-
-
     
-
     public function schema()
     {
         if (DEVELOPMENT) {
