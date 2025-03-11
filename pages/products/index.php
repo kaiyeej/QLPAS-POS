@@ -39,6 +39,7 @@
                                     <th><input type='checkbox' onchange="checkAll(this, 'dt_id')"></th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                     <th>Barcode</th>
                                     <th>Product</th>
                                     <th>Price</th>
@@ -58,6 +59,7 @@
 </div>
 <?php include 'modal_products.php' ?>
 <?php include 'modal_barcode.php' ?>
+<?php include 'modal_retail_wholesale.php' ?>
 <script type="text/javascript">
     var ClassName = 'Products';
 
@@ -76,7 +78,12 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<center><button class='btn btn-primary btn-circle' onclick='getEntryDetails(" + row.product_id + ")' style='padding:15px;height:45px;'><span class='ti ti-pencil'></span></button></center>";
+                        return "<button class='btn btn-primary btn-circle mr-2' onclick='getEntryDetails(" + row.product_id + ")' style='padding:15px';height='45px;'><span class='ti ti-pencil'></span></button> ";
+                    }
+                },
+                {
+                    "mRender": function(data, type, row){
+                        return "<button class='btn btn-warning btn-circle' title='Manage Warehouse' onclick='productPrices(" + row.product_id + ")' style='padding:15px';height='45px;'><span class='ti ti-package'></span></button></div>";
                     }
                 },
                 {
@@ -149,6 +156,12 @@
                 $("#barcode").html(barcode_data);
             }
         });
+    }
+
+    function productPrices(id) {
+        $("#product_price_id").val(id);
+        getWarehouses()
+        $("#modalProductPrice").modal('show');
     }
 
     $(document).ready(function() {

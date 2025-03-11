@@ -5,6 +5,8 @@ class Products extends Connection
     public $pk = 'product_id';
     public $name = 'product_name';
     public $module_name = "Product";
+    public $table_warehouse = 'tbl_warehouses';
+    public $table_product_warehouse = 'tbl_product_warehouses';
 
     public $inputs = [];
 
@@ -197,6 +199,47 @@ class Products extends Connection
         $row = $result->fetch_assoc();
         return $row;
     }
+
+    public function showProductPrices()
+    {   
+        $product_id = $this->inputs['product_id'];
+        $branch_id = $this->getBranch();
+
+        $rows = array();
+        $Warehouse = new Warehouses;
+        $result = $this->select("$this->table_product_warehouse","*","product_id='$product_id' AND branch_id='$branch_id'");
+        while ($row = $result->fetch_assoc()) {
+            $row['warehouse_name'] = $Warehouse->name($row['warehouse_id']);
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    public function updateProductPrices()
+    {
+        $product_id = $this->inputs['product_price_id'];
+        $branch_id = $this->getBranch();
+        $prices = $_POST['warehouse_id'];
+
+        $result = 0;
+        foreach($prices AS $warehouse_id => $price){
+            $form = [
+                'price_retail' => $price['price_retail'],
+                'price_wholesale' => $price['price_wholesale']
+            ];
+
+            $param = "product_id='$product_id' AND warehouse_id='$warehouse_id' AND branch_id='$branch_id'";
+            $result += $this->update($this->table_product_warehouse, $form, $param);
+
+            Logs::storeCrud($this->module_name, 'c', $result, $this->inputs[$this->name]);
+        }
+
+        if($result > 0){
+            return 1;
+        }
+    }
+
+
     
 
     public function schema()

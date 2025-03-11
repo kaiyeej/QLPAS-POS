@@ -58,7 +58,10 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return "<div style='display:flex;align-items:center'><button class='btn btn-primary btn-circle mr-2' onclick='getEntryDetails(" + row.branch_id + ")' style='padding:15px';height='45px;'><span class='ti ti-pencil'></span></button><button class='btn btn-warning btn-circle' title='Manage Warehouse' onclick='getWarehouses(" + row.branch_id + ")' style='padding:15px';height='45px;'><span class='ti ti-location-pin'></span></button></div>";
+                        return "<div style='display:flex;align-items:center'>"+
+                            "<button class='btn btn-primary btn-circle mr-2' onclick='getEntryDetails(" + row.branch_id + ")' style='padding:15px';height='45px;'><span class='ti ti-pencil'></span></button>"+
+                            
+                            "<button class='btn btn-warning btn-circle' title='Manage Warehouse' onclick='getWarehouses(" + row.branch_id + ")' style='padding:15px';height='45px;'><span class='ti ti-location-pin'></span></button></div>";
                     }
                 },
                 {
