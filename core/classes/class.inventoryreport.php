@@ -150,7 +150,20 @@ class InventoryReport extends Connection
         $warehouse_id = $this->clean($this->inputs['warehouse_id']);
         $product_id = $this->clean($this->inputs['product_id']);
         $inv_qty = $this->balance_per_warehouse($product_id, $branch_id, $warehouse_id);
-        $result = $this->update("tbl_product_warehouses", ['product_qty' => $inv_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+
+        $counter = $this->select("tbl_product_warehouses", "*", "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+        if($counter->num_rows > 0){
+            $result = $this->update("tbl_product_warehouses", ['product_qty' => $inv_qty], "product_id='$product_id' AND branch_id='$branch_id' AND warehouse_id='$warehouse_id'");
+        }else{
+            $form = array(
+                "product_id" => $product_id,
+                "branch_id" => $branch_id,
+                "warehouse_id" => $warehouse_id,
+                "product_qty" => $inv_qty
+            );
+            $result = $this->insert("tbl_product_warehouses", $form);
+        }
+        
         if ($result) {
             // get cost
             $fetch_cost = $this->select("tbl_product_transactions", "SUM(quantity*cost)/SUM(quantity) as average_cost", "product_id = '$product_id' AND STATUS = 1 AND TYPE='IN' AND module='PO'");
