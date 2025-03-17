@@ -166,7 +166,7 @@ class StockWithdrawal extends Connection
         $result = $this->select($this->table, '*', $param);
         while ($row = $result->fetch_assoc()) {
             $row['sales_ref'] = $Sales->dataRow($row['sales_id'], "reference_number");
-            $row['customer'] = 1;//$Customers->name($Sales->dataRow($row['sales_id'], "customer_id"));
+            $row['customer'] = $Customers->name($Sales->dataRow($row['sales_id'], "customer_id"));
             $row['encoded_name'] = $Users->getUser($row['encoded_by']);
             $rows[] = $row;
         }
