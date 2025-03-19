@@ -129,10 +129,12 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
       var current_branch_id = $("#pos_branch_id").val();
 
       $(document).ready(function() {
-        // var branch_id = $("#pos_branch_id").val();
+        //var branch_id = $("#pos_branch_id").val();
 
         getSelectOption('Branches', 'branch_id', 'branch_name', '', [], current_branch_id, 'Please Select Branch', '', '', current_branch_id);
 
+
+        //alert(current_branch_id);
         $(".select2").select2();
 
         $(".select2").css({
@@ -156,10 +158,38 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
           },
           success: function(data) {
             var json = JSON.parse(data);
-            location.reload();
+            console.log(json.data);
+            
+            $("#pos_branch_id").val(json.data);
+            localStorage.setItem("session_branch_id", json.data);
+            
           }
         });
       }
+
+      window.addEventListener("storage", function(event) {
+        if (event.key === "session_branch_id") {
+            var newBranchId = event.newValue;
+
+            if(newBranchId != current_branch_id){
+              $("#branch_id").val(newBranchId).trigger("change");
+
+              swal({
+                title: "Branch Change",
+                text: "Session branch updated!",
+                type: "success",
+                confirmButtonText: "Ok"
+              },
+              function(isConfirm) {
+                if (isConfirm) {
+                  location.reload();
+                }
+              });
+            }
+        }
+      });
+
+
 
       // function getBranchesSession() {
       //   $.ajax({
