@@ -38,7 +38,7 @@
                             <div class="form-group">
                                 <label><strong>Warehouse</strong></label>
                                 <div>
-                                    <select class="form-control form-control-sm select2" id="warehouse_id" name="input[warehouse_id]" required>
+                                    <select class="form-control form-control-sm select2" id="warehouse_id_2" name="input[warehouse_id]" required>
                                         <option value="" disabled selected>&mdash; Please Select &mdash;</option>
                                     </select>
                                 </div>
@@ -126,7 +126,7 @@
     function getWarehouses(type) {
         if (type == "product") {
             var branch_id = $("#branch_id_2").val();
-            getSelectOption('Warehouses', 'warehouse_id', 'warehouse_name', "branch_id = '" + branch_id + "'",[], '', 'Please Select', 1);
+            getSelectOption('Warehouses', 'warehouse_id_2', 'warehouse_name', "branch_id = '" + branch_id + "'",[], '', 'Please Select', 1);
         } else {
             var branch_id = $("#branch_id_w").val();
             getSelectOption('Warehouses', 'warehouse_id_w', 'warehouse_name', "branch_id = '" + branch_id + "'",[], '', 'Please Select', 1);
