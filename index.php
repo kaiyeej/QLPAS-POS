@@ -185,6 +185,8 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
                   location.reload();
                 }
               });
+            }else{
+              location.reload();
             }
         }
       });
