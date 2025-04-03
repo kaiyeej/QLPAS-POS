@@ -117,32 +117,70 @@
                     <div class="row">
                         <div class="col-6">
                             <input type="hidden" id="hidden_id">
+
                             <div class="form-group">
                                 <label for="module_discount">Discount</label>
-                                <input name="input[module_discount]" type="password" class="form-control input-item" id="module_discount" placeholder="Discount Module">
+                                <div class="input-group">
+                                    <input name="input[module_discount]" type="password" class="form-control input-item" id="module_discount" placeholder="Discount Module">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="document_eye" onclick="show_pass('document')" style="cursor:pointer">show</span>
+                                    </div>
+                                </div>
                             </div>
+                            
                             <div class="form-group">
                                 <label for="module_cancel">Cancel</label>
-                                <input name="input[module_cancel]" type="password" class="form-control input-item" id="module_cancel" placeholder="Cancelling Module">
+                                <div class="input-group">
+                                    <input name="input[module_cancel]" type="password" class="form-control input-item" id="module_cancel" placeholder="Cancelling Module">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="cancel_eye" onclick="show_pass('cancel')" style="cursor:pointer">show</span>
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="module_delete">Delete</label>
-                                <input name="input[module_delete]" type="password" class="form-control input-item" id="module_delete" placeholder="Delete Module">
+                                <div class="input-group">
+                                    <input name="input[module_delete]" type="password" class="form-control input-item" id="module_delete" placeholder="Delete Module">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="delete_eye" onclick="show_pass('delete')" style="cursor:pointer">show</span>
+                                    </div>
+                                </div>
                             </div>
+                            
                             <button type="submit" class="btn btn-primary mr-2" id="btn_submit">Submit</button>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="module_add_customer">Add Customer</label>
-                                <input name="input[module_add_customer]" type="password" class="form-control input-item" id="module_add_customer" placeholder="Add Customer Module">
+                                <div class="input-group">
+                                    <input name="input[module_add_customer]" type="password" class="form-control input-item" id="module_add_customer" placeholder="Add Customer Module">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="customer_eye" onclick="show_pass('customer')" style="cursor:pointer">show</span>
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="module_change_payment_type">Change Payment Type</label>
-                                <input name="input[module_change_payment_type]" type="password" class="form-control input-item" id="module_change_payment_type" placeholder="Cancelling Module">
+                                <div class="input-group">
+                                    <input name="input[module_change_payment_type]" type="password" class="form-control input-item" id="module_change_payment_type" placeholder="Cancelling Module">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="change_payment_eye" onclick="show_pass('change_payment')" style="cursor:pointer">show</span>
+                                        </div>
+                                </div>
+                                
                             </div>
+
                             <div class="form-group">
                                 <label for="module_remove_online_payment">Remove Online Payment</label>
-                                <input name="input[module_remove_online_payment]" type="password" class="form-control input-item" id="module_remove_online_payment" placeholder="Delete Module">
+                                <div class="input-group">
+                                    <input name="input[module_remove_online_payment]" type="password" class="form-control input-item" id="module_remove_online_payment" placeholder="Delete Module">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="remove_online_payment_eye" onclick="show_pass('remove_online_payment')" style="cursor:pointer">show</span>
+                                    </div>
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -261,5 +299,63 @@
                 swal("Error!", "Please contact your support!", "warning");
             }
         });
+    }
+
+    function show_pass(type){
+        if(type === 'document'){
+            var this_pass = document.getElementById("module_discount");
+            if(this_pass.type == "password"){
+                this_pass.type = "text";
+                document.getElementById("document_eye").innerHTML = "hide";
+            }else{
+                this_pass.type = "password";
+                document.getElementById("document_eye").innerHTML = "show";
+            }
+        }else if(type === 'cancel'){
+            var this_pass = document.getElementById("module_cancel");
+            if(this_pass.type == "password"){
+                this_pass.type = "text";
+                document.getElementById("cancel_eye").innerHTML = "hide";
+            }else{
+                this_pass.type = "password";
+                document.getElementById("cancel_eye").innerHTML = "show";
+            }
+        }else if(type === 'delete'){
+            var this_pass = document.getElementById("module_delete");
+            if(this_pass.type == "password"){
+                this_pass.type = "text";
+                document.getElementById("delete_eye").innerHTML = "hide";
+            }else{
+                this_pass.type = "password";
+                document.getElementById("delete_eye").innerHTML = "show";
+            }
+        }else if(type === 'customer'){
+            var this_pass = document.getElementById("module_add_customer");
+            if(this_pass.type == "password"){
+                this_pass.type = "text";
+                document.getElementById("customer_eye").innerHTML = "hide";
+            }else{
+                this_pass.type = "password";
+                document.getElementById("customer_eye").innerHTML = "show";
+            }
+        }else if(type === 'change_payment'){
+            var this_pass = document.getElementById("module_change_payment_type");
+            if(this_pass.type == "password"){
+                this_pass.type = "text";
+                document.getElementById("change_payment_eye").innerHTML = "hide";
+            }else{
+                this_pass.type = "password";
+                document.getElementById("change_payment_eye").innerHTML = "show";
+            }
+        }else if(type === 'remove_online_payment'){
+            var this_pass = document.getElementById("module_remove_online_payment");
+            if(this_pass.type == "password"){
+                this_pass.type = "text";
+                document.getElementById("remove_online_payment_eye").innerHTML = "hide";
+            }else{
+                this_pass.type = "password";
+                document.getElementById("remove_online_payment_eye").innerHTML = "show";
+            }
+        }  
     }
 </script>
