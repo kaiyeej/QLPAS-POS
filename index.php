@@ -148,23 +148,38 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
 
       function AuthBranch() {
         var branch_id = $("#branch_id").val();
-        $.ajax({
-          type: "POST",
-          url: "controllers/sql.php?c=Branches&q=session_branch",
-          data: {
-            input: {
-              branch_id: branch_id
+        var current_branch_id = localStorage.getItem("session_branch_id");
+        
+        if(branch_id != current_branch_id){
+          localStorage.setItem("session_branch_id", branch_id);
+
+          $.ajax({
+            type: "POST",
+            url: "controllers/sql.php?c=Branches&q=session_branch",
+            data: {
+              input: {
+                branch_id: branch_id
+              }
+            },
+            success: function(data) {
+              var json = JSON.parse(data);
+              // console.log(json.data);
+
+              $("#pos_branch_id").val(json.data);
+
+              swal({
+                    title: "Branch Change",
+                    text: "Session branch updated!",
+                    type: "success",
+                    confirmButtonText: "Ok"
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        location.reload();
+                    }
+                });
             }
-          },
-          success: function(data) {
-            var json = JSON.parse(data);
-            console.log(json.data);
-            
-            $("#pos_branch_id").val(json.data);
-            localStorage.setItem("session_branch_id", json.data);
-            
-          }
-        });
+          });
+        }
       }
 
       window.addEventListener("storage", function(event) {
@@ -185,8 +200,6 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
                   location.reload();
                 }
               });
-            }else{
-              location.reload();
             }
         }
       });
