@@ -192,7 +192,7 @@ class ClaimSlip extends Connection
             $user = "cashier";
         }
 
-        $result = $this->select("$this->table c LEFT JOIN tbl_sales s ON c.sales_id=s.sales_id LEFT JOIN tbl_customers cu ON s.customer_id=cu.customer_id", "c.*, s.reference_number AS sales_reference_number, s.sales_type, s.customer_id, s.sales_date, s.for_pick_up, cu.customer_name as customer", $param);
+        $result = $this->select("$this->table c LEFT JOIN tbl_sales s ON c.sales_id=s.sales_id LEFT JOIN tbl_customers cu ON s.customer_id=cu.customer_id", "c.*, s.reference_number AS sales_reference_number, s.sales_type, s.customer_id, s.sales_date, s.for_pick_up, cu.customer_name as customer, s.sales_total_amount as sales_total_amount", $param);
         while ($row = $result->fetch_assoc()) {
 
             // $sales_id = $row['sales_id'];
@@ -202,7 +202,7 @@ class ClaimSlip extends Connection
             //$customer_name = $sales_row['customer_id'] > 0 ? $Customers->name($sales_row['customer_id']) : 'Walk-in';
             //$row['customer'] = $row['customer_name'];
             // $total = $Sales->total($sales_id);
-            $total = $row['total_amount'];
+            $total = $row['sales_total_amount'];
             $row['total'] = number_format($total, 2);
             $row['total_nonformat'] = $total;
             $row['reference_number'] = $user == "warehouse" ? $row['reference_number'] : $row['sales_reference_number'];
