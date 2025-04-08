@@ -44,6 +44,45 @@ class InventoryReport extends Connection
         return $rows;
     }
 
+    public function countsheet()
+    {
+        $branch_id = $this->getBranch();
+        $product_category_id = $this->inputs['product_category_id'];
+        $warehouse_id = $this->inputs['warehouse_id'];
+        $warehouse = '';
+        if ($warehouse_id != -1) {
+            $warehouse = "AND warehouse_id = '$warehouse_id'";
+        }
+        $rows = array();
+
+        $category_eq = $product_category_id == -1 ? ">" : $product_category_id;
+        $category_col = $product_category_id == -1 ? '0' : '';
+
+        $query = $this->table('tbl_products AS p')
+            ->join('tbl_product_transactions AS c', 'p.product_id', '=', 'c.product_id')
+            ->selectRaw('p.product_id, p.product_name, p.product_cost, p.product_code, SUM(IF(c.type="IN", c.quantity, -c.quantity)) AS product_qty')
+            ->where('product_category_id', $category_eq, $category_col)
+            ->where('status', 1)
+            ->where('branch_id', $branch_id);
+        if ($warehouse_id != -1) {
+            $query->where('warehouse_id', $warehouse_id);
+        }
+        $result = $query->groupBy('p.product_id')
+            ->get();
+
+        $count = 1;
+        while ($row = $result->fetch_assoc()) {
+            $forpickup = $this->pick_up_balance($row['product_id'], $branch_id, $warehouse_id);
+            $for_pickup = $forpickup < 0 ? 0 : $forpickup;
+            $row['count'] = $count++;
+            $row['product_code'] =  $row['product_code'];
+            $row['for_pickup'] = number_format($for_pickup, 2);
+            $row['in_stock'] = $row['product_qty'] + $for_pickup;
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
     public function pick_up_balance($product_id, $branch_id, $warehouse_id)
     {
         $param = ($warehouse_id != -1) ? "AND h.release_warehouse_id = '$warehouse_id'" : "";

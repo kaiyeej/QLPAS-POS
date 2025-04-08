@@ -53,6 +53,7 @@
             array('Bank Due Report', 'bankdue-report'),
             array('Bank Ledger', 'bank-ledger'),
             array('Customer SOA', 'customer-soa'),
+            array('Countsheet', 'count-sheet'),
             array('Expense Report', 'expense-report'),
             array('Income Statement', 'income-statement'),
             array('Inventory Report', 'inventory-report'),
