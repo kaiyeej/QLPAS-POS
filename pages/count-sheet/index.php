@@ -102,7 +102,7 @@
                                     <button type="submit" id="btn_generate" class="btn btn-warning btn-icon-text">
                                         <i class="ti-reload mr-1"></i> Generate
                                     </button>
-                                    <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Inventroy-Report')">
+                                    <button type="button" class="btn btn-primary btn-icon-text" onclick="exportTableToExcel(this,'dt_entries','Countsheet-Report')">
                                         <i class="ti-cloud-down mr-1"></i> Export
                                     </button>
                                     <button type="button" class="btn btn-success btn-icon-text" onclick="print_report1('report_container')" id="btn_delete">
