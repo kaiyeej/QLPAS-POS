@@ -322,6 +322,6 @@
         const inStock = parseInt(rowData.in_stock) || 0;
 
         const variance = actualCount - inStock;
-        $(`.variance[data-row-index="${rowIndex}"]`).text(variance);
+        $(`.variance[data-row-index="${rowIndex}"]`).val(variance);
     });
 </script>
