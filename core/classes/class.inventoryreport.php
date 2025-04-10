@@ -72,12 +72,12 @@ class InventoryReport extends Connection
 
         $count = 1;
         while ($row = $result->fetch_assoc()) {
-            $forpickup = $this->pick_up_balance($row['product_id'], $branch_id, $warehouse_id);
-            $for_pickup = $forpickup < 0 ? 0 : $forpickup;
+            // $forpickup = $this->pick_up_balance($row['product_id'], $branch_id, $warehouse_id);
+            // $for_pickup = $forpickup < 0 ? 0 : $forpickup;
             $row['count'] = $count++;
             $row['product_code'] =  $row['product_code'];
-            $row['for_pickup'] = number_format($for_pickup, 2);
-            $row['in_stock'] = $row['product_qty'] + $for_pickup;
+            // $row['for_pickup'] = number_format($for_pickup, 2);
+            $row['in_stock'] = $row['product_qty'];
             $rows[] = $row;
         }
         return $rows;
