@@ -16,6 +16,8 @@ class Products extends Connection
         $form = array(
             $this->name             => $this->clean($this->inputs[$this->name]),
             'product_price'         => $this->inputs['product_price'],
+            'wholesale_price'       => $this->inputs['wholesale_price'],
+            'retail_price'          => $this->inputs['retail_price'],
             'product_category_id'   => $this->inputs['product_category_id'],
             'remarks'               => $this->inputs['remarks'],
             'product_code'          => $this->inputs['product_code'],
@@ -37,6 +39,8 @@ class Products extends Connection
             'product_category_id'   => $this->inputs['product_category_id'],
             'product_code'          => $this->inputs['product_code'],
             'product_price'         => $this->inputs['product_price'],
+            'wholesale_price'       => $this->inputs['wholesale_price'],
+            'retail_price'          => $this->inputs['retail_price'],
             'product_barcode'       => $this->inputs['product_barcode'],
             'remarks'               => $this->inputs['remarks'],
             'is_package'            => isset($this->inputs['is_package']) ? '1' : '0',

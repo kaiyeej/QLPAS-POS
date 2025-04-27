@@ -62,6 +62,20 @@
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <label><strong>Wholesale Price</strong></label>
+                            <div>
+                                <input type="number" class="form-control input-item" name="input[wholesale_price]" id="wholesale_price" step=".01" min="0" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label><strong>Retail Price</strong></label>
+                            <div>
+                                <input type="number" class="form-control input-item" name="input[retail_price]" id="retail_price" step=".01" min="0" autocomplete="off" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Remarks</strong></label>
                             <div>
                                 <textarea class="form-control input-item" name="input[remarks]" id="remarks" placeholder="Remarks" autocomplete="off" maxlength="255"></textarea>
