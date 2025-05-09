@@ -66,7 +66,7 @@
 <?php include 'modal_adjustment.php' ?>
 <script type="text/javascript">
     function getEntries() {
-        var branch_id = "<?=$_SESSION['branch_id']?>";
+        var branch_id = "<?=$_SESSION['grocery_branch_id']?>";
         var start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
         var param = "(adjustment_date >= '" + start_date + "' AND adjustment_date <= '" + end_date + "') AND branch_id='"+branch_id+"'";

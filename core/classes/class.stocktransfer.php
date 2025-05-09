@@ -27,7 +27,7 @@ class StockTransfer extends Connection
             'destination_warehouse_id'  => $this->inputs['destination_warehouse_id'],
             'remarks'                   => $this->inputs['remarks'],
             'stock_transfer_date'       => $this->inputs['stock_transfer_date'],
-            'user_id'                   => $_SESSION['user']['id'],
+            'user_id'                   => $_SESSION['user_grocery']['id'],
             'date_added'                => $this->getCurrentDate()
         );
 
@@ -65,7 +65,7 @@ class StockTransfer extends Connection
             'no_of_batches'         => $this->inputs['no_of_batches'],
             'remarks'               => $this->inputs['remarks'],
             'job_order_date'        => $this->inputs['job_order_date'],
-            'encoded_by'            => $_SESSION['user']['id'],
+            'encoded_by'            => $_SESSION['user_grocery']['id'],
             'date_last_modified'    => $this->getCurrentDate()
         );
         return $this->updateIfNotExist($this->table, $form);
@@ -100,7 +100,7 @@ class StockTransfer extends Connection
         $row['source_warehouse'] = $Warehouses->name($row['source_warehouse_id']);
         $row['destination_warehouse'] = $Warehouses->name($row['destination_warehouse_id']);
         $row['encoded_name'] = $Users->getUser($row['user_id']);
-        $row['prepared_name'] = $Users->getUser($_SESSION['user']['id']);
+        $row['prepared_name'] = $Users->getUser($_SESSION['user_grocery']['id']);
         return $row;
     }
 

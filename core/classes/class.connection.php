@@ -320,7 +320,7 @@ class Connection
     }
 
     public function getBranch(){
-        return $_SESSION['branch_id'];
+        return $_SESSION['grocery_branch_id'];
     }
 
     function daysDifference($endDate, $beginDate)

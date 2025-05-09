@@ -69,7 +69,7 @@
     function getEntries() {
         var  start_date = $("#start_date").val();
         var end_date = $("#end_date").val();
-        var branch_id = "<?=$_SESSION['branch_id']?>";
+        var branch_id = "<?=$_SESSION['grocery_branch_id']?>";
         var param = "(job_order_date >= '"+start_date+"' AND job_order_date <= '"+end_date+"') AND branch_id = '"+branch_id+"'";
 
         $("#dt_entries").DataTable().destroy();

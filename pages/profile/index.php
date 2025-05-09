@@ -55,7 +55,7 @@
 
 <script type="text/javascript">
   <?php
-  echo "var id = " . $_SESSION['user']['id'] . ";\n";
+  echo "var id = " . $_SESSION['user_grocery']['id'] . ";\n";
   ?>
   $(document).ready(function() {
     getProfile();

@@ -95,7 +95,7 @@ class Menus extends Connection
                 $list_data = $this->menus[$main_column][$index];
 
                 $UserPrivileges = new UserPrivileges();
-                if ($UserPrivileges->check($page, $_SESSION['user']['id']) == 1) {
+                if ($UserPrivileges->check($page, $_SESSION['user_grocery']['id']) == 1) {
                     $this->dir = $dir;
                     $this->route_settings = [
                         'class_name' => $list_data['class_name'],
@@ -115,7 +115,7 @@ class Menus extends Connection
     public function sidebar($name, $url, $ti)
     {
         $UserPrivileges = new UserPrivileges();
-        if ($UserPrivileges->check($url, $_SESSION['user']['id']) == 1) {
+        if ($UserPrivileges->check($url, $_SESSION['user_grocery']['id']) == 1) {
             echo '<li class="nav-item">
             <a class="nav-link" href="./' . $url . '">
                 <i class="ti ti-' . $ti . ' menu-icon"></i>
@@ -132,7 +132,7 @@ class Menus extends Connection
         $ui = str_replace(' ', '', strtolower($name));
         $child_label = "";
         foreach ($child as $row) {
-            if ($UserPrivileges->check($row[1], $_SESSION['user']['id']) == 1) {
+            if ($UserPrivileges->check($row[1], $_SESSION['user_grocery']['id']) == 1) {
                 $child_label .= '<li class="nav-item"> <a class="nav-link" href="./' . $row[1] . '">' . $row[0] . '</a></li>';
             }
         }

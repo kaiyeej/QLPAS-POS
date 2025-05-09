@@ -14,7 +14,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Juancoder IT Solutions POS</title>
+  <title>Juancoder IT Solutions - Grocery</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="vendors/feather/feather.css">
   <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
@@ -88,7 +88,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
 </head>
 
 <body class="sidebar-dark">
-  <?php if (!isset($_SESSION['user']['id'])) {
+  <?php if (!isset($_SESSION['user_grocery']['id'])) {
     require_once 'pages/authentication/index.php';
   } else {
     // sidebar-icon-only
@@ -104,7 +104,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
         <div class="main-panel">
           <!-- routes -->
           <?php
-          if (isset($_SESSION['branch_id']) && $_SESSION['branch_id'] > 0) {
+          if (isset($_SESSION['grocery_branch_id']) && $_SESSION['grocery_branch_id'] > 0) {
             require 'routes/routes.php';
           } else {
             require 'no_branch.php';
