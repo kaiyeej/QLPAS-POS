@@ -14,20 +14,20 @@ class InventoryReport extends Connection
         }
         $rows = array();
 
-        $category_eq = $product_category_id == -1 ? ">" : $product_category_id;
-        $category_col = $product_category_id == -1 ? '0' : '';
+        $category_eq = $product_category_id == -1 ? "" : "product_category_id = '$product_category_id'  AND ";
+        // $category_col = $product_category_id == -1 ? '0' : '';
 
-        $query = $this->table('tbl_products AS p')
-            ->join('tbl_product_transactions AS c', 'p.product_id', '=', 'c.product_id')
-            ->selectRaw('p.product_id, p.product_name, p.product_cost, p.product_code, SUM(IF(c.type="IN", c.quantity, -c.quantity)) AS product_qty')
-            ->where('product_category_id', $category_eq, $category_col)
-            ->where('status', 1)
-            ->where('branch_id', $branch_id);
-        if ($warehouse_id != -1) {
-            $query->where('warehouse_id', $warehouse_id);
-        }
-        $result = $query->groupBy('p.product_id')
-            ->get();
+        // $query = $this->table('tbl_products AS p')
+        //     ->join('tbl_product_transactions AS c', 'p.product_id', '=', 'c.product_id')
+        //     ->selectRaw('p.product_id, p.product_name, p.product_cost, p.product_code, SUM(IF(c.type="IN", c.quantity, -c.quantity)) AS product_qty')
+        //     ->where('product_category_id', $category_eq, $category_col)
+        //     ->where('status', 1)
+        //     ->where('branch_id', $branch_id);
+        // if ($warehouse_id != -1) {
+        //     $query->where('warehouse_id', $warehouse_id);
+        // }
+
+        $result = $this->select("tbl_products p LEFT JOIN tbl_product_transactions c ON p.product_id = c.product_id", "p.product_id, p.product_name, p.product_cost, p.product_code, SUM(IF(c.type='IN', c.quantity, -c.quantity)) AS product_qty", "$category_eq status = 1 AND branch_id = '$branch_id' $warehouse GROUP BY p.product_id");
 
         $count = 1;
         while ($row = $result->fetch_assoc()) {
@@ -55,20 +55,9 @@ class InventoryReport extends Connection
         }
         $rows = array();
 
-        $category_eq = $product_category_id == -1 ? ">" : $product_category_id;
-        $category_col = $product_category_id == -1 ? '0' : '';
+        $category_eq = $product_category_id == -1 ? "" : "product_category_id = '$product_category_id'  AND ";
 
-        $query = $this->table('tbl_products AS p')
-            ->join('tbl_product_transactions AS c', 'p.product_id', '=', 'c.product_id')
-            ->selectRaw('p.product_id, p.product_name, p.product_cost, p.product_code, SUM(IF(c.type="IN", c.quantity, -c.quantity)) AS product_qty')
-            ->where('product_category_id', $category_eq, $category_col)
-            ->where('status', 1)
-            ->where('branch_id', $branch_id);
-        if ($warehouse_id != -1) {
-            $query->where('warehouse_id', $warehouse_id);
-        }
-        $result = $query->groupBy('p.product_id')
-            ->get();
+        $result = $this->select("tbl_products p LEFT JOIN tbl_product_transactions c ON p.product_id = c.product_id", "p.product_id, p.product_name, p.product_cost, p.product_code, SUM(IF(c.type='IN', c.quantity, -c.quantity)) AS product_qty", "$category_eq status = 1 AND branch_id = '$branch_id' $warehouse GROUP BY p.product_id");
 
         $count = 1;
         while ($row = $result->fetch_assoc()) {
