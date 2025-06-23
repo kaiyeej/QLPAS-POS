@@ -30,6 +30,15 @@
                     </div>
                     <div class="form-group row">
                         <div class="col">
+                            <label><strong>Assign Warehouse</strong></label>
+                            <div>
+                                <select class="form-control form-control-sm input-item select2" name="input[user_warehouse_id]" id="warehouse_id" required>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
                             <label><strong>Username</strong></label>
                             <div>
                                 <input type="text" class="form-control input-item" name="input[username]" autocomplete="off" id="username" placeholder="Username" maxlength=15 required>

@@ -9,17 +9,23 @@ class Users extends Connection
     public function add()
     {
         $username = $this->clean($this->inputs['username']);
+        $Warehouses = new Warehouses();
+        $warehouse_id = $this->inputs['user_warehouse_id'];
+        $user_branch_id = $Warehouses->warehouse_branch_id($warehouse_id);
+
         $is_exist = $this->select($this->table, $this->pk, "username = '$username'");
         if ($is_exist->num_rows > 0) {
             return 2;
         } else {
             $pass = $this->inputs['password'];
             $form = array(
-                'user_fullname' => $this->inputs['user_fullname'],
-                'user_category' => $this->inputs['user_category'],
-                'username'      => $this->inputs['username'],
-                'password'      => md5($pass),
-                'date_added'    => $this->getCurrentDate()
+                'user_fullname'     => $this->inputs['user_fullname'],
+                'user_category'     => $this->inputs['user_category'],
+                'user_warehouse_id' => $warehouse_id,
+                'user_branch_id'    => $user_branch_id,
+                'username'          => $this->inputs['username'],
+                'password'          => md5($pass),
+                'date_added'        => $this->getCurrentDate()
             );
             return $this->insert($this->table, $form);
         }
@@ -29,6 +35,11 @@ class Users extends Connection
     {
         $primary_id = $this->inputs[$this->pk];
         $user_fullname = $this->clean($this->inputs['user_fullname']);
+        
+        $Warehouses = new Warehouses();
+        $warehouse_id = $this->inputs['user_warehouse_id'];
+        $user_branch_id = $Warehouses->warehouse_branch_id($warehouse_id);
+
         $username = $this->clean($this->inputs['username']);
         $is_exist = $this->select($this->table, $this->pk, "username = '$username' AND  $this->pk != '$primary_id'");
         if ($is_exist->num_rows > 0) {
@@ -37,6 +48,8 @@ class Users extends Connection
             $form = array(
                 'user_fullname'         => $user_fullname,
                 'username'              => $username,
+                'user_warehouse_id'     => $warehouse_id,
+                'user_branch_id'        => $user_branch_id,
                 'date_last_modified'    => $this->getCurrentDate()
             );
             if ($primary_id != $_SESSION['user']['id']) {

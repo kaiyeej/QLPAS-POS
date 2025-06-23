@@ -16,21 +16,6 @@
                             </div>
                         </div>
                     </div>
-                    <hr />
-                    <div class="table-responsive">
-                        <table class="display expandable-table" id="dt_entries_2" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Warehouse</th>
-                                    <th>Date Added</th>
-                                    <th>Date Modified</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <div class='btn-group'>
