@@ -509,6 +509,37 @@ class Sales extends Connection
         }
     }
 
+    public function edit_price()
+    {
+        $sales_detail_id = $this->clean($this->inputs['sales_detail_id']);
+        $price_id = $this->clean($this->inputs['price_id']);
+        $access_code = $this->clean($this->inputs['access_code']);
+
+        $Settings = new Settings();
+        $setting_row = $Settings->view();
+        if ($setting_row['module_change_price'] == $access_code) {
+            // get ws/retail price
+            $fetch_product_price = $this->select("tbl_sales_details d LEFT JOIN tbl_products p ON d.product_id=p.product_id", "p.product_wholesale_price, p.product_price", "d.sales_detail_id='$sales_detail_id'");
+            $product_price_row = $fetch_product_price->fetch_assoc();
+
+            if($price_id == 0){
+                $new_price = $product_price_row['product_price'];
+            }else{
+                $new_price = $product_price_row['product_wholesale_price'];
+            }
+
+            $form = array(
+                'price' => $new_price,
+                'discount' => 0,
+                'discount_id' => 0
+            );
+
+            return $this->update($this->table_detail, $form, " $this->pk2 = '$sales_detail_id'");
+        } else {
+            return -2; // access denied
+        }
+    }
+
     public function getID($param)
     {
         $fetch = $this->select($this->table, $this->pk, $param);
