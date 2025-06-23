@@ -59,20 +59,18 @@
                                 <input type="number" class="form-control input-item" name="input[product_price]" id="product_price" step=".01" min="0" autocomplete="off" required>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
                         <div class="col">
                             <label><strong>Wholesale Price</strong></label>
                             <div>
-                                <input type="number" class="form-control input-item" name="input[wholesale_price]" id="wholesale_price" step=".01" min="0" autocomplete="off" required>
+                                <input type="number" class="form-control input-item" name="input[product_wholesale_price]" id="product_wholesale_price" step=".01" min="0" autocomplete="off" required>
                             </div>
                         </div>
-                        <div class="col">
+                        <!-- <div class="col">
                             <label><strong>Retail Price</strong></label>
                             <div>
                                 <input type="number" class="form-control input-item" name="input[retail_price]" id="retail_price" step=".01" min="0" autocomplete="off" required>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="form-group row">
                         <div class="col">
