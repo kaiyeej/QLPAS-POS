@@ -129,7 +129,10 @@
                                 <label for="module_delete">Delete</label>
                                 <input name="input[module_delete]" type="password" class="form-control input-item" id="module_delete" placeholder="Delete Module">
                             </div>
-                            <button type="submit" class="btn btn-primary mr-2" id="btn_submit">Submit</button>
+                            <div class="form-group">
+                                <label for="module_remove_online_payment">Change Price</label>
+                                <input name="input[module_change_price]" type="password" class="form-control input-item" id="module_change_price" placeholder="Change Price Module">
+                            </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
@@ -138,12 +141,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="module_change_payment_type">Change Payment Type</label>
-                                <input name="input[module_change_payment_type]" type="password" class="form-control input-item" id="module_change_payment_type" placeholder="Cancelling Module">
+                                <input name="input[module_change_payment_type]" type="password" class="form-control input-item" id="module_change_payment_type" placeholder="Change Payment Type Module">
                             </div>
                             <div class="form-group">
                                 <label for="module_remove_online_payment">Remove Online Payment</label>
-                                <input name="input[module_remove_online_payment]" type="password" class="form-control input-item" id="module_remove_online_payment" placeholder="Delete Module">
+                                <input name="input[module_remove_online_payment]" type="password" class="form-control input-item" id="module_remove_online_payment" placeholder="Remove Online Payment Module">
                             </div>
+                            <button type="submit" class="btn btn-primary mr-2" id="btn_submit" style="margin-top: 30px;">Submit</button>
                         </div>
                     </div>
                 </form>
