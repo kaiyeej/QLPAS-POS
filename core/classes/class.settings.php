@@ -15,6 +15,7 @@ class Settings extends Connection
             'module_add_customer'           => $this->inputs['module_add_customer'],
             'module_change_payment_type'    => $this->inputs['module_change_payment_type'],
             'module_remove_online_payment'  => $this->inputs['module_remove_online_payment'],
+            'module_change_price'           => $this->inputs['module_change_price'],
         );
 
         $result = $this->select($this->table, 'settings_id');

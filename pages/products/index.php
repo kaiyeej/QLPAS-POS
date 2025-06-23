@@ -42,6 +42,7 @@
                                     <th>Barcode</th>
                                     <th>Product</th>
                                     <th>Price</th>
+                                    <th>Wholesale Price</th>
                                     <th>Category</th>
                                     <th>Date Added</th>
                                     <th>Date Modified</th>
@@ -92,6 +93,9 @@
                 },
                 {
                     "data": "product_price"
+                },
+                {
+                    "data": "product_wholesale_price"
                 },
                 {
                     "data": "product_category"

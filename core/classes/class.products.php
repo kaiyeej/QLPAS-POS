@@ -8,22 +8,21 @@ class Products extends Connection
 
     public $inputs = [];
 
-    public $searchable = ['product_barcode','product_code','product_name'];
+    public $searchable = ['product_barcode', 'product_code', 'product_name'];
     public $uri = "products";
 
     public function add()
     {
         $form = array(
-            $this->name             => $this->clean($this->inputs[$this->name]),
-            'product_price'         => $this->inputs['product_price'],
-            'wholesale_price'       => $this->inputs['wholesale_price'],
-            'retail_price'          => $this->inputs['retail_price'],
-            'product_category_id'   => $this->inputs['product_category_id'],
-            'remarks'               => $this->inputs['remarks'],
-            'product_code'          => $this->inputs['product_code'],
-            'product_barcode'       => $this->inputs['product_barcode'],
-            'is_package'            => isset($this->inputs['is_package']) ? '1' : '0',
-            'date_added'            => $this->getCurrentDate()
+            $this->name                 => $this->clean($this->inputs[$this->name]),
+            'product_price'             => $this->inputs['product_price'],
+            'product_wholesale_price'   => $this->inputs['product_wholesale_price'],
+            'product_category_id'       => $this->inputs['product_category_id'],
+            'remarks'                   => $this->inputs['remarks'],
+            'product_code'              => $this->inputs['product_code'],
+            'product_barcode'           => $this->inputs['product_barcode'],
+            'is_package'                => isset($this->inputs['is_package']) ? '1' : '0',
+            'date_added'                => $this->getCurrentDate()
         );
         $param = "product_code='" . $this->inputs['product_code'] . "'";
         $param .= $this->inputs['product_barcode'] != '' ? " OR product_barcode = '" . $this->inputs['product_barcode'] . "'" : '';
@@ -35,16 +34,16 @@ class Products extends Connection
     public function edit()
     {
         $form = array(
-            $this->name             => $this->clean($this->inputs[$this->name]),
-            'product_category_id'   => $this->inputs['product_category_id'],
-            'product_code'          => $this->inputs['product_code'],
-            'product_price'         => $this->inputs['product_price'],
-            'wholesale_price'       => $this->inputs['wholesale_price'],
-            'retail_price'          => $this->inputs['retail_price'],
-            'product_barcode'       => $this->inputs['product_barcode'],
-            'remarks'               => $this->inputs['remarks'],
-            'is_package'            => isset($this->inputs['is_package']) ? '1' : '0',
-            'date_last_modified'    => $this->getCurrentDate()
+            $this->name                 => $this->clean($this->inputs[$this->name]),
+            'product_category_id'       => $this->inputs['product_category_id'],
+            'product_code'              => $this->inputs['product_code'],
+            'product_price'             => $this->inputs['product_price'],
+            'product_wholesale_price'   => $this->inputs['product_wholesale_price'],
+            // 'retail_price'          => $this->inputs['retail_price'],
+            'product_barcode'           => $this->inputs['product_barcode'],
+            'remarks'                   => $this->inputs['remarks'],
+            'is_package'                => isset($this->inputs['is_package']) ? '1' : '0',
+            'date_last_modified'        => $this->getCurrentDate()
         );
         $param = "(product_code='" . $this->inputs['product_code'] . "'";
         $param .= $this->inputs['product_barcode'] != '' ? " OR product_barcode = '" . $this->inputs['product_barcode'] . "')" : ')';
@@ -65,6 +64,8 @@ class Products extends Connection
         while ($row = $result->fetch_assoc()) {
             $row['count'] = $count++;
             $row['product_category'] = $ProductCategories->name($row['product_category_id']);
+            $row['product_price'] = number_format($row['product_price'], 2);
+            $row['product_wholesale_price'] = number_format($row['product_wholesale_price'], 2);
             $rows[] = $row;
         }
         return $rows;
@@ -168,32 +169,32 @@ class Products extends Connection
             $row['count'] = $count++;
             //$row['product_category'] = $ProductCategories->name($row['product_category_id']);
 
-            $row['current_qty'] = $row['product_qty'];//$Inv->balance($row['product_id']);
+            $row['current_qty'] = $row['product_qty']; //$Inv->balance($row['product_id']);
             $rows[] = $row;
         }
         return $rows;
     }
 
-    public static function search($words,&$rows)
+    public static function search($words, &$rows)
     {
         $self = new self;
-        if(count($self->searchable) > 0 ){
-            $where = implode(" LIKE '%$words%' OR ", $self->searchable)." LIKE '%$words%'";
+        if (count($self->searchable) > 0) {
+            $where = implode(" LIKE '%$words%' OR ", $self->searchable) . " LIKE '%$words%'";
             $result = $self->select($self->table, '*', $where);
             while ($row = $result->fetch_assoc()) {
                 $names = [];
-                foreach($self->searchable as $f){
+                foreach ($self->searchable as $f) {
                     $names[] = $row[$f];
                 }
                 $rows[] = array(
                     'name' => implode(" ", $names),
                     'module' => $self->module_name,
-                    'slug' => $self->uri."?id=".$row[$self->pk]
+                    'slug' => $self->uri . "?id=" . $row[$self->pk]
                 );
             }
         }
     }
-    
+
     public function view_by_barcode()
     {
         $product_barcode = $this->inputs['product_barcode'];
@@ -201,7 +202,7 @@ class Products extends Connection
         $row = $result->fetch_assoc();
         return $row;
     }
-    
+
 
     public function schema()
     {
