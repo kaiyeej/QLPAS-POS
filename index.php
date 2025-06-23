@@ -476,6 +476,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
                 $("#div_category").show();
                 $("#user_category").prop("required", true);
               }
+              $("#warehouse_id").val(json['user_warehouse_id']).trigger('change');
             }
             $("#modalLabel").html("<span class='fa fa-pen'></span> Update Entry");
             $("#modalEntry").modal('show');
