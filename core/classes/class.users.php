@@ -142,7 +142,6 @@ class Users extends Connection
                 $response['login'] = 'No branch';
                 $response['user_id'] = "";
             }
-
            
             //$_SESSION['user']['id'] = $row['user_id'];
         } else {
