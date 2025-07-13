@@ -163,7 +163,7 @@
         $("#hidden_id_3").val(id);
         $("#modalRelease").modal("show");
 
-        var param = "sales_id = '" + $("#hidden_id_3").val() + "'";
+        var param = "sales_id = '" + id + "'";
         $("#dt_release").DataTable().destroy();
         $("#dt_release").DataTable({
             "processing": true,
