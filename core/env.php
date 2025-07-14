@@ -10,8 +10,12 @@ define('DEVELOPMENT', true);
 // define("PASSWORD", "");
 // define("DBNAME", "jcis_db");
 
+// define("HOST", "localhost");
+// define("USER", "u814036432_jcis_root");
+// define("PASSWORD", "@Jcis123!");
+// define("DBNAME", "u814036432_jcis_db");
 
 define("HOST", "localhost");
-define("USER", "u814036432_jcis_root");
-define("PASSWORD", "@Jcis123!");
-define("DBNAME", "u814036432_jcis_db");
+define("USER", "juancoder_pos_root");
+define("PASSWORD", "tELm3zNFz@SRAfa#");
+define("DBNAME", "jcis_db");
