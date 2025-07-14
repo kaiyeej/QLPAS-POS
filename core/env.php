@@ -1,7 +1,7 @@
 <?php
 
 define('APP_FOLDER', 'pos');
-define('BASE_URL', 'http://localhost/' . APP_FOLDER . '/');
+define('BASE_URL', 'http://qlpascorp.com/' . APP_FOLDER . '/');
 define("BASE_PATH", __DIR__ . "/../");
 define('DEVELOPMENT', true);
 
@@ -12,5 +12,5 @@ define('DEVELOPMENT', true);
 
 define("HOST", "localhost");
 define("USER", "juancoder_pos_root");
-define("PASSWORD", "wGfccDMRMXj1vfnw");
+define("PASSWORD", "=wAQ=RzTnpNAdPrq");
 define("DBNAME", "jcis_pos_db");
