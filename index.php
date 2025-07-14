@@ -476,7 +476,7 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
                 $("#div_category").show();
                 $("#user_category").prop("required", true);
               }
-              
+
               $("#warehouse_id").val(json['user_warehouse_id']).trigger('change');
             }
             $("#modalLabel").html("<span class='fa fa-pen'></span> Update Entry");
@@ -664,15 +664,25 @@ $currentDate = date('Y-m-d H:i:s', strtotime($today) + 28800);
             var col_list = document.getElementById("col-list");
             var col_item = document.getElementById("col-item");
 
-            if (json.status == 'F' || json.status == 'C' || json.status == 'R' || json.status == 'P') {
+            if (json.status == 'F' || json.status == 'C' || json.status == 'R' || json.status == 'P' || (route_settings.class_name == "Sales" && json.status == 'S')) {
               transaction_edit.classList.add('disabled');
               (typeof(transaction_delete_items) != 'undefined' && transaction_delete_items != null) ? transaction_delete_items.classList.add('disabled'): '';
-              transaction_finish.classList.add('disabled');
 
               $("#frm_release :input").prop("disabled", true);
 
               transaction_edit.setAttribute("onclick", "");
               (typeof(transaction_delete_items) != 'undefined' && transaction_delete_items != null) ? transaction_delete_items.setAttribute("onclick", ""): '';
+
+              // if (route_settings.class_name == "Sales" && (json.status == 'S' || json.status == 'P')) {
+              //   transaction_finish.classList.remove('disabled');
+              //   transaction_finish.setAttribute("onclick", "finishTransaction()");
+              // } else {
+              //   transaction_finish.classList.add('disabled');
+              //   transaction_finish.setAttribute("onclick", "");
+              // }
+
+
+              transaction_finish.classList.add('disabled');
               transaction_finish.setAttribute("onclick", "");
 
               (typeof(col_item) != 'undefined' && col_item != null) ? col_item.style.display = "none": '';

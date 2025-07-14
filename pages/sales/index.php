@@ -139,7 +139,7 @@
                 },
                 {
                     "mRender": function(data, type, row) {
-                        return row.status == 'F' || row.status == 'P' ? "<span class='badge badge-success'>Finish</span>" : (row.status == "R" ? "<span class='badge badge-warning'>Returned</span>" : "<span class='badge badge-danger'>Saved</span>");
+                        return row.status == 'F' ? "<span class='badge badge-success'>Finish</span>" : (row.status == "R" ? "<span class='badge badge-warning'>Returned</span>" : "<span class='badge badge-danger'>Saved</span>");
                     }
                 },
                 {
@@ -163,7 +163,7 @@
         $("#hidden_id_3").val(id);
         $("#modalRelease").modal("show");
 
-        var param = "sales_id = '" + $("#hidden_id_3").val() + "'";
+        var param = "sales_id = '" + id + "'";
         $("#dt_release").DataTable().destroy();
         $("#dt_release").DataTable({
             "processing": true,

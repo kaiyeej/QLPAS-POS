@@ -160,7 +160,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-8" id="col-list">
+                    <div class="col-12" id="col-list">
                         <form>
                             <div class="table-responsive">
                                 <table class="display expandable-table" id="dt_entries_2" width="100%" cellspacing="0">
