@@ -17,5 +17,5 @@ define('DEVELOPMENT', true);
 
 define("HOST", "localhost");
 define("USER", "juancoder_pos_root");
-define("PASSWORD", "tELm3zNFz@SRAfa#");
-define("DBNAME", "jcis_db");
+define("PASSWORD", "wGfccDMRMXj1vfnw");
+define("DBNAME", "jcis_pos_db");
