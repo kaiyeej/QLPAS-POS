@@ -186,27 +186,26 @@ class StockTransfer extends Connection
                         'type'                  => 'OUT',
                         'status'                => 1,
                     );
-                    $this->insertIfNotExist('tbl_product_transactions', $form_inv_in, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='OUT' AND warehouse_id='$row[source_warehouse_id]' AND product_id = '$row[product_id]'");
+                    $this->insert('tbl_product_transactions', $form_inv_in);
                 
 
-                    $Warehouses = new Warehouses;
-                    $destination_branch_id = $Warehouses->warehouse_branch_id($row['destination_warehouse_id']);
-                    $form_inv_out = array(
-                        'branch_id'             => $destination_branch_id * 1,
-                        'warehouse_id'          => $row['destination_warehouse_id'] * 1,
-                        'quantity'              => $row['qty'] * 1,
-                        'product_id'            => $row['product_id'] * 1,
-                        'cost'                  => $row['cost'] * 1,
-                        'price'                 => 0,
-                        'header_id'             => $primary_id,
-                        'detail_id'             => $row['stock_transfer_detail_id'] * 1,
-                        'module'                => 'STK',
-                        'type'                  => 'IN',
-                        'status'                => 1,
-                    );
-                    // insertIfNotExist($table, $form, $param = '', $last_id = 'N')
+                    // $Warehouses = new Warehouses;
+                    // $destination_branch_id = $Warehouses->warehouse_branch_id($row['destination_warehouse_id']);
+                    // $form_inv_out = array(
+                    //     'branch_id'             => $destination_branch_id * 1,
+                    //     'warehouse_id'          => $row['destination_warehouse_id'] * 1,
+                    //     'quantity'              => $row['qty'] * 1,
+                    //     'product_id'            => $row['product_id'] * 1,
+                    //     'cost'                  => $row['cost'] * 1,
+                    //     'price'                 => 0,
+                    //     'header_id'             => $primary_id,
+                    //     'detail_id'             => $row['stock_transfer_detail_id'] * 1,
+                    //     'module'                => 'STK',
+                    //     'type'                  => 'IN',
+                    //     'status'                => 1,
+                    // );
 
-                    $this->insertIfNotExist('tbl_product_transactions', $form_inv_out, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='IN' AND warehouse_id='$row[destination_warehouse_id]' AND product_id = '$row[product_id]'");
+                    // $this->insertIfNotExist('tbl_product_transactions', $form_inv_out, "header_id = '$primary_id' AND detail_id='$row[stock_transfer_detail_id]' AND module='STK' AND type='IN' AND warehouse_id='$row[destination_warehouse_id]' AND product_id = '$row[product_id]'");
 
                 }
 
