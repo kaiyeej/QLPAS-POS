@@ -171,7 +171,7 @@ class StockTransfer extends Connection
             $query = $this->update($this->table, $form, "$this->pk = '$primary_id'");
 
             if ($query) {
-                $fetch = $this->select('tbl_stock_transfer as h, tbl_stock_transfer_details as d', "*", "h.stock_transfer_id='$primary_id' AND h.stock_transfer_id=d.stock_transfer_id");
+                $fetch = $this->select('tbl_stock_transfer h LEFT JOIN tbl_stock_transfer_details d ON h.stock_transfer_id=d.stock_transfer_id', "*", "h.stock_transfer_id='$primary_id'");
                 while ($row = $fetch->fetch_assoc()) {
                     $form_inv_in = array(
                         'branch_id'             => $row['branch_id'] * 1,
