@@ -543,7 +543,7 @@ class CustomerPayment extends Connection
             $this->inputs['customer_id'] = $sales_row['customer_id'];
             $this->inputs['payment_type'] = "C";
             $this->inputs['payment_date'] = $this->getCurrentDate();
-            $this->inputs['check_date'] = "";
+            $this->inputs['check_date'] = "0000-00-00";
             $this->inputs['check_number'] = "";
             $this->inputs['check_bank'] = "";
             $this->inputs['payment_option_id'] = 0;
